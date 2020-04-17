@@ -1,5 +1,7 @@
 import React from 'react';
 import gsx2json from './Gsx2json.js';
+import Sidebar from './Sidebar.js';
+import OutfitList from './OutfitList.js';
 
 export default class Main extends React.Component {
   constructor(props) {
@@ -27,13 +29,13 @@ export default class Main extends React.Component {
 
   toggleValueInSet() {
     return (setName) => {
-      return (value) => {
+      return (event) => {
         const newSet = this.state[setName];
-        if (this.state[setName].has(value)) {
-          newSet.delete(value);
+        if (this.state[setName].has(event.target.value)) {
+          newSet.delete(event.target.value);
         }
         else {
-          newSet.add(value);
+          newSet.add(event.target.value);
         }
         this.setState({ [setName]: newSet });
       }
@@ -45,11 +47,17 @@ export default class Main extends React.Component {
       characters: this.state.characters,
       outfitTypes: this.state.outfitTypes,
       attributes: this.state.attributes,
+      selCharas: this.state.selCharas,
+      selOutfits: this.state.selOutfits,
       toggleValue: this.toggleValueInSet,
     }
     const outfitListProps = {
-      query: Array.from(this.state.selCharas).concat(Array.from(this.state.selOutfits)),
-      attr: this.state.selAttr,
+      query: Array.from(this.state.selCharas).concat(Array.from(this.state.selOutfits), Array.from(this.state.selAttr)),
+      stringQuery: Array.from(this.state.selCharas).concat(Array.from(this.state.selOutfits)),
+      attributes: this.state.attributes,
+      selCharas: this.state.selCharas,
+      selOutfits: this.state.selOutfits,
+      selAttr: this.state.selAttr,
     }
     return (
       <>
@@ -57,68 +65,5 @@ export default class Main extends React.Component {
         <Sidebar {...sidebarProps} />
       </>
     )
-  }
-}
-
-function Sidebar(props) {
-  const toggleValue = props.toggleValue();
-  return (
-    <div className='sidebar'>
-      <Options id='attrOpts' className='attrOpt' optionsArr={props.attributes} toggleValue={toggleValue('selAttr')} />
-      <Options id='charaOpts' className='charaOpt' optionsArr={props.characters} toggleValue={toggleValue('selCharas')} />
-      <Options id='outfitOpts' className='outfitOpt' optionsArr={props.outfitTypes} toggleValue={toggleValue('selOutfits')} />
-    </div>
-  )
-}
-
-function Options(props) {
-  const options = props.optionsArr.map(function (option) {
-    if (option) {
-      return (
-        <div key={option} className={props.className}>
-          <input type='checkbox' name={option} onClick={() => props.toggleValue(option)} />
-          <label htmlFor={option}>{option}</label>
-        </div>
-      )
-    }
-  });
-  return <div className='options' id={props.id}>{options}</div>
-}
-
-class OutfitList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { outfits: [] };
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.query !== prevProps.query || this.props.attr !== prevProps.attr) {
-      fetch('https://spreadsheets.google.com/feeds/list/1JeHlN1zcBwyBbBkyfsDiiqDZpLotkn770ewa1JCsekU/1/public/values?alt=json')
-        .then(res => res.json())
-        .then(res => {
-          this.setState({ outfits: gsx2json(res, { query: this.props.query }).rows })
-        });
-      //const attrs = Array.from(this.props.attr)
-    }
-  }
-
-  render() {
-    const outfits = this.state.outfits.map((elt) => <Outfit key={elt.character + elt.outfit} props={elt} />);
-    return <div className='outfitList'>{outfits}</div>
-  }
-}
-
-function Outfit(props) {
-  const properties = props.props;
-  try {
-    return (
-      <div className='outfit'>
-        <p>{properties.character}</p>
-        <p>{properties.outfit}</p>
-      </div>
-    )
-  }
-  catch (err) {
-    return null;
   }
 }

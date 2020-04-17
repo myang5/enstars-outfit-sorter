@@ -1,5 +1,5 @@
 export default function gsx2json(data, config = {}) {
-  const query = config.query || ['']
+  const query = config.query || []
   const useIntegers = config.integers || true
   const showRows = config.rows || true
   const showColumns = config.columns || true
@@ -19,9 +19,11 @@ export default function gsx2json(data, config = {}) {
           var name = key.substring(4);
           var content = entry[key];
           var value = content.$t;
-          query.forEach(function (query) {
-            if (value.toLowerCase().indexOf(query.toLowerCase()) > -1) { queried = true; }
-          })
+          if (query.length) {
+            query.forEach(function (query) {
+              if (value.toLowerCase().indexOf(query.toLowerCase()) > -1) { queried = true; }
+            })
+          } else { queried = true; }
           if (useIntegers === true && !isNaN(value)) {
             value = Number(value);
           }
