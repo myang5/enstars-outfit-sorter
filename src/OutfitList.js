@@ -1,5 +1,6 @@
 import React from 'react';
 import gsx2json from './Gsx2json.js';
+import {apiKey, spreadsheetId} from './sheetsCreds.js';
 
 export default class OutfitList extends React.Component {
   constructor(props) {
@@ -13,11 +14,12 @@ export default class OutfitList extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.query !== prevProps.query) {
-      fetch('https://spreadsheets.google.com/feeds/list/1JeHlN1zcBwyBbBkyfsDiiqDZpLotkn770ewa1JCsekU/1/public/values?alt=json')
+      const sheetId = 'Stat Bonuses';
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}`)
         .then(res => res.json())
         .then(res => {
           this.setState((state, props) => {
-            let outfits = gsx2json(res, { query: this.props.stringQuery }).rows; //all outfits that match character/outfit (inclusive)
+            let outfits = gsx2json(res, { query: this.props.stringQuery }); //all outfits that match character/outfit (inclusive)
             //console.log(outfits);
             if (this.props.selAttr.size > 0) {
               for (let i = outfits.length - 1; i >= 0; i--) {

@@ -1,7 +1,7 @@
 import React from 'react';
-import gsx2json from './Gsx2json.js';
 import Sidebar from './Sidebar.js';
 import OutfitList from './OutfitList.js';
+import {apiKey, spreadsheetId} from './sheetsCreds.js';
 
 export default class Main extends React.Component {
   constructor(props) {
@@ -18,12 +18,16 @@ export default class Main extends React.Component {
   }
 
   componentDidMount() {
-    fetch('https://spreadsheets.google.com/feeds/list/1JeHlN1zcBwyBbBkyfsDiiqDZpLotkn770ewa1JCsekU/4/public/values?alt=json')
-      .then(res => res.json())
+    const sheetId = 'Validation Lists';
+    //fetch info for sidebar
+    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}&majorDimension=COLUMNS`)
+      .then(result => result.json())
       .then(result => {
-        const resultObj = gsx2json(result);
-        //console.log(resultObj);
-        this.setState({ characters: resultObj.columns.character, outfitTypes: resultObj.columns.outfittypes });
+        //console.log(result);
+        const resultObj = result.values;
+        const characters = resultObj.filter((arr) => arr[0] === 'Character');
+        const outfitTypes = resultObj.filter((arr) => arr[0] === 'Outfit Type');
+        this.setState({ characters: characters[0], outfitTypes: outfitTypes[0] });
       })
   }
 

@@ -6,7 +6,7 @@ export default function Sidebar(props) {
     <div className='sidebar'>
       {/* <SearchButton /> */}
       <AttrOptions id='attrOpts' optionsArr={props.attributes} toggleValue={toggleValue('selAttr')} />
-      <SelectOptions id='charaOpts' heading='Characters' optionsArr={props.characters} selected={props.selCharas} toggleValue={toggleValue('selCharas')} />
+      <SelectOptions id='charaOpts' heading='Character' optionsArr={props.characters} selected={props.selCharas} toggleValue={toggleValue('selCharas')} />
       <SelectOptions id='outfitOpts' heading='Outfit Type' optionsArr={props.outfitTypes} selected={props.selOutfits} toggleValue={toggleValue('selOutfits')} />
     </div>
   )
