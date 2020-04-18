@@ -1,10 +1,10 @@
-export default function gsx2json(data, config = {}) {
+export default function addHeadersToData(data, config = {}) {
   const query = config.query || '';
   const useIntegers = config.integers || true;
-  const inclusiveSearch = config.inclusiveSearch || true; //whether row should match query partially (inclusive) or entirely (exclusive)
+  const isInclusive = config.isInclusive || false; //whether row should match query partially (inclusive) or entirely (exclusive)
   const responseObj = [];
+  console.log(isInclusive);
   if (data) {
-    console.log(query);
     var headers = data.values[0];
     for (var i = 1; i < data.values.length; i++) {
       var row = data.values[i];
@@ -15,9 +15,12 @@ export default function gsx2json(data, config = {}) {
         var value = row[j];
         if (!query.length) {queried = true} 
         else {
-          query.forEach(function (queryStr) {
-            if (value.toLowerCase().indexOf(queryStr.toLowerCase()) > -1) { queried = true }
-          })
+        //   if (isInclusive) {
+            query.forEach(function (queryStr) {
+              if (value.toLowerCase().indexOf(queryStr.toLowerCase()) > -1) { queried = true }
+            })
+          // }
+          
         }
         if (useIntegers === true && !isNaN(value)) {
           value = Number(value);

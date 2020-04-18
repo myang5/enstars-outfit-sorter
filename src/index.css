@@ -13,7 +13,7 @@ body{
   display: flex;
   flex-direction: column;
   flex: 0 0 300px;
-  padding: 1rem;
+  padding: 3rem 1.5rem;
   height: 100vh;
   box-sizing: border-box;
   background-color: #9e9e9e;
@@ -23,14 +23,33 @@ body{
   margin-bottom: 1rem;
 }
 
-.sidebar h3 {
+.sidebar h3, h4 {
   flex: 1 0 100%;
+  margin: 0;
+  margin-bottom: 1em;
+  padding: 0;
+}
+
+.sidebar .radioBtn {
+  display: flex;
+}
+
+.sidebar .radioBtn label {
+  margin-left: 10px;
+}
+
+.sidebar .radioBtn .desc {
+  font-size: 0.8em;
 }
 
 .sidebar #attrOpts{
   display:flex;
   flex-wrap: wrap;
   align-content: flex-start;
+}
+
+.sidebar select {
+  width: 100%;
 }
 
 .outfitList {

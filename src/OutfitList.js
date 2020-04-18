@@ -1,5 +1,5 @@
 import React from 'react';
-import gsx2json from './Gsx2json.js';
+import addHeadersToData from './Gsx2json.js';
 import {apiKey, spreadsheetId} from './sheetsCreds.js';
 
 export default class OutfitList extends React.Component {
@@ -19,7 +19,7 @@ export default class OutfitList extends React.Component {
         .then(res => res.json())
         .then(res => {
           this.setState((state, props) => {
-            let outfits = gsx2json(res, { query: this.props.stringQuery }); //all outfits that match character/outfit (inclusive)
+            let outfits = addHeadersToData(res, { query: this.props.stringQuery, isInclusive: this.props.isInclusive }); //all outfits that match character/outfit (inclusive)
             //console.log(outfits);
             if (this.props.selAttr.size > 0) {
               for (let i = outfits.length - 1; i >= 0; i--) {
