@@ -1,54 +1,82 @@
 import React from 'react';
 import filterGsData from './Gsx2json.js';
 import { apiKey, spreadsheetId } from './sheetsCreds.js';
+import throttle from 'lodash.throttle';
 
 export default class OutfitList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      error: false,
       isLoaded: false,
       outfits: [],
+      loadedOutfits: [],
       status: ''
     };
+    // window.onscroll = throttle(() => {
+    //   const {
+    //     loadUsers,
+    //     state: {
+    //       error,
+    //       isLoading,
+    //       loadedOutfits,
+    //     },
+    //   } = this;
+
+    //   // Bails early if:
+    //   // * there's an error
+    //   // * it's already loading
+    //   // * there's nothing left to load
+    //   if (error || isLoading || !loadedOutfits.length) return;
+
+    //   // Checks that the page has scrolled to the bottom
+    //   if (
+    //     window.innerHeight + document.documentElement.scrollTop
+    //     === document.documentElement.offsetHeight
+    //   ) {
+    //     loadOutfits();
+    //   }
+    // }, 100);
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.query !== prevProps.query) {
-      const sheetId = 'Stat Bonuses';
-      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}`)
-        .then(res => res.json())
-        .then(res => {
-          this.setState((state, props) => {
+      this.setState({ isLoaded: false }, () => {
+        const sheetId = 'Stat Bonuses';
+        fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}`)
+          .then(res => res.json())
+          .then(res => {
             let outfits = filterGsData(res, { query: this.props.stringQuery, isInclusive: this.props.isInclusive }); //all outfits that match character/outfit (inclusive)
-            //console.log(outfits);
-            if (this.props.selAttr.size > 0) {
-              for (let i = outfits.length - 1; i >= 0; i--) {
-                let queried = false;
-                for (let attr of this.props.selAttr) {
-                  if (outfits[i][attr.toLowerCase()]) { //inclusive search by attr
-                    queried = true;
-                    break;
+              //console.log(outfits);
+              if (this.props.selAttr.size > 0) {
+                for (let i = outfits.length - 1; i >= 0; i--) {
+                  let queried = false;
+                  for (let attr of this.props.selAttr) {
+                    if (outfits[i][attr.toLowerCase()]) { //inclusive search by attr
+                      queried = true;
+                      break;
+                    }
+                    // if (!outfits[i][attr.toLowerCase()]) { //currently only keeps outfits that meet all attr criteria (exclusive)
+                    //   outfits.splice(i, 1);
+                    //   break;
+                    // }
                   }
-                  // if (!outfits[i][attr.toLowerCase()]) { //currently only keeps outfits that meet all attr criteria (exclusive)
-                  //   outfits.splice(i, 1);
-                  //   break;
-                  // }
+                  if (!queried) outfits.splice(i, 1);
                 }
-                if (!queried) outfits.splice(i, 1);
               }
-            }
-            outfits.sort((a, b) => { //sort from highest to lowest queried stat bonus
-              let totalBonusA = 0;
-              let totalBonusB = 0;
-              for (let attr of this.props.selAttr) {
-                totalBonusA += a[attr.toLowerCase()];
-                totalBonusB += b[attr.toLowerCase()];
-              }
-              return totalBonusB - totalBonusA;
-            })
-            return { isLoaded: true, outfits: outfits, status: `${outfits.length} outfits found` }
+              outfits.sort((a, b) => { //sort from highest to lowest queried stat bonus
+                let totalBonusA = 0;
+                let totalBonusB = 0;
+                for (let attr of this.props.selAttr) {
+                  totalBonusA += a[attr.toLowerCase()];
+                  totalBonusB += b[attr.toLowerCase()];
+                }
+                return totalBonusB - totalBonusA;
+              })
+              return { isLoaded: true, outfits: outfits, status: `${outfits.length} outfits found` }
           })
-        });
+          .then(res => this.setState(res));
+      });
     }
   }
 
