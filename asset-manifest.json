@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/enstars-outfit-sorter/static/css/main.01c185b2.chunk.css",
+    "main.css": "/enstars-outfit-sorter/static/css/main.0a1bb335.chunk.css",
     "main.js": "/enstars-outfit-sorter/static/js/main.e6e8da2d.chunk.js",
     "main.js.map": "/enstars-outfit-sorter/static/js/main.e6e8da2d.chunk.js.map",
     "runtime-main.js": "/enstars-outfit-sorter/static/js/runtime-main.78dbdcb7.js",
@@ -8,15 +8,15 @@
     "static/js/2.e09aef36.chunk.js": "/enstars-outfit-sorter/static/js/2.e09aef36.chunk.js",
     "static/js/2.e09aef36.chunk.js.map": "/enstars-outfit-sorter/static/js/2.e09aef36.chunk.js.map",
     "index.html": "/enstars-outfit-sorter/index.html",
-    "precache-manifest.1af40929522b2874a4ad9d70cbea106a.js": "/enstars-outfit-sorter/precache-manifest.1af40929522b2874a4ad9d70cbea106a.js",
+    "precache-manifest.18c0114c9f05d85eb963f6cbfc0625df.js": "/enstars-outfit-sorter/precache-manifest.18c0114c9f05d85eb963f6cbfc0625df.js",
     "service-worker.js": "/enstars-outfit-sorter/service-worker.js",
-    "static/css/main.01c185b2.chunk.css.map": "/enstars-outfit-sorter/static/css/main.01c185b2.chunk.css.map",
+    "static/css/main.0a1bb335.chunk.css.map": "/enstars-outfit-sorter/static/css/main.0a1bb335.chunk.css.map",
     "static/js/2.e09aef36.chunk.js.LICENSE.txt": "/enstars-outfit-sorter/static/js/2.e09aef36.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.78dbdcb7.js",
     "static/js/2.e09aef36.chunk.js",
-    "static/css/main.01c185b2.chunk.css",
+    "static/css/main.0a1bb335.chunk.css",
     "static/js/main.e6e8da2d.chunk.js"
   ]
 }
