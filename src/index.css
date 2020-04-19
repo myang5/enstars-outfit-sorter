@@ -60,21 +60,26 @@ body{
   height: 100vh;
   overflow-y: auto;
   padding: 1rem;
+  box-sizing: border-box;
 }
 
 .outfitList .status{
   flex: 1 0 100%;
   text-align: center;
+  align-content: stretch;
+
 }
 
 .outfit {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   box-sizing: border-box;
   width: calc(33% - 20px);
   min-width: 150px;
-  height: 13rem;
+  /*height: 13rem;*/
+  height: auto;
   border: solid 1px #adadad;
   border-radius: 5px;
   padding: 1rem;
