@@ -17,6 +17,7 @@ export default class OutfitList extends React.Component {
     };
     this.onScroll = this.onScroll.bind(this);
     this.loadOutfits = this.loadOutfits.bind(this);
+    this.onScrollThrottled = throttle(this.onScroll, 200);
   }
 
   componentDidUpdate(prevProps) {
@@ -61,28 +62,23 @@ export default class OutfitList extends React.Component {
   }
 
   //modified from this tutorial: https://alligator.io/react/react-infinite-scroll/
+  //and also this https://blog.bitsrc.io/improve-your-react-app-performance-by-using-throttling-and-debouncing-101afbe9055
   onScroll(event) {
-      const {
-        state: {
-          isLoading,
-          hasMore,
-        },
-      } = this;
+    event.persist() //didn't work without this 
 
-      // Bails early if:
-      // * there's an error
-      // * it's already loading
-      // * there's nothing left to load
-      if (isLoading || !hasMore) { console.log('not loadin'); return; }
+    // Bails early if:
+    // * there's an error
+    // * it's already loading
+    // * there's nothing left to load
+    if (this.state.isLoading || !this.state.hasMore) { /*console.log('not loading');*/ return; }
 
-      // Checks that the page has scrolled to the bottom
-      if (
-        window.innerHeight + event.target.scrollTop
-        >= event.target.scrollHeight - 500
-      ) {
-        console.log('loading more');
+    // Checks that the page has scrolled to the bottom
+    if (event.target) {
+      if (window.innerHeight + event.target.scrollTop >= event.target.scrollHeight - 400) {
+        // console.log('loading more');
         this.loadOutfits();
       }
+    }
   }
 
   loadOutfits() {
@@ -93,7 +89,7 @@ export default class OutfitList extends React.Component {
         let loadedOutfits = state.loadedOutfits;
         loadedOutfits = loadedOutfits.concat(state.outfits.slice(state.loadedOutfits.length, state.loadedOutfits.length + state.outfitsToLoad));
         const hasMore = loadedOutfits.length < state.outfits.length;
-        return { hasMore: hasMore, isLoading: false, loadedOutfits: loadedOutfits  };
+        return { hasMore: hasMore, isLoading: false, loadedOutfits: loadedOutfits };
       });
     })
   }
@@ -104,7 +100,7 @@ export default class OutfitList extends React.Component {
     );
     // console.log('finished loading outfit list', performance.now())
     return (
-      <div className='outfitList' onScroll={this.onScroll}>
+      <div className='outfitList' onScroll={this.onScrollThrottled}>
         <p className='status'>{this.state.status}</p>
         {outfits}
         {!this.state.hasMore &&
