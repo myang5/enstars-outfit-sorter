@@ -62,7 +62,7 @@ export default class OutfitList extends React.Component {
       );
       body = (<><p className='status'>{this.state.status}</p>{outfits}</>)
     }
-    console.log('finished loading outfit list', performance.now())
+    // console.log('finished loading outfit list', performance.now())
     return (
       <div className='outfitList'>
         {body}

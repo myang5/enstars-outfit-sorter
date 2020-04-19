@@ -60,7 +60,7 @@ export default class Main extends React.Component {
   }
 
   render() {
-    console.log('render main component', performance.now())
+    // console.log('render main component', performance.now())
     const sidebarProps = {
       characters: this.state.characters,
       outfitTypes: this.state.outfitTypes,
