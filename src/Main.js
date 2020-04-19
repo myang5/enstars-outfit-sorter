@@ -60,6 +60,7 @@ export default class Main extends React.Component {
   }
 
   render() {
+    console.log('render main component', performance.now())
     const sidebarProps = {
       characters: this.state.characters,
       outfitTypes: this.state.outfitTypes,
@@ -78,10 +79,10 @@ export default class Main extends React.Component {
       else return accumulator.concat([]);
     }, []);
     query.push(this.state.isInclusive);
-    const stringQuery = Object.keys(this.state).reduce((accumulator, key) => { //concat values in Sets that hold selected values
+    const stringQuery = Object.keys(this.state).reduce((accumulator, key) => { //create array of Sets that hold selected values
       const field = this.state[key];
-      if (!Array.isArray(field) && typeof(field) === 'object' && key !== 'selAttr') {return accumulator.concat(Array.from(field));}
-      else return accumulator.concat([]);
+      if (!Array.isArray(field) && typeof(field) === 'object' && key !== 'selAttr' && field.size > 0) {accumulator.push(field); return accumulator}
+      else return accumulator;
     }, []);
     const outfitListProps = {
       query: query,
@@ -89,6 +90,7 @@ export default class Main extends React.Component {
       attributes: this.state.attributes,
       selCharas: this.state.selCharas,
       selOutfits: this.state.selOutfits,
+      selUnits: this.state.selUnits,
       selAttr: this.state.selAttr,
       isInclusive: this.state.isInclusive,
     }
