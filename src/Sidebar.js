@@ -6,7 +6,7 @@ export default function Sidebar(props) {
 
 
   return (
-    <div id='sidebar'>
+    <div id='sidebar' className='toggledOn'>
       {/* <SearchButton /> */}
       <AttrOptions id='attrOpts' optionsArr={props.attributes} toggleValue={toggleValue('selAttr')} />
       <div className='options'><p>Filter data by...</p></div>

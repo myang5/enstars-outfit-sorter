@@ -13,7 +13,7 @@ body{
   display: flex;
   flex-direction: column;
   flex: 0 0 300px;
-  padding: 3rem 1.5rem;
+  padding: 2rem 1.5rem;
   box-sizing: border-box;
   height: 100vh;
   overflow: auto;
