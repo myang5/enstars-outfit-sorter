@@ -6,79 +6,96 @@ body{
 
 .App {
   display: flex;
+  justify-content: flex-end;
 }
 
-.sidebar{
+#sidebar{
   display: flex;
   flex-direction: column;
   flex: 0 0 300px;
   padding: 3rem 1.5rem;
-  height: 100vh;
   box-sizing: border-box;
+  height: 100vh;
+  overflow: auto;
   background-color: #9e9e9e;
 }
 
-.sidebar .options {
+#sidebar .options {
   margin-bottom: 1rem;
 }
 
-.sidebar .row {
+#sidebar .row {
   flex: 1 0 100%;
   margin-bottom: 1rem;
 }
 
-.sidebar .row * {
+#sidebar .row * {
   display: inline;
 }
 
-.sidebar p {
+#sidebar p {
   margin: 0;
   font-size: 1.4rem;
   font-weight: bold;
 }
 
-.sidebar .radioBtn {
+#sidebar .radioBtn {
   display: flex;
 }
 
-.sidebar .radioBtn label {
+#sidebar .radioBtn label {
   margin-left: 10px;
 }
 
-.sidebar .radioBtn .desc {
+#sidebar .radioBtn .desc {
   font-size: 0.8em;
 }
 
-.sidebar #attrOpts, #tierOpts{
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-}
-
-.sidebar select {
+#sidebar select {
   width: 100%;
 }
 
-.sidebar .clearFilter, .toggleOpt {
+#sidebar .clearFilter, .toggleOpt {
   display: inline;
 }
 
-.outfitList {
-  display: flex;
-  flex: 1 1 80%;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  height: 100vh;
-  overflow: auto;
+#toggleSidebarBtn {
   padding: 1rem;
-  box-sizing: border-box;
+  position: fixed;
+  background-color: #9e9e9e;
+  cursor: pointer;
+  z-index: 999;
 }
 
-.outfitList .status{
-  flex: 1 0 100%;
-  text-align: center;
-  align-content: stretch;
+#toggleSidebarBtn::before {
+  content: '>>';
+}
 
+/* from this tutorial: https://medium.com/@marcuslt/fluid-fly-out-sidebar-with-css3-flexbox-cb321b21f29 */
+#sidebar.toggledOn ~ .pageContent {
+  flex-basis: 0;
+}
+
+#sidebar.toggledOn ~ .pageContent #toggleSidebarBtn::before{
+  content: '<<';
+}
+
+.pageContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 100%;
+  height: 100vh;
+  overflow: auto;
+}
+
+.pageContent .status{
+  text-align: center;
+}
+
+#outfitList {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem;
 }
 
 .outfit {
@@ -87,13 +104,15 @@ body{
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
+  margin: 10px;
   width: calc(33% - 20px);
   min-width: 150px;
+  max-width: 300px;
   height: auto;
   border: solid 1px #adadad;
   border-radius: 5px;
   padding: 1rem;
-  margin: 10px;
+  
 }
 
 .outfit hr {

@@ -102,8 +102,9 @@ export default class Main extends React.Component {
     }
     return (
       <>
-        <OutfitList {...outfitListProps} />
         <Sidebar {...sidebarProps} />
+        <OutfitList {...outfitListProps} />
+        
       </>
     )
   }

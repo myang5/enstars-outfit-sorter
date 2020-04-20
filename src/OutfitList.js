@@ -18,18 +18,21 @@ export default class OutfitList extends React.Component {
     this.onScroll = this.onScroll.bind(this);
     this.loadOutfits = this.loadOutfits.bind(this);
     this.onScrollThrottled = throttle(this.onScroll, 100);
+    this.toggleSidebar = () => {
+      document.querySelector('#sidebar').classList.toggle('toggledOn');
+    }
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.query !== prevProps.query) {
-      console.log(this.props.stringQuery);
+      // console.log(this.props.stringQuery);
       this.setState({ status: 'Loading...' }, () => {
         const sheetId = 'Stat Bonuses';
         fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}`)
           .then(res => res.json())
           .then(res => {
             let outfits = filterGsData(res, { query: this.props.stringQuery, isInclusive: this.props.isInclusive }); //all outfits that match character/outfit (inclusive)
-            //console.log(outfits);
+            // console.log(outfits);
             if (this.props.selAttr.size > 0) {
               for (let i = outfits.length - 1; i >= 0; i--) {
                 let queried = false;
@@ -57,7 +60,7 @@ export default class OutfitList extends React.Component {
             })
             return { outfits: outfits, loadedOutfits: [], status: `${outfits.length} outfits found` }
           })
-          .then(res => {this.setState(res, this.loadOutfits)});
+          .then(res => { this.setState(res, this.loadOutfits) });
       });
     }
   }
@@ -71,12 +74,12 @@ export default class OutfitList extends React.Component {
     // * it's already loading
     // * there's nothing left to load
     // console.log(this.state.isLoading, this.state.hasMore);
-    if (this.state.isLoading || !this.state.hasMore) { console.log('not loading'); return; }
+    if (this.state.isLoading || !this.state.hasMore) { return; }
 
     // Checks that the page has scrolled to the bottom
     if (event.target) {
       if (window.innerHeight + event.target.scrollTop >= event.target.scrollHeight - 600) {
-        console.log('loading more');
+        // console.log('loading more');
         this.loadOutfits();
       }
     }
@@ -101,9 +104,10 @@ export default class OutfitList extends React.Component {
     );
     // console.log('finished loading outfit list', performance.now())
     return (
-      <div className='outfitList' onScroll={this.onScrollThrottled}>
+      <div className='pageContent' onScroll={this.onScrollThrottled}>
+        <div id='toggleSidebarBtn' onClick={this.toggleSidebar}></div>
         <p className='status'>{this.state.status}</p>
-        {outfits}
+        <div id='outfitList'>{outfits}</div>
         {!this.state.hasMore &&
           <p className='status'>End of results</p>
         }

@@ -2,8 +2,11 @@ import React from 'react';
 
 export default function Sidebar(props) {
   const toggleValue = props.toggleValue();
+
+
+
   return (
-    <div className='sidebar'>
+    <div id='sidebar'>
       {/* <SearchButton /> */}
       <AttrOptions id='attrOpts' optionsArr={props.attributes} toggleValue={toggleValue('selAttr')} />
       <div className='options'><p>Filter data by...</p></div>
@@ -68,9 +71,9 @@ function TierOptions(props) {
 function SelectOptions(props) {
   if (props.optionsArr.indexOf(props.heading) > -1) { props.optionsArr.splice(props.optionsArr.indexOf(props.heading), 1, '') }
   const options = props.optionsArr.map(function (option) {
-      return (
-        <option key={option} value={option}>{option}</option>
-      )
+    return (
+      <option key={option} value={option}>{option}</option>
+    )
   });
   const selected = Array.from(props.selected).map((value) =>
     <ToggleOption key={value} value={value} toggleValue={props.toggleValue} />
