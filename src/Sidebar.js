@@ -71,9 +71,7 @@ function TierOptions(props) {
 function SelectOptions(props) {
   if (props.optionsArr.indexOf(props.heading) > -1) { props.optionsArr.splice(props.optionsArr.indexOf(props.heading), 1, '') }
   const options = props.optionsArr.map(function (option) {
-    return (
-      <option key={option} value={option}>{option}</option>
-    )
+    if (option) { return <option key={option} value={option}>{option}</option> }
   });
   const selected = Array.from(props.selected).map((value) =>
     <ToggleOption key={value} value={value} toggleValue={props.toggleValue} />
