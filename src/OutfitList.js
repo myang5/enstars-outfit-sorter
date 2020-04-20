@@ -22,7 +22,7 @@ export default class OutfitList extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.query !== prevProps.query) {
-      console.log(' outfitlist componendDidUpdate');
+      console.log(this.props.stringQuery);
       this.setState({ status: 'Loading...' }, () => {
         const sheetId = 'Stat Bonuses';
         fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}`)
@@ -75,7 +75,7 @@ export default class OutfitList extends React.Component {
 
     // Checks that the page has scrolled to the bottom
     if (event.target) {
-      if (window.innerHeight + event.target.scrollTop >= event.target.scrollHeight - 400) {
+      if (window.innerHeight + event.target.scrollTop >= event.target.scrollHeight - 600) {
         console.log('loading more');
         this.loadOutfits();
       }

@@ -8,18 +8,21 @@ export default class Main extends React.Component {
     super(props);
     this.state = {
       characters: [],
-      outfitTypes: [],
       units: [],
+      outfitTypes: [],
+      outfitTiers: ['Tier I', 'Tier II', 'Tier III'],
       attributes: ['Ac', 'Pa', 'Un', 'Sm', 'Te', 'Ch'],
       selCharas: new Set(), //query rows with select characters
       selOutfits: new Set(), //query rows with selected outfits
-      selUnits: new Set(), //rows where selAttr > 0
+      selUnits: new Set(), //query rows with selected units
+      selTiers: new Set(),
       selAttr: new Set(), //rows where selAttr > 0
       isInclusive: false,
     };
     this.toggleValueInSet = this.toggleValueInSet.bind(this);
     this.toggleSearchTypeTrue = this.toggleSearchTypeTrue.bind(this);
     this.toggleSearchTypeFalse = this.toggleSearchTypeFalse.bind(this);
+    this.clearFilter = this.clearFilter.bind(this);
   }
 
   componentDidMount() {
@@ -36,21 +39,6 @@ export default class Main extends React.Component {
       })
   }
 
-  toggleValueInSet() {
-    return (setName) => {
-      return (event) => {
-        const newSet = this.state[setName];
-        if (this.state[setName].has(event.target.value)) {
-          newSet.delete(event.target.value);
-        }
-        else {
-          newSet.add(event.target.value);
-        }
-        this.setState({ [setName]: newSet });
-      }
-    }
-  }
-
   toggleSearchTypeTrue () {
     this.setState({isInclusive: true})
   }
@@ -59,19 +47,40 @@ export default class Main extends React.Component {
     this.setState({isInclusive: false})
   }
 
+  toggleValueInSet() {
+    return (filter) => {
+      return (event) => {
+        const newSet = this.state[filter];
+        if (this.state[filter].has(event.target.value)) {
+          newSet.delete(event.target.value);
+        }
+        else {
+          newSet.add(event.target.value);
+        }
+        this.setState({ [filter]: newSet });
+      }
+    }
+  }
+
+  clearFilter(filter) {
+    return () => this.setState( {[filter]: new Set()})
+  }
+
   render() {
     // console.log('render main component', performance.now())
     const sidebarProps = {
-      characters: this.state.characters,
+      characters: this.state.characters, //render selects and attributes check boxes
       outfitTypes: this.state.outfitTypes,
       units: this.state.units,
+      outfitTiers: this.state.outfitTiers,
       attributes: this.state.attributes,
-      selCharas: this.state.selCharas,
+      selCharas: this.state.selCharas, //needed to render ToggleButtons
       selOutfits: this.state.selOutfits,
       selUnits: this.state.selUnits,
       toggleValue: this.toggleValueInSet,
       toggleTrue: this.toggleSearchTypeTrue,
       toggleFalse: this.toggleSearchTypeFalse,
+      clearFilter: this.clearFilter,
     }
     const query = Object.keys(this.state).reduce((accumulator, key) => { //concat values in Sets that hold selected values
       const field = this.state[key];
@@ -88,9 +97,6 @@ export default class Main extends React.Component {
       query: query,
       stringQuery: stringQuery,
       attributes: this.state.attributes,
-      selCharas: this.state.selCharas,
-      selOutfits: this.state.selOutfits,
-      selUnits: this.state.selUnits,
       selAttr: this.state.selAttr,
       isInclusive: this.state.isInclusive,
     }

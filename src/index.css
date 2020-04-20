@@ -22,11 +22,19 @@ body{
   margin-bottom: 1rem;
 }
 
-.sidebar h3, h4 {
+.sidebar .row {
   flex: 1 0 100%;
+  margin-bottom: 1rem;
+}
+
+.sidebar .row * {
+  display: inline;
+}
+
+.sidebar p {
   margin: 0;
-  margin-bottom: 1em;
-  padding: 0;
+  font-size: 1.4rem;
+  font-weight: bold;
 }
 
 .sidebar .radioBtn {
@@ -41,14 +49,18 @@ body{
   font-size: 0.8em;
 }
 
-.sidebar #attrOpts{
-  display:flex;
+.sidebar #attrOpts, #tierOpts{
+  display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
 }
 
 .sidebar select {
   width: 100%;
+}
+
+.sidebar .clearFilter, .toggleOpt {
+  display: inline;
 }
 
 .outfitList {
