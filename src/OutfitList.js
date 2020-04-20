@@ -17,11 +17,12 @@ export default class OutfitList extends React.Component {
     };
     this.onScroll = this.onScroll.bind(this);
     this.loadOutfits = this.loadOutfits.bind(this);
-    this.onScrollThrottled = throttle(this.onScroll, 200);
+    this.onScrollThrottled = throttle(this.onScroll, 100);
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.query !== prevProps.query) {
+      console.log(' outfitlist componendDidUpdate');
       this.setState({ status: 'Loading...' }, () => {
         const sheetId = 'Stat Bonuses';
         fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}`)
@@ -54,9 +55,9 @@ export default class OutfitList extends React.Component {
               }
               return totalBonusB - totalBonusA;
             })
-            return { outfits: outfits, loadedOutfits: outfits.slice(0, this.state.outfitsToLoad), status: `${outfits.length} outfits found` }
+            return { outfits: outfits, loadedOutfits: [], status: `${outfits.length} outfits found` }
           })
-          .then(res => this.setState(res));
+          .then(res => {this.setState(res, this.loadOutfits)});
       });
     }
   }
@@ -67,15 +68,15 @@ export default class OutfitList extends React.Component {
     event.persist() //didn't work without this 
 
     // Bails early if:
-    // * there's an error
     // * it's already loading
     // * there's nothing left to load
-    if (this.state.isLoading || !this.state.hasMore) { /*console.log('not loading');*/ return; }
+    // console.log(this.state.isLoading, this.state.hasMore);
+    if (this.state.isLoading || !this.state.hasMore) { console.log('not loading'); return; }
 
     // Checks that the page has scrolled to the bottom
     if (event.target) {
       if (window.innerHeight + event.target.scrollTop >= event.target.scrollHeight - 400) {
-        // console.log('loading more');
+        console.log('loading more');
         this.loadOutfits();
       }
     }
@@ -84,11 +85,11 @@ export default class OutfitList extends React.Component {
   loadOutfits() {
     this.setState({ isLoading: true }, () => {
       this.setState((state, props) => {
-        // console.log(state.outfits.slice(state.loadedOutfits.length, state.outfitsToLoad));
-        // console.log()
+        // console.log('initial loaded outfits', state.loadedOutfits);
         let loadedOutfits = state.loadedOutfits;
         loadedOutfits = loadedOutfits.concat(state.outfits.slice(state.loadedOutfits.length, state.loadedOutfits.length + state.outfitsToLoad));
         const hasMore = loadedOutfits.length < state.outfits.length;
+        // console.log('after loadOutfits', loadedOutfits);
         return { hasMore: hasMore, isLoading: false, loadedOutfits: loadedOutfits };
       });
     })
