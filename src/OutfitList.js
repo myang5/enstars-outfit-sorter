@@ -135,7 +135,10 @@ function Outfit(props) {
     <div className='outfit'>
       <span>{`${properties.character} - ${properties.outfit}`}</span>
       <hr />
-      <AttrList attributes={props.attributes} props={props.props} />
+      <div className='rowContainer'>
+        <OutfitImage imageUrl={properties.imageurl} />
+        <AttrList attributes={props.attributes} props={props.props} />
+      </div>
       {totalBonus()}
     </div>
   )
@@ -143,13 +146,31 @@ function Outfit(props) {
 
 function AttrList(props) {
   return (
-    <div className='attrList'>
+    <>
       {Object.keys(props.props).map(key => { //display all attributes
         if (props.attributes.includes(key.charAt(0).toUpperCase() + key.slice(1))) {
-          return <span key={key + props.props[key]}>{`${key.charAt(0).toUpperCase() + key.slice(1)}: ${props.props[key]}`}</span>
+          return <p className='attr' key={key + props.props[key]}>{`${key.charAt(0).toUpperCase() + key.slice(1)}: ${props.props[key]}`}</p>
         }
       })
       }
-    </div>
+    </>
   )
+}
+
+function OutfitImage(props) {
+  // props link looks like this https://drive.google.com/open?id=IMAGE_ID
+  // or it could look like this https://drive.google.com/file/d/IMAGE_ID/view?usp=drivesdk
+  // need to change it to be https://drive.google.com/uc?export=view&id=IMAGE_ID
+  let imageUrl = null;
+  // console.log(props.imageUrl);
+  if (props.imageUrl) {
+    if (props.imageUrl.match(/https:\/\/drive.google.com\/file\/d\/.+\/view\?usp=drivesdk/)) {
+      imageUrl = props.imageUrl.replace('/view?usp=drivesdk', '');
+      imageUrl = imageUrl.replace('file/d/', 'uc?export=view&id=');
+    }
+    else if (props.imageUrl.match(/https:\/\/drive.google.com\/open\?id=.+/)) {
+      imageUrl = props.imageUrl.replace('open?', 'uc?export=view&');
+    }
+  }
+  return <img className='outfitImg' src={imageUrl} />
 }

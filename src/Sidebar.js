@@ -94,8 +94,7 @@ function SelectOptions(props) {
 function ClearFilterButton(props) {
   return (
     <div className='clearFilter'>
-      <button className='clearBtn' onClick={props.clearFilter}>X</button>
-      <span>Clear</span>
+      <button className='clearBtn' onClick={props.clearFilter}>Clear</button>
     </div>
   )
 }

@@ -37,6 +37,7 @@ body{
   margin: 0;
   font-size: 1.4rem;
   font-weight: bold;
+  padding-right: 0.5rem;
 }
 
 #sidebar .radioBtn {
@@ -95,6 +96,7 @@ body{
 #outfitList {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-start;
   padding: 1rem;
 }
 
@@ -105,14 +107,18 @@ body{
   justify-content: space-between;
   box-sizing: border-box;
   margin: 10px;
-  width: calc(33% - 20px);
-  min-width: 150px;
-  max-width: 300px;
+  flex: 0 1 calc(25% - 20px);
+  min-width: 10rem;
+  max-width: 25rem;
   height: auto;
   border: solid 1px #adadad;
   border-radius: 5px;
   padding: 1rem;
   
+}
+
+.outfit * {
+  margin-bottom: 2px;
 }
 
 .outfit hr {
@@ -121,11 +127,27 @@ body{
   margin: 0.5em 0;
 }
 
-.outfit .attrList {
+/* make sure outer div has a width to size child divs against */
+.outfit .rowContainer {
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+  height: 8rem;
+  width: 100%;
 }
 
-.outfit * {
-  margin-bottom: 2px;
+.outfit .outfitImg {
+  height: 100%;
 }
+
+.outfit .attr {
+  width: 5rem;
+  flex: 1;
+  margin: 0;
+}
+
+
+
+
