@@ -133,7 +133,7 @@ function Outfit(props) {
   }
   return (
     <div className='outfit'>
-      <span>{`${properties.character} - ${properties.outfit}`}</span>
+      <p>{`${properties.character} - ${properties.outfit}`}</p>
       <hr />
       <div className='rowContainer'>
         <OutfitImage imageUrl={properties.imageurl} />
@@ -160,16 +160,16 @@ function AttrList(props) {
 function OutfitImage(props) {
   // props link looks like this https://drive.google.com/open?id=IMAGE_ID
   // or it could look like this https://drive.google.com/file/d/IMAGE_ID/view?usp=drivesdk
-  // need to change it to be https://drive.google.com/uc?export=view&id=IMAGE_ID
+  // need to change it to be https://drive.google.com/thumbnail?&id=IMAGE_ID
   let imageUrl = null;
   // console.log(props.imageUrl);
   if (props.imageUrl) {
     if (props.imageUrl.match(/https:\/\/drive.google.com\/file\/d\/.+\/view\?usp=drivesdk/)) {
       imageUrl = props.imageUrl.replace('/view?usp=drivesdk', '');
-      imageUrl = imageUrl.replace('file/d/', 'uc?export=view&id=');
+      imageUrl = imageUrl.replace('file/d/', 'thumbnail?&id=');
     }
     else if (props.imageUrl.match(/https:\/\/drive.google.com\/open\?id=.+/)) {
-      imageUrl = props.imageUrl.replace('open?', 'uc?export=view&');
+      imageUrl = props.imageUrl.replace('open', 'thumbnail');
     }
   }
   return <img className='outfitImg' src={imageUrl} />

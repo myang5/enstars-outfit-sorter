@@ -114,7 +114,6 @@ body{
   border: solid 1px #adadad;
   border-radius: 5px;
   padding: 1rem;
-  
 }
 
 .outfit * {
@@ -143,9 +142,38 @@ body{
 }
 
 .outfit .attr {
-  width: 5rem;
+  width: 4rem;
   flex: 1;
   margin: 0;
+}
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  .outfit {
+    margin: 5px;
+    flex: 0 1 calc(50% - 10px);
+    min-width: 1px;
+    max-width: initial;
+    height: auto;
+    border: solid 1px #adadad;
+    border-radius: 5px;
+    padding: 0.8rem;
+  }
+
+  .outfit .rowContainer {
+    height: auto;
+  }
+
+  .outfit .outfitImg {
+    height: 8rem;
+  }
+
+  .outfit .attr {
+    width: 4rem;
+    flex: 1;
+    margin: 0;
+  }
+
 }
 
 
