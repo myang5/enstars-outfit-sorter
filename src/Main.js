@@ -12,9 +12,9 @@ export default class Main extends React.Component {
       outfitTypes: [],
       outfitTiers: ['Tier I', 'Tier II', 'Tier III'],
       attributes: ['Ac', 'Pa', 'Un', 'Sm', 'Te', 'Ch'],
-      selCharas: new Set(), //query rows with select characters
-      selOutfits: new Set(), //query rows with selected outfits
-      selUnits: new Set(), //query rows with selected units
+      selCharas: new Set(),
+      selOutfits: new Set(), 
+      selUnits: new Set(), 
       selTiers: new Set(),
       selAttr: new Set(), //rows where selAttr > 0
       isInclusive: false,
@@ -67,13 +67,15 @@ export default class Main extends React.Component {
   }
 
   render() {
-    // console.log('render main component', performance.now())
+    //console.log('render main component', performance.now())
     const sidebarProps = {
       characters: this.state.characters, //render selects and attributes check boxes
       outfitTypes: this.state.outfitTypes,
       units: this.state.units,
       outfitTiers: this.state.outfitTiers,
       attributes: this.state.attributes,
+      selAttr: this.state.selAttr, //needed to toggle checkboxes
+      selTiers: this.state.selTiers,
       selCharas: this.state.selCharas, //needed to render ToggleButtons
       selOutfits: this.state.selOutfits,
       selUnits: this.state.selUnits,

@@ -3,17 +3,23 @@ import React from 'react';
 export default function Sidebar(props) {
   const toggleValue = props.toggleValue();
 
+  const attrMapFunc = function (option) {
+    return <CheckBox key={option} option={option} value={option} toggleValue={toggleValue('selAttr')} />
+  };
 
+  const tierMapFunc = function (option, index) {
+    return <CheckBox key={option} option={option} value={index + 1} toggleValue={toggleValue('selTiers')} />
+  };
 
   return (
     <div id='sidebar' className='toggledOn'>
       {/* <SearchButton /> */}
-      <AttrOptions id='attrOpts' optionsArr={props.attributes} toggleValue={toggleValue('selAttr')} />
+      <CheckBoxOptions id='attrOpts' heading='Stat Bonus' optionsArr={props.attributes} selected={props.selAttr} toggleValue={toggleValue('selAttr')} mapFunc={attrMapFunc} />
       <div className='options'><p>Filter data by...</p></div>
       <SearchType toggleTrue={props.toggleTrue} toggleFalse={props.toggleFalse} />
       <SelectOptions id='unitOpts' heading='Unit' optionsArr={props.units} selected={props.selUnits} toggleValue={toggleValue('selUnits')} clearFilter={props.clearFilter('selUnits')} />
       <SelectOptions id='charaOpts' heading='Character' optionsArr={props.characters} selected={props.selCharas} toggleValue={toggleValue('selCharas')} clearFilter={props.clearFilter('selCharas')} />
-      <TierOptions id='tierOpts' optionsArr={props.outfitTiers} toggleValue={toggleValue('selTiers')} />
+      <CheckBoxOptions id='tierOpts' heading='Outfit Tier' optionsArr={props.outfitTiers} selected={props.selTiers} toggleValue={toggleValue('selTiers')} mapFunc={tierMapFunc} />
       <SelectOptions id='outfitOpts' heading='Outfit Type' optionsArr={props.outfitTypes} selected={props.selOutfits} toggleValue={toggleValue('selOutfits')} clearFilter={props.clearFilter('selOutfits')} />
     </div>
   )
@@ -34,36 +40,22 @@ function SearchType(props) {
   )
 }
 
-function AttrOptions(props) {
-  const options = props.optionsArr.map(function (option) {
-    return (
-      <div key={option}>
-        <input type='checkbox' value={option} onClick={props.toggleValue} />
-        <label htmlFor={option}>{option}</label>
-      </div>
-    )
-  });
+function CheckBoxOptions(props) {
+  const options = props.optionsArr.map(props.mapFunc);
+  
   return (
     <div className='options' id={props.id}>
-      <div className='row'><p>Stat Bonus</p></div>
+      <div className='row'><p>{props.heading}</p></div>
       <div className='row'>{options}</div>
     </div>
   )
 }
 
-function TierOptions(props) {
-  const options = props.optionsArr.map(function (option, index) {
-    return (
-      <div key={option}>
-        <input type='checkbox' value={index + 1} onClick={props.toggleValue} />
-        <label htmlFor={option}>{option}</label>
-      </div>
-    )
-  });
+function CheckBox(props) {
   return (
-    <div className='options' id={props.id}>
-      <div className='row'><p>Outfit Tier</p></div>
-      <div className='row'>{options}</div>
+    <div>
+      <input type='checkbox' value={props.value} onClick={props.toggleValue} />
+      <label htmlFor={props.option}>{props.option}</label>
     </div>
   )
 }
@@ -74,12 +66,13 @@ function SelectOptions(props) {
     if (option) { return <option key={option} value={option}>{option}</option> }
   });
   const selected = Array.from(props.selected).map((value) =>
-    <ToggleOption key={value} value={value} toggleValue={props.toggleValue} />
+    <ToggleOptionBtn key={value} value={value} toggleValue={props.toggleValue} />
   );
+
   return (
     <div className='options' id={props.id}>
       <div className='row'>
-        <div><p>{props.heading}</p></div>
+        <p>{props.heading}</p>
         <ClearFilterButton clearFilter={props.clearFilter} />
       </div>
       <select className='row' defaultValue='none' onChange={props.toggleValue}>
@@ -99,7 +92,7 @@ function ClearFilterButton(props) {
   )
 }
 
-function ToggleOption(props) {
+function ToggleOptionBtn(props) {
   return (
     <div className='toggleOpt'>
       <span>{props.value}</span>
