@@ -1,5 +1,5 @@
 import React from 'react';
-import Sidebar from './Sidebar.js';
+import FilterBar from './FilterBar.js';
 import OutfitList from './OutfitList.js';
 import { apiKey, spreadsheetId } from './sheetsCreds.js';
 
@@ -104,7 +104,7 @@ export default class Main extends React.Component {
     }
     return (
       <>
-        <Sidebar {...sidebarProps} />
+        <FilterBar {...sidebarProps} />
         <OutfitList {...outfitListProps} />
         
       </>

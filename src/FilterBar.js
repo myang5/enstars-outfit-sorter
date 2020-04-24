@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Sidebar(props) {
+export default function FilterBar(props) {
   const toggleValue = props.toggleValue();
 
   const attrMapFunc = function (option) {
@@ -42,7 +42,7 @@ function SearchType(props) {
 
 function CheckBoxOptions(props) {
   const options = props.optionsArr.map(props.mapFunc);
-  
+
   return (
     <div className='options' id={props.id}>
       <div className='row'><p>{props.heading}</p></div>
