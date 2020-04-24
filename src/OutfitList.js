@@ -133,12 +133,13 @@ function Outfit(props) {
   }
   return (
     <div className='outfit'>
-      <p>{`${properties.character} - ${properties.outfit}`}</p>
+      <p>{properties.character}</p>
+      <p>{properties.outfit}</p>
       <hr />
       <div className='rowContainer'>
         <OutfitImage imageUrl={properties.imageurl} />
         <AttrList attributes={props.attributes} props={props.props} />
-      </div>
+        </div>
       {totalBonus()}
     </div>
   )
@@ -146,14 +147,14 @@ function Outfit(props) {
 
 function AttrList(props) {
   return (
-    <>
+    <div className='attrList'>
       {Object.keys(props.props).map(key => { //display all attributes
         if (props.attributes.includes(key.charAt(0).toUpperCase() + key.slice(1))) {
           return <p className='attr' key={key + props.props[key]}>{`${key.charAt(0).toUpperCase() + key.slice(1)}: ${props.props[key]}`}</p>
         }
       })
       }
-    </>
+    </div>
   )
 }
 
