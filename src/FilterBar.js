@@ -1,27 +1,57 @@
 import React from 'react';
 
-export default function FilterBar(props) {
-  const toggleValue = props.toggleValue();
+export default class FilterBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { activeMenu: '' }
+    this.toggleValue = this.props.toggleValue();
+    this.toggleMenu = this.toggleMenu.bind(this);
+  }
+  //const attrMapFunc = function (option) {
+  //  return <CheckBox key={option} option={option} value={option} toggleValue={toggleValue('selAttr')} />
+  //};
 
-  const attrMapFunc = function (option) {
-    return <CheckBox key={option} option={option} value={option} toggleValue={toggleValue('selAttr')} />
-  };
+  //const tierMapFunc = function (option, index) {
+  //  return <CheckBox key={option} option={option} value={index + 1} toggleValue={toggleValue('selTiers')} />
+  //};
 
-  const tierMapFunc = function (option, index) {
-    return <CheckBox key={option} option={option} value={index + 1} toggleValue={toggleValue('selTiers')} />
-  };
+  toggleMenu(menu) {
+    this.setState((state, props) => { return { activeMenu: state.activeMenu === menu ? '' : menu } })
+  }
 
-  return (
-    <div id='sidebar' className='toggledOn'>
-      {/*<CheckBoxOptions id='attrOpts' heading='Stat Bonus' optionsArr={props.attributes} selected={props.selAttr} toggleValue={toggleValue('selAttr')} mapFunc={attrMapFunc} />*/}
-      {/*<div className='options'><p>Filter data by...</p></div>*/}
-      {/*<SearchType toggleTrue={props.toggleTrue} toggleFalse={props.toggleFalse} />*/}
-      <Filter heading='Unit' optionsArr={props.units} selected={props.selUnits} toggleValue={toggleValue('selUnits')} clearFilter={props.clearFilter('selUnits')} />
-      <Filter heading='Character' optionsArr={props.characters} selected={props.selCharas} toggleValue={toggleValue('selCharas')} clearFilter={props.clearFilter('selCharas')} />
-      {/*<CheckBoxOptions id='tierOpts' heading='Outfit Tier' optionsArr={props.outfitTiers} selected={props.selTiers} toggleValue={toggleValue('selTiers')} mapFunc={tierMapFunc} />*/}
-      <Filter heading='Outfit Type' optionsArr={props.outfitTypes} selected={props.selOutfits} toggleValue={toggleValue('selOutfits')} clearFilter={props.clearFilter('selOutfits')} />
-    </div>
-  )
+  render() {
+    const filters = Object.keys(this.props).reduce((accumulator, key) => { //concat values in Sets that hold selected values
+      if (Array.isArray(this.props[key]) && key !== 'tiers' && key !== 'attr') {
+        const selKey = 'sel' + key.replace(key.charAt(0), key.charAt(0).toUpperCase());
+        const heading = this.props[key][0];
+        accumulator.push(
+          <Filter key={heading}
+            heading={heading}
+            isMenuActive={this.state.activeMenu===heading}
+            toggleMenu={() => (this.toggleMenu(heading))}
+            optionsArr={this.props[key]}
+            selected={this.props[selKey]}
+            toggleValue={this.toggleValue(selKey)}
+            clearFilter={this.props.clearFilter(selKey)}
+          />
+        );
+        
+      }
+      return accumulator;
+    }, []);
+    return (
+      <div id='filterBar'>
+        {filters}
+        {/*<CheckBoxOptions id='attrOpts' heading='Stat Bonus' optionsArr={this.props.attributes} selected={this.props.selAttr} toggleValue={toggleValue('selAttr')} mapFunc={attrMapFunc} />*/}
+        {/*<div className='options'><p>Filter data by...</p></div>*/}
+        {/*<SearchType toggleTrue={this.props.toggleTrue} toggleFalse={this.props.toggleFalse} />*/}
+        {/*<Filter heading='Unit' optionsArr={this.props.units} selected={this.props.selUnits} toggleValue={this.toggleValue('selUnits')} clearFilter={this.props.clearFilter('selUnits')} />
+        <Filter heading='Character' optionsArr={this.props.characters} selected={this.props.selCharas} toggleValue={this.toggleValue('selCharas')} clearFilter={this.props.clearFilter('selCharas')} />
+        <CheckBoxOptions id='tierOpts' heading='Outfit Tier' optionsArr={this.props.outfitTiers} selected={this.props.selTiers} toggleValue={toggleValue('selTiers')} mapFunc={tierMapFunc} />
+        <Filter heading='Outfit Type' optionsArr={this.props.outfitTypes} selected={this.props.selOutfits} toggleValue={this.toggleValue('selOutfits')} clearFilter={this.props.clearFilter('selOutfits')} />*/}
+      </div>
+    )
+  }
 }
 
 function SearchType(props) {
@@ -72,24 +102,14 @@ function CheckBox(props) {
 
 {/*<SelectOptions heading='Unit' optionsArr={props.units} selected={props.selUnits} toggleValue={toggleValue('selUnits')} clearFilter={props.clearFilter('selUnits')} />*/ }
 class Filter extends React.Component {
-  constructor() {
-    super();
-    this.state = { isMenu: true };
-    this.toggleMenu = this.toggleMenu.bind(this);
-  }
-
-  toggleMenu() {
-    this.setState((state, props) => { return { isMenu: !state.isMenu } })
-  }
-
   render() {
     return (
       <div className='filter'>
         <div className='filterHeading'>
           <p>{this.props.heading}</p>
-          <p onClick={this.toggleMenu}>⯆</p>
+          <p onClick={this.props.toggleMenu}>⯆</p>
         </div>
-        {this.state.isMenu &&
+        {this.props.isMenuActive &&
           <FilterMenu heading={this.props.heading}
             optionsArr={this.props.optionsArr}
             selected={this.props.selected}
@@ -105,7 +125,7 @@ class FilterMenu extends React.Component {
     return (
       <div className='filterMenu'>
         <div>
-        <button className='clearBtn' onClick={this.props.clearFilter}>Clear</button>
+          <button className='clearBtn' onClick={this.props.clearFilter}>Clear</button>
         </div>
         <SelectOptions heading={this.props.heading}
           optionsArr={this.props.optionsArr}
@@ -117,8 +137,9 @@ class FilterMenu extends React.Component {
 }
 
 function SelectOptions(props) {
-  if (props.optionsArr.indexOf(props.heading) > -1) { props.optionsArr.splice(props.optionsArr.indexOf(props.heading), 1, '') }
-  const options = props.optionsArr.map(function (option) {
+  let optionsArr = props.optionsArr.slice(0); //needed to create a real new (shallow) copy of the array
+  if (optionsArr.indexOf(props.heading) > -1) { optionsArr.splice(optionsArr.indexOf(props.heading), 1, '') }
+  const options = optionsArr.map(function (option) {
     if (option) {
       return (
         <li key={option}
@@ -128,10 +149,6 @@ function SelectOptions(props) {
           {option}
         </li>)
     }
-  });
-  //add selected class to options that are selected
-  props.selected.forEach((value) => {
-
   });
   return (
     <ul>

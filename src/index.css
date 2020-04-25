@@ -10,7 +10,7 @@ body{
   justify-content: flex-end;
 }
 
-#sidebar{
+#filterBar{
   display: flex;
   border: 1px solid #9e9e9e;
   box-sizing: border-box;
