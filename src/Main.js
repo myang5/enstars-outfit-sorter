@@ -49,14 +49,15 @@ export default class Main extends React.Component {
 
   toggleValueInSet() {
     return (filter) => {
-      return (event) => {
+      return (value) => {
         const newSet = this.state[filter];
-        if (this.state[filter].has(event.target.value)) {
-          newSet.delete(event.target.value);
+        if (this.state[filter].has(value)) {
+          newSet.delete(value);
         }
         else {
-          newSet.add(event.target.value);
+          newSet.add(value);
         }
+        console.log(newSet);
         this.setState({ [filter]: newSet });
       }
     }
@@ -105,8 +106,7 @@ export default class Main extends React.Component {
     return (
       <>
         <FilterBar {...sidebarProps} />
-        <OutfitList {...outfitListProps} />
-        
+        {/*<OutfitList {...outfitListProps} />*/}
       </>
     )
   }

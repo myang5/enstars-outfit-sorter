@@ -100,7 +100,7 @@ export default class OutfitList extends React.Component {
 
   render() {
     const outfits = this.state.loadedOutfits.map((elt) =>
-      <Outfit key={elt.character + elt.outfit} props={elt} attributes={this.props.attributes} selAttr={this.props.selAttr} />
+      <OutfitCard key={elt.character + elt.outfit} props={elt} attributes={this.props.attributes} selAttr={this.props.selAttr} />
     );
     //console.log('finished loading outfit list', performance.now())
     let placeholders = [];
@@ -123,7 +123,7 @@ export default class OutfitList extends React.Component {
   }
 }
 
-function Outfit(props) {
+function OutfitCard(props) {
   const properties = props.props;
   //const attr = Object.keys(properties).map(key => { //display all attributes
   //  if (props.attributes.includes(key.charAt(0).toUpperCase() + key.slice(1))) {
@@ -139,7 +139,7 @@ function Outfit(props) {
     else return null;
   }
   return (
-    <div className='outfit'>
+    <div className='outfitCard'>
       <p>{properties.character}</p>
       <p>{properties.outfit}</p>
       <hr />
@@ -150,6 +150,10 @@ function Outfit(props) {
       {totalBonus()}
     </div>
   )
+}
+
+function OutfitRow(props) {
+
 }
 
 function AttrList(props) {

@@ -1,5 +1,6 @@
 body{
   margin: 0;
+  overflow-x: scroll;
   overflow-y: hidden;
   font-family: 'Roboto', sans-serif;
 }
@@ -11,16 +12,73 @@ body{
 
 #sidebar{
   display: flex;
-  flex-direction: column;
-  flex: 0 0 300px;
-  padding: 2rem 1.5rem;
+  border: 1px solid #9e9e9e;
   box-sizing: border-box;
-  height: 100vh;
-  overflow: auto;
   background-color: #9e9e9e;
 }
 
-#sidebar .options {
+.filter {
+  position: relative;
+}
+
+.filterHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px;
+  width: 15rem;
+  border-right: 1px solid #9e9e9e;
+  font-size: 0.9rem;
+  background-color: #fff;
+}
+
+.filterHeading p {
+  display: inline-block;
+  margin: 0;
+  font-weight: bold;
+  width: auto;
+}
+
+.filterMenu {
+  position: absolute;
+  left: 90%;
+  display: flex;
+  flex-direction: column;
+  width: 15rem;
+  padding: 1rem;
+  box-sizing: border-box;
+  height: auto;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.19);
+  font-size: 0.9rem;
+}
+
+.filterMenu ul {
+  height: 10em;
+  width: 100%;
+  overflow-y: scroll;
+  list-style-type: none;
+  padding: 0;
+}
+
+.filterMenu li {
+  display: flex;
+  height: 1em;
+  align-items: flex-end;
+  margin: 0.7em 0;
+}
+
+.filterMenu li > span {
+  display: inline-block;
+  width: 1.5em;
+}
+
+.filterMenu li.selected > span::before {
+  content: '✓'
+}
+
+/*#sidebar .options {
   margin-bottom: 1rem;
 }
 
@@ -58,7 +116,7 @@ body{
 
 #sidebar .clearFilter, .toggleOpt {
   display: inline;
-}
+}*/
 
 #toggleSidebarBtn {
   padding: 1rem;
@@ -103,7 +161,7 @@ body{
   max-width: calc(15rem * 5 + 10px * 10);
 }
 
-.outfit {
+.outfitCard {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -120,29 +178,29 @@ body{
 
 /* fix sizing issue in last row https://medium.com/developedbyjohn/equal-width-flex-items-a5ba1bfacb77 */
 .outfit-placeholder {
-  flex: 1 0 14rem; /* flex-basis should be same as .outfit */
+  flex: 1 0 14rem; /* flex-basis should be same as .outfitCard */
   height: 0.5px;
   margin: 0 10px;
 }
 
-.outfit > p {
+.outfitCard > p {
   margin: 0;
   text-align: center;
   font-size: 0.9rem;
 }
 
-.outfit * {
+.outfitCard * {
   margin-bottom: 2px;
 }
 
-.outfit hr {
+.outfitCard hr {
   width: 100%;
   border: solid 0.5px #adadad;
   margin: 0.5em 0;
 }
 
 /* make sure outer div has a width to size child divs against */
-.outfit .rowContainer {
+.outfitCard .rowContainer {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -150,7 +208,7 @@ body{
   width: 100%;
 }
 
-.outfit .outfitImg {
+.outfitCard .outfitImg {
   height: 100%;
 }
 
@@ -162,7 +220,7 @@ body{
   align-items: center;
 }
 
-.outfit .attr {
+.outfitCard .attr {
   width: 4rem;
   flex: 1;
   margin: 0;
@@ -174,7 +232,7 @@ body{
     padding: 0 0.5rem;
   }
 
-  .outfit {
+  .outfitCard {
     margin: 5px;
     flex: 1 1 calc(50% - 10px);
     min-width: 1px;
@@ -185,16 +243,16 @@ body{
     padding: 0.8rem;
   }
 
-  .outfit .rowContainer {
+  .outfitCard .rowContainer {
     flex-direction: column;
     height: auto;
   }
 
-  .outfit .outfitImg {
+  .outfitCard .outfitImg {
     height: 8rem;
   }
 
-  .outfit .attr {
+  .outfitCard .attr {
     width: 4rem;
     flex: 1;
     margin: 0;
