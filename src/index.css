@@ -1,6 +1,5 @@
 body{
   margin: 0;
-  overflow-y: hidden;
   font-family: 'Roboto', sans-serif;
 }
 
@@ -20,7 +19,94 @@ body{
   background-color: #9e9e9e;
 }
 
-#sidebar .options {
+.filter {
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.filterHeading {
+  display: flex;
+  justify-content: flex-start;
+  align-items: baseline;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.filterHeading p {
+  display: inline-block;
+  margin: 0;
+  width: auto;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-right: 0.6rem;
+}
+
+.filterHeading a {
+  text-decoration: underline;
+  font-size: 0.8rem;
+}
+
+.filterMenu {
+  display: flex;
+  flex-direction: column;
+  width: 15rem;
+  padding: 1rem;
+  box-sizing: border-box;
+  height: auto;
+  background-color: #fff;
+  font-size: 0.9rem;
+}
+
+.filterMenu ul {
+  height: 10em;
+  width: 100%;
+  overflow-y: auto;
+  list-style-type: none;
+  padding: 0;
+}
+
+.filterMenu li {
+  display: flex;
+  height: 2em;
+  align-items: center;
+  cursor: pointer;
+}
+
+
+.filterMenu li:hover {
+  background-color: #d1d1d1;
+}
+
+.filterMenu li div {
+  display: flex;
+  height: 1em;
+  align-items: flex-end;
+  padding-left: 0.5em;
+}
+
+.filterMenu li span {
+  display: inline-block;
+  width: 1.5em;
+}
+
+.filterMenu li.selected span::before {
+  content: '✓'
+}
+
+#sidebar .radioBtn {
+  display: flex;
+}
+
+#sidebar .radioBtn label {
+  margin-left: 10px;
+}
+
+#sidebar .radioBtn .desc {
+  font-size: 0.8em;
+}
+
+/*#sidebar .options {
   margin-bottom: 1rem;
 }
 
@@ -38,19 +124,9 @@ body{
   font-size: 1.4rem;
   font-weight: bold;
   padding-right: 0.5rem;
-}
+} 
 
-#sidebar .radioBtn {
-  display: flex;
-}
 
-#sidebar .radioBtn label {
-  margin-left: 10px;
-}
-
-#sidebar .radioBtn .desc {
-  font-size: 0.8em;
-}
 
 #sidebar select {
   width: 100%;
@@ -58,7 +134,7 @@ body{
 
 #sidebar .clearFilter, .toggleOpt {
   display: inline;
-}
+}*/
 
 #toggleSidebarBtn {
   padding: 1rem;
@@ -74,15 +150,15 @@ body{
 }
 
 /* from this tutorial: https://medium.com/@marcuslt/fluid-fly-out-sidebar-with-css3-flexbox-cb321b21f29 */
-#sidebar.toggledOn ~ .pageContent {
+#sidebar.toggledOn ~ #outfitView {
   flex-basis: 0;
 }
 
-#sidebar.toggledOn ~ .pageContent #toggleSidebarBtn::before{
+#sidebar.toggledOn ~ #outfitView #toggleSidebarBtn::before{
   content: '<<';
 }
 
-.pageContent {
+#outfitView {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -91,19 +167,20 @@ body{
   overflow: auto;
 }
 
-.pageContent .status{
+#outfitView .status{
   text-align: center;
 }
 
-#outfitList {
+#outfitList.card {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  box-sizing: border-box;
   padding: 0 1rem;
-  max-width: calc(15rem * 5 + 10px * 10);
+  width: 100%;
 }
 
-.outfit {
+.outfitCard {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -120,29 +197,29 @@ body{
 
 /* fix sizing issue in last row https://medium.com/developedbyjohn/equal-width-flex-items-a5ba1bfacb77 */
 .outfit-placeholder {
-  flex: 1 0 14rem; /* flex-basis should be same as .outfit */
+  flex: 1 0 14rem; /* flex-basis should be same as .outfitCard */
   height: 0.5px;
   margin: 0 10px;
 }
 
-.outfit > p {
+.outfitCard > p {
   margin: 0;
   text-align: center;
   font-size: 0.9rem;
 }
 
-.outfit * {
+.outfitCard * {
   margin-bottom: 2px;
 }
 
-.outfit hr {
+.outfitCard hr {
   width: 100%;
   border: solid 0.5px #adadad;
   margin: 0.5em 0;
 }
 
 /* make sure outer div has a width to size child divs against */
-.outfit .rowContainer {
+.outfitCard .rowContainer {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -150,7 +227,7 @@ body{
   width: 100%;
 }
 
-.outfit .outfitImg {
+.outfitCard .outfitImg {
   height: 100%;
 }
 
@@ -162,7 +239,7 @@ body{
   align-items: center;
 }
 
-.outfit .attr {
+.outfitCard .attr {
   width: 4rem;
   flex: 1;
   margin: 0;
@@ -174,7 +251,7 @@ body{
     padding: 0 0.5rem;
   }
 
-  .outfit {
+  .outfitCard {
     margin: 5px;
     flex: 1 1 calc(50% - 10px);
     min-width: 1px;
@@ -185,16 +262,16 @@ body{
     padding: 0.8rem;
   }
 
-  .outfit .rowContainer {
+  .outfitCard .rowContainer {
     flex-direction: column;
     height: auto;
   }
 
-  .outfit .outfitImg {
+  .outfitCard .outfitImg {
     height: 8rem;
   }
 
-  .outfit .attr {
+  .outfitCard .attr {
     width: 4rem;
     flex: 1;
     margin: 0;
