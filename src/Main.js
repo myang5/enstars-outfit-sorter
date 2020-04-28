@@ -2,41 +2,37 @@ import React from 'react';
 import FilterBar from './FilterBar.js';
 import OutfitList from './OutfitList.js';
 import { apiKey, spreadsheetId } from './sheetsCreds.js';
+import { filterData, convertOutfitArraysToObjects } from './Gsx2json.js';
 
 export default class Main extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       isLoaded: false,
-      charas: [],
-      units: [],
-      types: [],
-      tiers: ['Tier I', 'Tier II', 'Tier III'],
+      data: null, //Array of Objects representing rows
       attr: ['Ac', 'Pa', 'Un', 'Sm', 'Te', 'Ch'],
-      selCharas: new Set(),
-      selTypes: new Set(),
-      selUnits: new Set(),
-      selTiers: new Set(),
       selAttr: new Set(), //rows where selAttr > 0
       isInclusive: false,
+      view: 'card',
     };
-    this.toggleValueInSet = this.toggleValueInSet.bind(this);
+    this.submitFilterSelection = this.submitFilterSelection.bind(this);
+    this.calculateTotalBonus = this.calculateTotalBonus.bind(this);
     this.toggleSearchTypeTrue = this.toggleSearchTypeTrue.bind(this);
     this.toggleSearchTypeFalse = this.toggleSearchTypeFalse.bind(this);
-    this.clearFilter = this.clearFilter.bind(this);
   }
 
   componentDidMount() {
-    const sheetId = 'Validation Lists';
+    console.log('Main componentDidMount')
+    const sheetId = 'Stat Bonuses';
     //fetch info for sidebar
-    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}&majorDimension=COLUMNS`)
+    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}`)
       .then(result => result.json())
       .then(result => {
-        const resultObj = result.values;
-        const characters = resultObj.filter((arr) => arr[0] === 'Character');
-        const types = resultObj.filter((arr) => arr[0] === 'Outfit Type');
-        const units = resultObj.filter((arr) => arr[0] === 'Unit');
-        this.setState({ isLoaded: true, charas: characters[0], types: types[0], units: units[0] });
+        let data = result.values; //Array of Arrays representing sheet rows
+        const newState = { isLoaded: true };
+        data[0].forEach((arr) => { if (arr[0] !== 'ImageID') newState['sel' + arr[0]] = new Set() }) //Create set for each header to keep track of selected values
+        newState.data = data;
+        this.setState(newState);
       })
   }
 
@@ -48,67 +44,79 @@ export default class Main extends React.Component {
     this.setState({ isInclusive: false })
   }
 
-  toggleValueInSet() {
-    return (filter) => {
-      return (value) => {
-        const newSet = this.state[filter];
-        if (this.state[filter].has(value)) {
-          newSet.delete(value);
-        }
-        else {
-          newSet.add(value);
-        }
-        console.log(newSet);
-        this.setState({ [filter]: newSet });
-      }
+  submitFilterSelection(filter) {
+    return (value) => {
+      console.log('submitFilterSelection', value)
+      this.setState({ [filter]: value });
     }
   }
 
-  clearFilter(filter) {
-    return () => this.setState({ [filter]: new Set() })
+  calculateTotalBonus(outfits, attrSet) { //outfits is Array of Objects of each outfit info
+    console.log(outfits);
+    console.log(attrSet);
+      outfits.forEach(outfitObj => {
+        const total = Array.from(attrSet)
+              .reduce((accumulator, currVal) => accumulator + outfitObj[currVal], 0);
+        outfitObj['Total Bonus'] = total
+      });
+
+      //outfits.sort((a, b) => { //sort from highest to lowest queried stat bonus
+      //  let totalBonusA = 0;
+      //  let totalBonusB = 0;
+      //  for (let attr of this.props.selAttr) {
+      //    totalBonusA += a[attr.toLowerCase()];
+      //    totalBonusB += b[attr.toLowerCase()];
+      //  }
+      //  return totalBonusB - totalBonusA;
+      //})
+    return outfits;
   }
 
   render() {
+    console.log('Main render');
     //console.log('render main component', performance.now())
     if (this.state.isLoaded) {
-      const sidebarProps = {
-        charas: this.state.charas, //render selects and attributes check boxes
-        types: this.state.types,
-        units: this.state.units,
-        tiers: this.state.tiers,
+      const query = Object.keys(this.state).reduce((accumulator, key) => { //make Object of Sets that hold selected values
+        const value = this.state[key];
+        if (key.includes('sel') && key !== 'selAttr' && value.size > 0) { accumulator[key] = value; }
+        return accumulator;
+      }, {});
+      const filteredData = filterData(this.state.data, { query: query });
+      let outfits = convertOutfitArraysToObjects(filteredData);
+      outfits = this.calculateTotalBonus(outfits, this.state.selAttr);
+      //query.push(this.state.isInclusive);
+      //const stringQuery = Object.keys(this.state).reduce((accumulator, key) => { //create array of Sets that hold selected values
+      //  const field = this.state[key];
+      //  if (!Array.isArray(field) && typeof (field) === 'object' && key !== 'selAttr' && field.size > 0) { accumulator.push(field) }
+      //  return accumulator;
+      //}, []);
+      const queryStr = Object.keys(query).reduce((accumulator, key) => {
+        let val = accumulator + key + ': ';
+        val += Array.from(query[key]) + ' ';
+        return val;
+      }, '');
+      //console.log(queryStr);
+      const outfitListProps = {
+        key: queryStr,
+        query: query,
+        outfits: outfits,
+        view: this.state.view,
+        status: `${outfits.length} outfits found`,
         attr: this.state.attr,
-        selCharas: this.state.selCharas,
-        selTypes: this.state.selTypes,
-        selUnits: this.state.selUnits,
         selAttr: this.state.selAttr,
-        selTiers: this.state.selTiers,
-        toggleValue: this.toggleValueInSet,
+      }
+      const sidebarProps = {
+        attr: this.state.attr,
+        data: filteredData,
+        submitFilterSelection: this.submitFilterSelection,
         toggleTrue: this.toggleSearchTypeTrue,
         toggleFalse: this.toggleSearchTypeFalse,
-        clearFilter: this.clearFilter,
       }
-      const query = Object.keys(this.state).reduce((accumulator, key) => { //concat values in Sets that hold selected values
-        const field = this.state[key];
-        if (!Array.isArray(field)) { return accumulator.concat(Array.from(field)); }
-        else return accumulator.concat([]);
-      }, []);
-      query.push(this.state.isInclusive);
-      const stringQuery = Object.keys(this.state).reduce((accumulator, key) => { //create array of Sets that hold selected values
-        const field = this.state[key];
-        if (!Array.isArray(field) && typeof (field) === 'object' && key !== 'selAttr' && field.size > 0) { accumulator.push(field) }
-        return accumulator;
-      }, []);
-      const outfitListProps = {
-        query: query,
-        stringQuery: stringQuery,
-        attr: this.state.attr,
-        selAttr: this.state.selAttr,
-        isInclusive: this.state.isInclusive,
-      }
+      const mergedObj = { ...sidebarProps, ...query };
       return (
         <>
-          <FilterBar {...sidebarProps} />
-          {/*<OutfitList {...outfitListProps} />*/}
+          <FilterBar {...mergedObj} />
+          <OutfitList {...outfitListProps} />
         </>
       )
     }

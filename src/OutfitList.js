@@ -1,5 +1,5 @@
 import React from 'react';
-import filterGsData from './Gsx2json.js';
+import filterData from './Gsx2json.js';
 import { apiKey, spreadsheetId } from './sheetsCreds.js';
 import throttle from 'lodash.throttle';
 
@@ -10,59 +10,17 @@ export default class OutfitList extends React.Component {
       error: false,
       isLoading: false,
       hasMore: true,
-      status: '',
-      outfits: [],
       loadedOutfits: [],
-      outfitsToLoad: 20,
+      outfitsToLoad: 40,
     };
     this.onScroll = this.onScroll.bind(this);
     this.loadOutfits = this.loadOutfits.bind(this);
     this.onScrollThrottled = throttle(this.onScroll, 100);
-    this.toggleSidebar = () => {
-      document.querySelector('#sidebar').classList.toggle('toggledOn');
-    }
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.query !== prevProps.query) {
-      //console.log(this.props.stringQuery);
-      this.setState({ status: 'Loading...' }, () => {
-        const sheetId = 'Stat Bonuses';
-        fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}`)
-          .then(res => res.json())
-          .then(res => {
-            let outfits = filterGsData(res, { query: this.props.stringQuery, isInclusive: this.props.isInclusive }); //all outfits that match character/outfit (inclusive)
-            //console.log(outfits);
-            if (this.props.selAttr.size > 0) {
-              for (let i = outfits.length - 1; i >= 0; i--) {
-                let queried = false;
-                for (let attr of this.props.selAttr) {
-                  if (outfits[i][attr.toLowerCase()]) { //inclusive search by attr
-                    queried = true;
-                    break;
-                  }
-                  //if (!outfits[i][attr.toLowerCase()]) { //currently only keeps outfits that meet all attr criteria (exclusive)
-                  //  outfits.splice(i, 1);
-                  //  break;
-                  //}
-                }
-                if (!queried) outfits.splice(i, 1);
-              }
-            }
-            outfits.sort((a, b) => { //sort from highest to lowest queried stat bonus
-              let totalBonusA = 0;
-              let totalBonusB = 0;
-              for (let attr of this.props.selAttr) {
-                totalBonusA += a[attr.toLowerCase()];
-                totalBonusB += b[attr.toLowerCase()];
-              }
-              return totalBonusB - totalBonusA;
-            })
-            return { outfits: outfits, loadedOutfits: [], status: `${outfits.length} outfits found` }
-          })
-          .then(res => { this.setState(res, this.loadOutfits) });
-      });
-    }
+  componentDidMount() {
+    console.log('OutfitList componentDidMount');
+    this.loadOutfits();
   }
 
   //modified from this tutorial: https://alligator.io/react/react-infinite-scroll/
@@ -88,10 +46,9 @@ export default class OutfitList extends React.Component {
   loadOutfits() {
     this.setState({ isLoading: true }, () => {
       this.setState((state, props) => {
-        //console.log('initial loaded outfits', state.loadedOutfits);
         let loadedOutfits = state.loadedOutfits;
-        loadedOutfits = loadedOutfits.concat(state.outfits.slice(state.loadedOutfits.length, state.loadedOutfits.length + state.outfitsToLoad));
-        const hasMore = loadedOutfits.length < state.outfits.length;
+        loadedOutfits = loadedOutfits.concat(props.outfits.slice(state.loadedOutfits.length, state.loadedOutfits.length + state.outfitsToLoad));
+        const hasMore = loadedOutfits.length < props.outfits.length;
         //console.log('after loadOutfits', loadedOutfits);
         return { hasMore: hasMore, isLoading: false, loadedOutfits: loadedOutfits };
       });
@@ -100,89 +57,98 @@ export default class OutfitList extends React.Component {
 
   render() {
     const outfits = this.state.loadedOutfits.map((elt) =>
-      <OutfitCard key={elt.character + elt.outfit} props={elt} attributes={this.props.attributes} selAttr={this.props.selAttr} />
+      this.props.view === 'sheet' ?
+        <OutfitRow key={elt.Character + elt.Outfit} info={elt} /> :
+        <OutfitCard key={elt.Character + elt.Outfit} info={elt} attr={this.props.attr} selAttr={this.props.selAttr} />
     );
     //console.log('finished loading outfit list', performance.now())
     let placeholders = [];
-    for (let i=0; i<4; i ++) {
+    for (let i = 0; i < 4; i++) {
       placeholders.push(<div key={i} className="outfit-placeholder"></div>)
     }
+    console.log('OutfitList render');
+    //console.log('loaded Outfits', this.state.loadedOutfits)
     return (
-      <div className='pageContent' onScroll={this.onScrollThrottled}>
-        <div id='toggleSidebarBtn' onClick={this.toggleSidebar}></div>
-        <p className='status'>{this.state.status}</p>
-        <div id='outfitList'>
+      <div id='outfitView' onScroll={this.onScrollThrottled}>
+        {/*<div id='toggleSidebarBtn' onClick={this.toggleSidebar}></div>*/}
+        {this.props.view === 'card' && <p className='status'>{this.props.status}</p>}
+        <div id='outfitList' className={this.props.view}>
           {outfits}
-          {placeholders}
+          {this.props.view === 'card' && placeholders}
         </div>
-        {!this.state.hasMore &&
+        {!this.state.hasMore && this.props.view === 'card' &&
           <p className='status'>End of results</p>
         }
       </div>
     )
+    //return (
+    //  <div className={'outfitView ' + this.props.view} onScroll={this.onScrollThrottled}>
+    //    {/*<div id='toggleSidebarBtn' onClick={this.toggleSidebar}></div>*/}
+    //    {this.props.view === 'card' && <p className='status'>{this.props.status}</p>}
+    //    <div id='outfitList'>
+    //      {outfits}
+    //      {placeholders}
+    //    </div>
+    //    {!this.state.hasMore && this.props.view === 'card' &&
+    //      <p className='status'>End of results</p>
+    //    }
+    //  </div>
+    //)
   }
 }
 
 function OutfitCard(props) {
-  const properties = props.props;
-  //const attr = Object.keys(properties).map(key => { //display all attributes
-  //  if (props.attributes.includes(key.charAt(0).toUpperCase() + key.slice(1))) {
-  //    return <span key={key + properties[key]}>{`${key.charAt(0).toUpperCase() + key.slice(1)}: ${properties[key]}`}</span>
-  //  }
-  //});
-  const totalBonus = () => { //display total bonus of queried attrs if any have been queried
-    if (props.selAttr.size > 0) {
-      const total = Array.from(props.selAttr)
-        .reduce((accumulator, currVal) => accumulator + properties[currVal.toLowerCase()], 0);
-      return <span>{`TOTAL BONUS: ${total}`}</span>;
-    }
-    else return null;
-  }
   return (
     <div className='outfitCard'>
-      <p>{properties.character}</p>
-      <p>{properties.outfit}</p>
+      <p>{props.info['Character']}</p>
+      <p>{props.info['Outfit']}</p>
       <hr />
       <div className='rowContainer'>
-        <OutfitImage imageUrl={properties.imageurl} />
-        <AttrList attributes={props.attributes} props={props.props} />
-        </div>
-      {totalBonus()}
+        <OutfitImage imageId={props.info['ImageID']} />
+        <AttrList attr={props.attr} info={props.info} />
+      </div>
+      {/*{totalBonus()}*/}
     </div>
   )
 }
 
 function OutfitRow(props) {
-
+  return (
+    <>
+      {Object.keys(props.info).map(key => {
+        if (key !== 'ImageID') {
+          return (
+            <div key={key} className='outfitCell'>
+              <p>{props.info[key]}</p>
+            </div>
+          )
+        }
+      })}
+    </>
+  )
 }
 
 function AttrList(props) {
   return (
     <div className='attrList'>
-      {Object.keys(props.props).map(key => { //display all attributes
-        if (props.attributes.includes(key.charAt(0).toUpperCase() + key.slice(1))) {
-          return <p className='attr' key={key + props.props[key]}>{`${key.charAt(0).toUpperCase() + key.slice(1)}: ${props.props[key]}`}</p>
-        }
-      })
+      {
+        props.attr.map(attr => { //display all attributes
+          return <p className='attr' key={attr + props.info[attr]}>{`${attr}: ${props.info[attr]}`}</p>
+        })
       }
     </div>
   )
 }
 
 function OutfitImage(props) {
+  //OLD METHOD, OutfitImage should now receive the image id directly
   //props link looks like this https://drive.google.com/open?id=IMAGE_ID
   //or it could look like this https://drive.google.com/file/d/IMAGE_ID/view?usp=drivesdk
-  //need to change it to be https://drive.google.com/thumbnail?&id=IMAGE_ID
+  //or it could look like this https://drive.google.com/file/d/IMAGE_ID/view
+  //need to change it to be    https://drive.google.com/thumbnail?&id=IMAGE_ID
   let imageUrl = null;
-  //console.log(props.imageUrl);
-  if (props.imageUrl) {
-    if (props.imageUrl.match(/https:\/\/drive.google.com\/file\/d\/.+\/view\?usp=drivesdk/)) {
-      imageUrl = props.imageUrl.replace('/view?usp=drivesdk', '');
-      imageUrl = imageUrl.replace('file/d/', 'thumbnail?&id=');
-    }
-    else if (props.imageUrl.match(/https:\/\/drive.google.com\/open\?id=.+/)) {
-      imageUrl = props.imageUrl.replace('open', 'thumbnail');
-    }
+  if (props.imageId && props.imageId.toLowerCase() !== 'missing') {
+    imageUrl = 'https://drive.google.com/thumbnail?&id=' + props.imageId
   }
   return <img className='outfitImg' src={imageUrl} />
 }
