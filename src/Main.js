@@ -124,6 +124,6 @@ export default class Main extends React.Component {
         </>
       )
     }
-    else return <p>Loading</p>;
+    else return null;
   }
 }

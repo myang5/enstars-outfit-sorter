@@ -184,7 +184,6 @@ body{
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   box-sizing: border-box;
   margin: 10px;
   flex: 1 0 14rem;
@@ -192,8 +191,22 @@ body{
   height: auto;
   border: solid 1px #adadad;
   border-radius: 5px;
-  padding: 1rem;
+  padding: 1rem 0;
 }
+
+/*.outfitCard { //for horizontal layout
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  box-sizing: border-box;
+  margin: 10px;
+  flex: 1 0 16rem;
+  min-width: 16rem;
+  height: auto;
+  border: solid 1px #adadad;
+  border-radius: 5px;
+  padding: 1rem 1rem 1rem 0;
+}*/
 
 /* fix sizing issue in last row https://medium.com/developedbyjohn/equal-width-flex-items-a5ba1bfacb77 */
 .outfit-placeholder {
@@ -202,47 +215,113 @@ body{
   margin: 0 10px;
 }
 
-.outfitCard > p {
+.outfitCard p {
   margin: 0;
   text-align: center;
   font-size: 0.9rem;
 }
 
-.outfitCard * {
-  margin-bottom: 2px;
-}
-
 .outfitCard hr {
-  width: 100%;
+  width: calc(100% - 2rem);
   border: solid 0.5px #adadad;
-  margin: 0.5em 0;
+  margin: 0.3rem 0;
 }
 
 /* make sure outer div has a width to size child divs against */
+/*.outfitCard .rowContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  height: auto;
+  flex: 1 1 auto;
+  min-width: 9rem;
+}*/
+
 .outfitCard .rowContainer {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 8rem;
+  height: auto;
   width: 100%;
 }
 
-.outfitCard .outfitImg {
-  height: 100%;
+.outfitImg {
+  height: 7rem;
+  margin-bottom: 0.3rem;
 }
 
 .attrList {
   display: flex;
   height: auto;
   flex-direction: column;
-  align-content: center;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 6.5rem;
+  min-width: 8rem;
+  font-size: 0.8rem;
 }
 
-.outfitCard .attr {
-  width: 4rem;
-  flex: 1;
-  margin: 0;
+.attr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 8.5rem;
+}
+
+.attr .icon {
+  display: inline-block;
+  font-size: 0.8em;
+  font-weight: bold;
+  text-align:center;
+  width: 2em;
+  height: auto;
+  padding: 0.1em;
+  box-sizing: border-box;
+  color: #fff;
+  border-radius: 1px;
+}
+
+.attr .numberText {
+  width: 2.5em;
+  text-align: right;
+}
+
+.statusBarContainer {
+  display: flex;
+  border: 0.5px solid #000;
+  border-radius: 2px;
+  height: 0.7em;
+}
+
+.statusBar {
+  display: inline-block;
+  height: 0.7em;
+  border-radius: 2px 0 0 2px;
+}
+
+.ac {
+  background-color: #EB5145;
+}
+
+.pa {
+  background-color: #E69C36;
+}
+
+.un {
+  background-color: #E54B7D;
+}
+
+.sm {
+  background-color: #469DDD;
+}
+
+.te {
+  background-color: #2C5EE7;
+}
+
+.ch {
+  background-color: #99D041;
 }
 
 /* Smartphones (portrait and landscape) ----------- */
@@ -251,7 +330,7 @@ body{
     padding: 0 0.5rem;
   }
 
-  .outfitCard {
+  /*.outfitCard {
     margin: 5px;
     flex: 1 1 calc(50% - 10px);
     min-width: 1px;
@@ -259,7 +338,13 @@ body{
     height: auto;
     border: solid 1px #adadad;
     border-radius: 5px;
-    padding: 0.8rem;
+    padding: 0.8rem 0;
+  }
+
+  .outfitCard hr {
+    width: calc(100% - 1.6rem);
+    border: solid 0.5px #adadad;
+    margin: 0.3rem 0;
   }
 
   .outfitCard .rowContainer {
@@ -269,13 +354,7 @@ body{
 
   .outfitCard .outfitImg {
     height: 8rem;
-  }
-
-  .outfitCard .attr {
-    width: 4rem;
-    flex: 1;
-    margin: 0;
-  }
+  }*/
 } 
 
 

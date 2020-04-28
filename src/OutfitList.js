@@ -60,7 +60,7 @@ export default class OutfitList extends React.Component {
     const outfits = this.state.loadedOutfits.map((elt) =>
       this.props.view === 'sheet' ?
         <OutfitRow key={elt.Character + elt.Outfit + elt['Total Bonus']} info={elt} /> :
-        <OutfitCard key={elt.Character + elt.Outfit  + elt['Total Bonus']} info={elt} attr={this.props.attr} selAttr={this.props.selAttr} />
+        <OutfitCard key={elt.Character + elt.Outfit + elt['Total Bonus']} info={elt} attr={this.props.attr} selAttr={this.props.selAttr} />
     );
     //console.log('finished loading outfit list', performance.now())
     let placeholders = [];
@@ -130,11 +130,22 @@ function OutfitRow(props) {
 }
 
 function AttrList(props) {
+  const statusBarWidth = 4.2;
   return (
     <div className='attrList'>
       {
         props.attr.map(attr => { //display all attributes
-          return <p className='attr' key={attr + props.info[attr]}>{`${attr}: ${props.info[attr]}`}</p>
+          return (
+            <div className='attr' key={attr + props.info[attr]}>
+              <span className={'icon ' + attr.toLowerCase()}>{attr}</span>
+              <span className='numberText'>{'+' + props.info[attr]}</span>
+              <span className='statusBarContainer' style={{ width: `${statusBarWidth}rem` }}>
+                <span className={'statusBar ' + attr.toLowerCase()}
+                  style={{ width: `${props.info[attr] / 300 * statusBarWidth}rem` }} />
+              </span>
+            </div>
+            //<p className='attr' key={attr + props.info[attr]}>{`${attr}: ${props.info[attr]}`}</p>
+          )
         })
       }
     </div>
