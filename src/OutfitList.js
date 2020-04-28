@@ -133,8 +133,7 @@ function AttrList(props) {
   const statusBarWidth = 4.2;
   return (
     <div className='attrList'>
-      {
-        props.attr.map(attr => { //display all attributes
+      {props.attr.map(attr => { //display all attributes
           return (
             <div className='attr' key={attr + props.info[attr]}>
               <span className={'icon ' + attr.toLowerCase()}>{attr}</span>
@@ -144,10 +143,8 @@ function AttrList(props) {
                   style={{ width: `${props.info[attr] / 300 * statusBarWidth}rem` }} />
               </span>
             </div>
-            //<p className='attr' key={attr + props.info[attr]}>{`${attr}: ${props.info[attr]}`}</p>
           )
-        })
-      }
+        })}
     </div>
   )
 }

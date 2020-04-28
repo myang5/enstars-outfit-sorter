@@ -26,7 +26,7 @@ export default class Sidebar extends React.Component {
         setsArr[j].add(row[j]);
       }
     }
-    //console.log(setsArr);
+    //pop unwanted sets
     return setsArr;
   }
 
@@ -34,9 +34,7 @@ export default class Sidebar extends React.Component {
     this.setState((state, props) => { return { activeMenu: state.activeMenu === menu ? '' : menu } })
   }
 
-  //const attrMapFunc = function (option) {
-  //  return <CheckBox key={option} option={option} value={option} toggleValue={toggleValue('selAttr')} />
-  //};
+
 
   //return (
   //  <div id='sidebar' className='toggledOn'>
@@ -54,7 +52,7 @@ export default class Sidebar extends React.Component {
     if (this.state.filters) {
       const filters = this.state.filters.reduce((accumulator, set) => { //data is Array of Sets of unique values in each column
         const arr = Array.from(set);
-        if (arr[0] !== 'ImageID') {
+        if (arr[0] !== 'ImageID' && this.props.attr.indexOf(arr[0]) < 0) {
           const heading = arr[0];
           const selKey = 'sel' + heading;
           const optionsArr = Array.from(new Set(arr)).sort((a, b) => {
@@ -77,26 +75,61 @@ export default class Sidebar extends React.Component {
         return accumulator;
       }, []);
       //console.log(filters);
-      filters.push( 
-        <Filter key={'Total Bonus'}
-        heading={'Total Bonus'}
-        isMenuActive={this.state.activeMenu === 'Total Bonus'}
-        toggleMenu={() => (this.toggleMenu('Total Bonus'))}
-        optionsArr={this.props.attr}
-        submitSelection={this.props.submitFilterSelection('selAttr')}
-      />)
       return (
         <div id='sidebar' className='toggledOn'>
+          <div className='filterHeading filter'><p>Stat Bonus</p></div>
+          <CheckBoxOptions optionsArr={this.props.attr} submitSelection={this.props.submitFilterSelection('selAttr')} />
           <div className='filterHeading filter'><p>Filter data by...</p></div>
           <SearchType toggleTrue={this.props.toggleTrue} toggleFalse={this.props.toggleFalse} />
           {filters}
-          {/*<CheckBoxOptions id='attrOpts' heading='Stat Bonus' optionsArr={this.props.attributes} selected={this.props.selAttr} toggleValue={toggleValue('selAttr')} mapFunc={attrMapFunc} />*/}
-          
+
+
         </div>
       )
     }
     else return null;
   }
+}
+
+class CheckBoxOptions extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { selected: new Set() };
+    this.toggleOption = this.toggleOption.bind(this);
+  }
+
+  toggleOption(option) {
+    const newSet = this.state.selected; //not actually creating a new Set copy?
+    if (this.state.selected.has(option)) { newSet.delete(option) }
+    else { newSet.add(option); }
+    this.setState({ selected: newSet }, this.props.submitSelection(this.state.selected));
+  }
+
+  render() {
+    const attrMapFunc = (option) => {
+      return <CheckBox key={option} option={option} toggleOption={() => this.toggleOption(option)} />
+      //return (
+      //  <span key={option} className={'icon ' + option.toLowerCase()} onClick={() => this.toggleOption(option)}>
+      //    {option}
+      //  </span>
+      //)
+    }
+    const options = this.props.optionsArr.map(attrMapFunc);
+    return (
+      <div className='filter attrOptions'>
+        {options}
+      </div>
+    )
+  }
+}
+
+function CheckBox(props) {
+  return (
+    <div>
+      <input type='checkbox' onClick={props.toggleOption} />
+      <span className={'icon ' + props.option.toLowerCase()}>{props.option}</span>
+    </div>
+  )
 }
 
 class Filter extends React.Component {
@@ -209,26 +242,6 @@ function SearchType(props) {
         <input type='radio' name='searchType' id='true' onClick={props.toggleTrue} />
         <label htmlFor='true'>Inclusive match <br /><span className='desc'>(find outfits that match 1 or more criteria)</span></label>
       </div>
-    </div>
-  )
-}
-
-function CheckBoxOptions(props) {
-  const options = props.optionsArr.map(props.mapFunc);
-  
-  return (
-    <div className='options' id={props.id}>
-      <div className='row'><p>{props.heading}</p></div>
-      <div className='row'>{options}</div>
-    </div>
-  )
-}
-
-function CheckBox(props) {
-  return (
-    <div>
-      <input type='checkbox' value={props.value} onClick={props.toggleValue} />
-      <label htmlFor={props.option}>{props.option}</label>
     </div>
   )
 }
