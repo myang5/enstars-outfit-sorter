@@ -1,20 +1,22 @@
 import React from 'react';
+import TeamBuilder from './TeamBuilder.js'
 import SideBar from './Sidebar.js';
 import OutfitList from './OutfitList.js';
 import { apiKey, spreadsheetId } from './sheetsCreds.js';
-import { filterData, convertOutfitArraysToObjects } from './Gsx2json.js';
+import { filterData, convertArraysToObjects } from './Gsx2json.js';
 
 export default class Main extends React.Component {
   constructor() {
     super();
     this.state = {
-      isLoaded: false,
-      data: null, //Array of Objects representing rows
+      data: null,
+      jobData: null,
       attr: ['Ac', 'Pa', 'Un', 'Sm', 'Te', 'Ch'],
-      selAttr: new Set(), //rows where selAttr > 0
+      selAttr: new Set(),
       isInclusive: false,
       view: 'card',
     };
+    this.prepareOutfitData = this.prepareOutfitData.bind(this)
     this.submitFilterSelection = this.submitFilterSelection.bind(this);
     this.calculateTotalBonus = this.calculateTotalBonus.bind(this);
     this.toggleSearchTypeTrue = this.toggleSearchTypeTrue.bind(this);
@@ -24,15 +26,23 @@ export default class Main extends React.Component {
   componentDidMount() {
     console.log('Main componentDidMount')
     const sheetId = 'Stat Bonuses';
-    //fetch info for sidebar
+    //fetch info for Sidebar
     fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}`)
       .then(result => result.json())
       .then(result => {
         let data = result.values; //Array of Arrays representing sheet rows
-        const newState = { isLoaded: true };
+        const newState = {};
         data[0].forEach((arr) => { if (arr[0] !== 'ImageID') newState['sel' + arr[0]] = new Set() }) //Create set for each header to keep track of selected values
         newState.data = data;
         this.setState(newState);
+      })
+    const nextSheetId = 'Jobs';
+    //fetch info for TeamBuilder
+    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${nextSheetId}?key=${apiKey}`)
+      .then(result => result.json())
+      .then(result => {
+        let data = result.values; //Array of Arrays representing sheet rows
+        this.setState({ jobData: data });
       })
   }
 
@@ -49,6 +59,16 @@ export default class Main extends React.Component {
       console.log('submitFilterSelection', value)
       this.setState({ [filter]: value });
     }
+  }
+
+  prepareOutfitData(data, queryConfig) {
+    const filteredData = filterData(data, queryConfig);
+    let outfits = convertArraysToObjects(filteredData);
+    if (this.state.selAttr.size > 0) {
+      outfits = this.calculateTotalBonus(outfits, this.state.selAttr);
+      this.sortByFilter(outfits, 'Total Bonus', false);
+    }
+    return outfits;
   }
 
   calculateTotalBonus(outfits, attrSet) { //outfits is Array of Objects of each outfit info
@@ -80,28 +100,29 @@ export default class Main extends React.Component {
 
   render() {
     console.log('Main render');
-    if (this.state.isLoaded) {
+    if (this.state.data && this.state.jobData) {
       const query = Object.keys(this.state).reduce((accumulator, key) => { //make Object of Sets that hold selected values
         const value = this.state[key];
         if (key.includes('sel') && key !== 'selAttr' && value.size > 0) { accumulator[key] = value; }
         return accumulator;
       }, {});
-      const filteredData = filterData(this.state.data, { query: query, isInclusive: this.state.isInclusive });
-      let outfits = convertOutfitArraysToObjects(filteredData);
-      if (this.state.selAttr.size > 0) {
-        outfits = this.calculateTotalBonus(outfits, this.state.selAttr);
-        this.sortByFilter(outfits, 'Total Bonus', false);
-      }
-      const queryStr = Object.keys(this.state).reduce((accumulator, key) => {
+      let queryStr = Object.keys(this.state).reduce((accumulator, key) => {
         const value = this.state[key];
-        if (key.includes('sel') && value.size > 0) { 
-          accumulator += key + ':' + Array.from(value) + ' '; 
+        if (key.includes('sel') && value.size > 0) {
+          accumulator += key + ':' + Array.from(value) + ' ';
         }
         return accumulator;
       }, '');
-      //console.log(queryStr);
+      queryStr += `isInclusive: ${this.state.isInclusive}`
+      const outfits = this.prepareOutfitData(this.state.data, { query: query, isInclusive: this.state.isInclusive })
+      const jobs = convertArraysToObjects(this.state.jobData);
+      const teamBuilderProps = {
+        jobs: jobs,
+        attr: this.state.attr,
+      }
       const outfitListProps = {
         key: queryStr,
+        queryStr: queryStr,
         query: query,
         outfits: outfits,
         view: this.state.view,
@@ -111,16 +132,19 @@ export default class Main extends React.Component {
       }
       const sidebarProps = {
         attr: this.state.attr,
-        data: filteredData,
+        data: this.state.data,
         submitFilterSelection: this.submitFilterSelection,
         toggleTrue: this.toggleSearchTypeTrue,
         toggleFalse: this.toggleSearchTypeFalse,
       }
-      const mergedObj = { ...sidebarProps, ...query };
       return (
         <>
-          <SideBar {...mergedObj} />
-          <OutfitList {...outfitListProps} />
+          <TeamBuilder {...teamBuilderProps} />
+          <div id='bottomContainer'>
+            <SideBar {...sidebarProps} />
+            <OutfitList {...outfitListProps} />
+          </div>
+
         </>
       )
     }

@@ -132,6 +132,21 @@ function CheckBox(props) {
   )
 }
 
+function SearchType(props) {
+  return (
+    <div className='filter'>
+      <div className='radioBtn'>
+        <input type='radio' name='searchType' id='false' onClick={props.toggleFalse} defaultChecked />
+        <label htmlFor='false'>Strict match <br /><span className='desc'>(find outfits that match all search criteria)</span></label>
+      </div>
+      <div className='radioBtn'>
+        <input type='radio' name='searchType' id='true' onClick={props.toggleTrue} />
+        <label htmlFor='true'>Inclusive match <br /><span className='desc'>(find outfits that match 1 or more criteria)</span></label>
+      </div>
+    </div>
+  )
+}
+
 class Filter extends React.Component {
   constructor(props) {
     super(props);
@@ -172,9 +187,9 @@ class Filter extends React.Component {
   render() {
     return (
       <div className='filter'>
-        <div className='filterHeading' onClick={this.props.toggleMenu}>
-          <p className='filterIcon'>⯆</p>
-          <p>{this.props.heading}</p>
+        <div className='filterHeading'>
+          <p className='filterIcon' onClick={this.props.toggleMenu}>⯆</p>
+          <p onClick={this.props.toggleMenu}>{this.props.heading}</p>
           {this.state.selected.size > 0 && <a onClick={this.clearFilter}>clear filter</a>}
         </div>
         {this.props.isMenuActive &&
@@ -228,21 +243,6 @@ function SelectOptions(props) {
     <ul>
       {options}
     </ul>
-  )
-}
-
-function SearchType(props) {
-  return (
-    <div className='filter'>
-      <div className='radioBtn'>
-        <input type='radio' name='searchType' id='false' onClick={props.toggleFalse} defaultChecked />
-        <label htmlFor='false'>Strict match <br /><span className='desc'>(find outfits that match all search criteria)</span></label>
-      </div>
-      <div className='radioBtn'>
-        <input type='radio' name='searchType' id='true' onClick={props.toggleTrue} />
-        <label htmlFor='true'>Inclusive match <br /><span className='desc'>(find outfits that match 1 or more criteria)</span></label>
-      </div>
-    </div>
   )
 }
 

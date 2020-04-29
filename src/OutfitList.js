@@ -73,7 +73,7 @@ export default class OutfitList extends React.Component {
       <div id='outfitView' onScroll={this.onScrollThrottled}>
         <div id='toggleSidebarBtn' onClick={this.toggleSidebar}></div>
         {this.props.view === 'card' && <p className='status'>{this.props.status}</p>}
-        <div id='outfitList' className={this.props.view}>
+        <div key={this.props.queryStr} id='outfitList' className={this.props.view}>
           {outfits}
           {this.props.view === 'card' && placeholders}
         </div>
@@ -158,6 +158,7 @@ function OutfitImage(props) {
   let imageUrl = null;
   if (props.imageId && props.imageId.toLowerCase() !== 'missing') {
     imageUrl = 'https://drive.google.com/thumbnail?&id=' + props.imageId
+    return <img className='outfitImg' src={imageUrl} />
   }
-  return <img className='outfitImg' src={imageUrl} />
+  else return <div className='outfitImg'>Image N/A</div>
 }

@@ -5,7 +5,94 @@ body{
 
 .App {
   display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#teamBuilder {
+  height: 300px;
+  width: 100%;
+}
+
+#jobList {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: auto;
+  font-size: 0.8rem;
+}
+
+#jobList p {
+  margin: 0;
+}
+
+#jobTabMenu {
+  display: flex;
+  flex-direction: column;
+  width: 4rem;
+}
+
+.jobTab {
+  border-bottom: 0.5px solid #9e9e9e;
+  padding: 1rem 0;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.jobTab.selected {
+  background-color: yellow;
+}
+
+.jobTab p {
+  text-align: center;
+}
+
+#jobSelect {
+  display: flex;
+  flex-direction: column;
+  width: 17rem;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.jobOpt {
+  border: 0.5px solid #9e9e9e;
+  border-radius: 5px;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  margin: 0.5rem 0;
+  cursor: pointer;
+}
+
+.jobOpt.selected {
+  background-color: yellow;
+}
+
+#jobView {
+  display: flex;
+  flex-direction: column;
+  width: 17rem;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+#jobView img, .imgPlaceholder {
+  width: 100%;
+}
+
+#jobView p {
+  font-weight: bold;
+}
+
+/* ------------------------------------OUTFIT LIST------------------------------------ */
+#bottomContainer {
+  display: flex;
   justify-content: flex-end;
+  flex: 1 0 auto;
+  height: calc(100vh - 300px);
 }
 
 #sidebar{
@@ -14,7 +101,7 @@ body{
   flex: 0 0 300px;
   padding: 2rem 1.5rem;
   box-sizing: border-box;
-  height: 100vh;
+  height: 100%;
   overflow: auto;
   background-color: #9e9e9e;
 }
@@ -140,7 +227,7 @@ body{
 
 #toggleSidebarBtn {
   padding: 1rem;
-  position: fixed;
+  position: absolute;
   align-self: flex-start;
   background-color: #9e9e9e;
   cursor: pointer;
@@ -165,7 +252,6 @@ body{
   flex-direction: column;
   align-items: center;
   flex: 1 0 100%;
-  height: 100vh;
   overflow: auto;
 }
 
@@ -250,7 +336,10 @@ body{
 
 .outfitImg {
   height: 7rem;
+  width: 7rem;
   margin-bottom: 0.3rem;
+  text-align: center;
+  color: #9e9e9e;
 }
 
 .attrList {

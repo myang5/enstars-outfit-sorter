@@ -46,11 +46,11 @@ function matchFilters(query, row, headers) {
   return result
 }
 
-export function convertOutfitArraysToObjects(outfitArrs) {
+export function convertArraysToObjects(arrs) {
   const result = [];
-  const headers = outfitArrs[0]; //first row is header row
-  for (let i = 1; i < outfitArrs.length; i++) {
-    const row = outfitArrs[i];
+  const headers = arrs[0]; //first row is header row
+  for (let i = 1; i < arrs.length; i++) {
+    const row = arrs[i];
     const newRow = {};
     for (let j = 0; j < row.length; j++) { //iterate over values in each row to add headers
       const header = headers[j];
