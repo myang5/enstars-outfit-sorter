@@ -1,5 +1,6 @@
 import React from 'react';
 import throttle from 'lodash.throttle';
+import { AttrList } from './Main.js';
 
 export default class OutfitList extends React.Component {
   constructor(props) {
@@ -20,7 +21,6 @@ export default class OutfitList extends React.Component {
   }
 
   componentDidMount() {
-    console.log('OutfitList componentDidMount');
     this.loadOutfits();
   }
 
@@ -58,17 +58,20 @@ export default class OutfitList extends React.Component {
 
   render() {
     const outfits = this.state.loadedOutfits.map((elt) =>
-      this.props.view === 'sheet' ?
-        <OutfitRow key={elt.Character + elt.Outfit + elt['Total Bonus']} info={elt} /> :
-        <OutfitCard key={elt.Character + elt.Outfit + elt['Total Bonus']} info={elt} attr={this.props.attr} selAttr={this.props.selAttr} />
+      !this.props.teamMembers.includes(elt) ?
+        <OutfitCard key={elt.Character + elt.Outfit + elt['Total Bonus']}
+          info={elt}
+          attr={this.props.attr}
+          selAttr={this.props.selAttr}
+          setMember={this.props.setMember} /> :
+          null
     );
     //console.log('finished loading outfit list', performance.now())
     let placeholders = [];
     for (let i = 0; i < 4; i++) {
       placeholders.push(<div key={i} className="outfit-placeholder"></div>)
     }
-    console.log('OutfitList render');
-    //console.log('loaded Outfits', this.state.loadedOutfits)
+    //console.log('OutfitList render');
     return (
       <div id='outfitView' onScroll={this.onScrollThrottled}>
         <div id='toggleSidebarBtn' onClick={this.toggleSidebar}></div>
@@ -100,13 +103,14 @@ export default class OutfitList extends React.Component {
 
 function OutfitCard(props) {
   return (
-    <div className='outfitCard'>
+    <div className='outfitCard' onClick={() => props.setMember(props.info)}>
       <p>{props.info['Character']}</p>
       <p>{props.info['Outfit']}</p>
       <hr />
       <div className='rowContainer'>
-        <OutfitImage imageId={props.info['ImageID']} />
-        <AttrList attr={props.attr} info={props.info} />
+        <OutfitImage {...props.info} />
+        {/*<OutfitImage imageId={props.info['ImageID']} alt={`${props.info['Character']} ${props.info['Outfit']}`} />*/}
+        <AttrList attr={props.attr} bonus={props.info} statusBarWidth={4.2} maxValue={300} />
       </div>
       {('Total Bonus' in props.info) && <span>{`TOTAL BONUS: ${props.info['Total Bonus']}`}</span>}
     </div>
@@ -129,36 +133,16 @@ function OutfitRow(props) {
   )
 }
 
-function AttrList(props) {
-  const statusBarWidth = 4.2;
-  return (
-    <div className='attrList'>
-      {props.attr.map(attr => { //display all attributes
-          return (
-            <div className='attr' key={attr + props.info[attr]}>
-              <span className={'icon ' + attr.toLowerCase()}>{attr}</span>
-              <span className='numberText'>{'+' + props.info[attr]}</span>
-              <span className='statusBarContainer' style={{ width: `${statusBarWidth}rem` }}>
-                <span className={'statusBar ' + attr.toLowerCase()}
-                  style={{ width: `${props.info[attr] / 300 * statusBarWidth}rem` }} />
-              </span>
-            </div>
-          )
-        })}
-    </div>
-  )
-}
-
-function OutfitImage(props) {
+export function OutfitImage(props) {
   //OLD METHOD, OutfitImage should now receive the image id directly
   //props link looks like this https://drive.google.com/open?id=IMAGE_ID
   //or it could look like this https://drive.google.com/file/d/IMAGE_ID/view?usp=drivesdk
   //or it could look like this https://drive.google.com/file/d/IMAGE_ID/view
   //need to change it to be    https://drive.google.com/thumbnail?&id=IMAGE_ID
   let imageUrl = null;
-  if (props.imageId && props.imageId.toLowerCase() !== 'missing') {
-    imageUrl = 'https://drive.google.com/thumbnail?&id=' + props.imageId
-    return <img className='outfitImg' src={imageUrl} />
+  if (props['ImageID'] && props['ImageID'].toLowerCase() !== 'missing') {
+    imageUrl = 'https://drive.google.com/thumbnail?&id=' + props['ImageID']
+    return <img className='outfitImg' alt={`${props['Character']} ${props['Outfit']}`} src={imageUrl} />
   }
   else return <div className='outfitImg'>Image N/A</div>
 }

@@ -3,22 +3,99 @@ body{
   font-family: 'Roboto', sans-serif;
 }
 
-.App {
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.attrList {
+  display: flex;
+  height: auto;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: calc(6 * 1rem);
+  min-width: 8rem;
+  font-size: 0.7rem;
+}
+
+.attr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 8.5rem;
+}
+
+.icon {
+  display: inline-block;
+  font-size: 0.9em;
+  font-weight: bold;
+  text-align:center;
+  width: 2em;
+  height: auto;
+  padding: 0.1em;
+  box-sizing: border-box;
+  color: #fff;
+  border-radius: 1px;
+}
+
+.attr .numberText {
+  width: auto;
+  text-align: right;
+}
+
+.statusBarContainer {
+  display: flex;
+  border: 0.5px solid #000;
+  border-radius: 2px;
+  height: 0.7em;
+}
+
+.statusBar {
+  display: inline-block;
+  height: 0.7em;
+  border-radius: 2px 0 0 2px;
+}
+
+.ac {
+  background-color: #EB5145;
+}
+
+.pa {
+  background-color: #E69C36;
+}
+
+.un {
+  background-color: #E54B7D;
+}
+
+.sm {
+  background-color: #469DDD;
+}
+
+.te {
+  background-color: #2C5EE7;
+}
+
+.ch {
+  background-color: #99D041;
+}
+
+/* ------------------------------------TEAM BUILDER------------------------------------ */
+
+#teamBuilder {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-#teamBuilder {
-  height: 300px;
   width: 100%;
 }
 
 #jobList {
   display: flex;
   flex-direction: row;
-  height: 100%;
   width: auto;
+  height: 50%;
   font-size: 0.8rem;
 }
 
@@ -73,26 +150,75 @@ body{
 #jobView {
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 17rem;
   padding: 0 1rem;
   box-sizing: border-box;
   height: 100%;
 }
 
+#jobView > * {
+  margin-bottom: 0.5rem;
+}
+
 #jobView img, .imgPlaceholder {
   width: 100%;
+}
+
+.imgPlaceholder {
+  background-color: #9e9e9e;
+  height: 9.2rem;
 }
 
 #jobView p {
   font-weight: bold;
 }
 
+#jobView .attrList {
+  height: calc(3 * 1rem);
+}
+
+#jobView .attr {
+  width: 11rem;
+}
+
+.selectJobBtn {
+  border: 0.5px solid #9e9e9e;
+  border-radius: 5px;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  margin: 0.5rem 0;
+  background-color: yellow;
+  cursor: pointer;
+}
+
+#teamView {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
+  flex: 1 0 50%;
+}
+
+.teamMember {
+  width: 100px;
+  margin-right: 5px;
+  height: 100px;
+  background-color: #9e9e9e;
+}
+
 /* ------------------------------------OUTFIT LIST------------------------------------ */
 #bottomContainer {
+  position: fixed;
+  left: 2rem;
   display: flex;
   justify-content: flex-end;
   flex: 1 0 auto;
-  height: calc(100vh - 300px);
+  height: calc(100% - 4rem);
+  width: calc(100% - 4rem);
+  background-color: #fff;
+  transition: 0.3s ease-in-out;
 }
 
 #sidebar{
@@ -340,79 +466,6 @@ body{
   margin-bottom: 0.3rem;
   text-align: center;
   color: #9e9e9e;
-}
-
-.attrList {
-  display: flex;
-  height: auto;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  height: 6.5rem;
-  min-width: 8rem;
-  font-size: 0.8rem;
-}
-
-.attr {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 8.5rem;
-}
-
-.icon {
-  display: inline-block;
-  font-size: 0.8em;
-  font-weight: bold;
-  text-align:center;
-  width: 2em;
-  height: auto;
-  padding: 0.1em;
-  box-sizing: border-box;
-  color: #fff;
-  border-radius: 1px;
-}
-
-.attr .numberText {
-  width: 2.5em;
-  text-align: right;
-}
-
-.statusBarContainer {
-  display: flex;
-  border: 0.5px solid #000;
-  border-radius: 2px;
-  height: 0.7em;
-}
-
-.statusBar {
-  display: inline-block;
-  height: 0.7em;
-  border-radius: 2px 0 0 2px;
-}
-
-.ac {
-  background-color: #EB5145;
-}
-
-.pa {
-  background-color: #E69C36;
-}
-
-.un {
-  background-color: #E54B7D;
-}
-
-.sm {
-  background-color: #469DDD;
-}
-
-.te {
-  background-color: #2C5EE7;
-}
-
-.ch {
-  background-color: #99D041;
 }
 
 /* Smartphones (portrait and landscape) ----------- */
