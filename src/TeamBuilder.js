@@ -83,9 +83,11 @@ function JobTabMenu(props) {
 
 function JobSelect(props) {
   const jobs = props.jobs.map(job => {
+    const isViewing = props.viewJob['Job'] === job['Job'];
+    const key = job['Job JP'] + (isViewing ? ' selected' : '');
     return (
-      <div key={job['Job JP'] + (props.viewJob === job ? ' selected' : '')}
-        className={'jobOpt' + (props.viewJob === job ? ' selected' : '')}
+      <div key={key}
+        className={'jobOpt' + (isViewing ? ' selected' : '')}
         onClick={() => props.toggleProperty('viewJob', job)}>
         <p>{job['Job JP']}</p>
       </div>
@@ -119,7 +121,7 @@ export class TeamView extends React.Component {
     //console.log('TeamView render', this.props.activeJob);
     if (this.props.activeJob && this.props.teamMembers.length > 0) {
       const members = this.props.teamMembers.map((member, index) => {
-        return <TeamMember key={index} index={index} member={member} toggleOutfitList={this.props.toggleOutfitList} />
+        return <TeamMember key={index} index={index} member={member} selAttr={this.props.selAttr} toggleOutfitList={this.props.toggleOutfitList} />
       })
       return (
         <div id='teamView'>
@@ -132,10 +134,15 @@ export class TeamView extends React.Component {
 }
 
 function TeamMember(props) {
-    return (
-      <div className={`teamMember ${props.index}`} onClick={() => props.toggleOutfitList(props.index)}>
-        { props.member['ImageID'] && <OutfitImage {...props.member} />}
-      </div>
-    )
+  return (
+    <div className={`teamMember ${props.index}`} onClick={() => props.toggleOutfitList(props.index)}>
+      {props.member !== 0 &&
+        <>
+          {props.member['ImageID'] && <OutfitImage {...props.member} />}
+          <AttrList attr={props.selAttr} bonus={props.member} statusBarWidth={4.2} maxValue={300} />
+        </>
+      }
+    </div>
+  )
 }
 

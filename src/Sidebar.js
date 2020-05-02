@@ -78,8 +78,8 @@ export default class Sidebar extends React.Component {
       return (
         <div id='sidebar' className='toggledOn'>
           <button onClick={this.props.toggleOutfitList}>Close</button>
-          <div className='filterHeading filter'><p>Stat Bonus</p></div>
-          <CheckBoxOptions optionsArr={this.props.attr} submitSelection={this.props.submitFilterSelection('selAttr')} />
+          {/*<div className='filterHeading filter'><p>Stat Bonus</p></div>*/}
+          {/*<CheckBoxOptions optionsArr={this.props.attr} submitSelection={this.props.submitFilterSelection('selAttr')} />*/}
           <div className='filterHeading filter'><p>Filter data by...</p></div>
           <SearchType toggleTrue={this.props.toggleTrue} toggleFalse={this.props.toggleFalse} />
           {filters}

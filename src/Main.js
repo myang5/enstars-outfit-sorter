@@ -12,7 +12,7 @@ export default class Main extends React.Component {
       data: null,
       jobData: null,
       attr: ['Ac', 'Pa', 'Un', 'Sm', 'Te', 'Ch'],
-      selAttr: new Set(),
+      selAttr: [],
       isInclusive: false,
       view: 'card',
       isOutfitList: false,
@@ -64,7 +64,8 @@ export default class Main extends React.Component {
   selectJob(job) {
     console.log('SelectJob', job);
     if(this.state.activeJob !== job) {
-      this.setState({ activeJob: job, teamMembers: new Array(job['Idol Slots']).fill(0) })
+      const selAttr = Object.keys(job).filter(key => this.state.attr.includes(key) && job[key] > 0);
+      this.setState({ activeJob: job, selAttr: selAttr, teamMembers: new Array(job['Idol Slots']).fill(0) })
     }
   }
 
@@ -100,7 +101,7 @@ export default class Main extends React.Component {
   prepareOutfitData(data, queryConfig) {
     const filteredData = filterData(data, queryConfig);
     let outfits = convertArraysToObjects(filteredData);
-    if (this.state.selAttr.size > 0) {
+    if (this.state.selAttr.length > 0) {
       outfits = this.calculateTotalBonus(outfits, this.state.selAttr);
       this.sortByFilter(outfits, 'Total Bonus', false);
     }
@@ -108,11 +109,10 @@ export default class Main extends React.Component {
   }
 
   calculateTotalBonus(outfits, attrSet) { //outfits is Array of Objects of each outfit info
-    //console.log(outfits);
-    console.log('Main calculateTotalBonus', attrSet);
+    //console.log('Main calculateTotalBonus', attrSet);
     outfits.forEach(outfitObj => {
       let total = 0;
-      Array.from(attrSet).forEach(attr => total += outfitObj[attr]);
+      attrSet.forEach(attr => total += outfitObj[attr]);
       outfitObj['Total Bonus'] = total;
     });
 
@@ -135,7 +135,7 @@ export default class Main extends React.Component {
   }
 
   render() {
-    console.log('Main render teamMembers', this.state.teamMembers);
+    console.log('Main render selAttr', this.state.selAttr);
     if (this.state.data && this.state.jobData) {
       const query = Object.keys(this.state).reduce((accumulator, key) => { //make Object of Sets that hold selected values
         const value = this.state[key];
@@ -144,7 +144,7 @@ export default class Main extends React.Component {
       }, {});
       let queryStr = Object.keys(this.state).reduce((accumulator, key) => {
         const value = this.state[key];
-        if (key.includes('sel') && value.size > 0) {
+        if (key.includes('sel') && (value.size > 0 || value.length > 0)) {
           accumulator += key + ':' + Array.from(value) + ' ';
         }
         return accumulator;
@@ -153,6 +153,7 @@ export default class Main extends React.Component {
       const outfits = this.prepareOutfitData(this.state.data, { query: query, isInclusive: this.state.isInclusive })
       const jobs = convertArraysToObjects(this.state.jobData);
       const teamViewProps = {
+        selAttr: this.state.selAttr,
         activeJob: this.state.activeJob,
         teamMembers: this.state.teamMembers,
         toggleOutfitList: this.toggleOutfitList,
@@ -203,7 +204,7 @@ export default class Main extends React.Component {
 
 //statusBarWidth: Integer as width of status bar in rem
 //maxValue: maximum value of status bar
-//attr: Array of attributes to display
+//attr: Array of Strings ot indicate which attributes to display
 //value: Obj of attr to display and corresponding values to calculate status bar (optional if bonus is provided)
 //bonus: Obj of attr to display and corresponding bonus values (optional if value is provided)
 export function AttrList(props) {
@@ -212,7 +213,7 @@ export function AttrList(props) {
     <div className='attrList'>
       {props.attr.map(attr => { //display all attributes
         const value = (props.value ? props.value[attr] : 0) + (props.bonus ? props.bonus[attr] : 0);
-        const numberText = (props.value ? props.value[attr] : '') + (props.bonus ? ` (+${props.bonus[attr]})` : '');
+        const numberText = (props.value ? props.value[attr] : '') + (props.bonus ? ` (+${props.bonus[attr]})` : '').trim();
         return (
           <div className='attr' key={attr}>
             <span className={'icon ' + attr.toLowerCase()}>{attr}</span>
