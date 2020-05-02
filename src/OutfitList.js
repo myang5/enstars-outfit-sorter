@@ -61,7 +61,6 @@ export default class OutfitList extends React.Component {
       !this.props.teamMembers.includes(elt) ?
         <OutfitCard key={elt.Character + elt.Outfit + elt['Total Bonus']}
           info={elt}
-          attr={this.props.attr}
           selAttr={this.props.selAttr}
           setMember={this.props.setMember} /> :
           null
@@ -110,28 +109,28 @@ function OutfitCard(props) {
       <div className='rowContainer'>
         <OutfitImage {...props.info} />
         {/*<OutfitImage imageId={props.info['ImageID']} alt={`${props.info['Character']} ${props.info['Outfit']}`} />*/}
-        <AttrList attr={props.attr} bonus={props.info} statusBarWidth={4.2} maxValue={300} />
+        <AttrList attr={props.selAttr} bonus={props.info} statusBarWidth={4.2} maxValue={300} />
       </div>
       {('Total Bonus' in props.info) && <span>{`TOTAL BONUS: ${props.info['Total Bonus']}`}</span>}
     </div>
   )
 }
 
-function OutfitRow(props) {
-  return (
-    <>
-      {Object.keys(props.info).map(key => {
-        if (key !== 'ImageID') {
-          return (
-            <div key={key} className='outfitCell'>
-              <p>{props.info[key]}</p>
-            </div>
-          )
-        }
-      })}
-    </>
-  )
-}
+//function OutfitRow(props) {
+//  return (
+//    <>
+//      {Object.keys(props.info).map(key => {
+//        if (key !== 'ImageID') {
+//          return (
+//            <div key={key} className='outfitCell'>
+//              <p>{props.info[key]}</p>
+//            </div>
+//          )
+//        }
+//      })}
+//    </>
+//  )
+//}
 
 export function OutfitImage(props) {
   //OLD METHOD, OutfitImage should now receive the image id directly

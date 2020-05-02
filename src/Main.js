@@ -1,5 +1,5 @@
 import React from 'react';
-import { TeamView, JobList } from './TeamBuilder.js'
+import { TeamView, JobView, JobList } from './TeamBuilder.js'
 import SideBar from './Sidebar.js';
 import OutfitList from './OutfitList.js';
 import { apiKey, spreadsheetId } from './sheetsCreds.js';
@@ -49,7 +49,9 @@ export default class Main extends React.Component {
       .then(result => result.json())
       .then(result => {
         let data = result.values; //Array of Arrays representing sheet rows
-        this.setState({ jobData: data, });
+        const jobs = convertArraysToObjects(data.slice(0, 2));
+        this.setState({ jobData: data });
+        this.selectJob(jobs[0]);
       })
   }
 
@@ -63,7 +65,7 @@ export default class Main extends React.Component {
 
   selectJob(job) {
     console.log('SelectJob', job);
-    if(this.state.activeJob !== job) {
+    if (this.state.activeJob !== job) {
       const selAttr = Object.keys(job).filter(key => this.state.attr.includes(key) && job[key] > 0);
       this.setState({ activeJob: job, selAttr: selAttr, teamMembers: new Array(job['Idol Slots']).fill(0) })
     }
@@ -158,9 +160,12 @@ export default class Main extends React.Component {
         teamMembers: this.state.teamMembers,
         toggleOutfitList: this.toggleOutfitList,
       }
-      const jobListProps = {
+      const jobViewProps = {
+        activeJob: this.state.activeJob,
+        teamMembers: this.state.teamMembers,
         jobs: jobs,
         attr: this.state.attr,
+        selAttr: this.state.selAttr,
         selectJob: this.selectJob,
       }
       const outfitListProps = {
@@ -188,7 +193,7 @@ export default class Main extends React.Component {
         <>
           <div id='teamBuilder'>
             <TeamView {...teamViewProps} />
-            <JobList {...jobListProps} />
+            {this.state.activeJob && <JobView {...jobViewProps} />}
           </div>
           <div id='bottomContainer' style={{ top: this.state.isOutfitList ? '2rem' : '100vh' }}>
             <SideBar {...sidebarProps} />
@@ -207,24 +212,55 @@ export default class Main extends React.Component {
 //attr: Array of Strings ot indicate which attributes to display
 //value: Obj of attr to display and corresponding values to calculate status bar (optional if bonus is provided)
 //bonus: Obj of attr to display and corresponding bonus values (optional if value is provided)
+//baseline: Obj of attr to display baseline job reqs on StatusBar
 export function AttrList(props) {
   const statusBarWidth = props.statusBarWidth || 5;
+  const height = props.attr.length + 'rem';
   return (
-    <div className='attrList'>
-      {props.attr.map(attr => { //display all attributes
+    <div className='attrList' style={{ height: height }}>
+      {props.attr.map(attr => {
         const value = (props.value ? props.value[attr] : 0) + (props.bonus ? props.bonus[attr] : 0);
-        const numberText = (props.value ? props.value[attr] : '') + (props.bonus ? ` (+${props.bonus[attr]})` : '').trim();
+        const numberText = (props.value ? props.value[attr] : '') + (props.bonus ? ` +${props.bonus[attr]}` : '').trim();
+        const progressText = props.baseline ?
+          `${props.value[attr]}/${props.baseline[attr]}`
+          : '';
+        const statusBarProps = {
+          width: props.statusBarWidth,
+          attr: attr,
+          value: value,
+          maxValue: props.maxValue,
+        }
+        if (props.baseline) { statusBarProps.baseline = props.baseline[attr] }
         return (
           <div className='attr' key={attr}>
             <span className={'icon ' + attr.toLowerCase()}>{attr}</span>
-            {numberText.length && <span className='numberText'>{numberText}</span>}
-            <span className='statusBarContainer' style={{ width: `${statusBarWidth}rem` }}>
-              <span className={'statusBar ' + attr.toLowerCase()}
-                style={{ width: `${value / props.maxValue * statusBarWidth}rem` }} />
-            </span>
+            {props.baseline ?
+               <span className='progressText'>{progressText}</span> :
+               <span className='numberText'>{numberText}</span>
+              
+            }
+            <StatusBar {...statusBarProps} />
+          {props.baseline && <span className='numberText'>{`${props.value[attr] > props.baseline[attr] ? '+' : '' }${props.value[attr] - props.baseline[attr]}`}</span>}
           </div>
         )
       })}
     </div>
   )
+}
+
+function StatusBar(props) {
+  return (
+    <span className='statusBarContainer' style={{ width: `${props.width}rem` }}>
+      {props.baseline &&
+        <span className='baseline'
+          style={{ marginLeft: `${props.baseline / props.maxValue * props.width}rem` }} />
+      }
+      <span className={'statusBar ' + props.attr.toLowerCase()}
+        style={{ width: `${props.value / props.maxValue * props.width}rem` }} />
+    </span>
+  )
+}
+
+export function ProgressAttrList(props) {
+  return <AttrList {...props} />;
 }

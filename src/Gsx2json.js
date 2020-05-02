@@ -5,7 +5,7 @@ export function filterData(data, config = {}) {
   if (data) { //should be Array of Arrays
     const headers = data[0]; //first row is header row
     result.push(headers);
-    console.log('filterGsData', query);
+    //console.log('filterGsData', query);
     for (let i = 1; i < data.length; i++) { //iterate over Array of rows
       const row = data[i];
       if (row[0]) { //filter out invalid/empty rows

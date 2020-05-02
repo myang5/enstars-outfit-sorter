@@ -15,9 +15,9 @@ body{
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-  height: calc(6 * 1rem);
   min-width: 8rem;
   font-size: 0.7rem;
+  text-align: right;
 }
 
 .attr {
@@ -41,21 +41,30 @@ body{
 }
 
 .attr .numberText {
-  width: auto;
-  text-align: right;
+  width: 2rem;
 }
 
 .statusBarContainer {
+  position: relative;
   display: flex;
   border: 0.5px solid #000;
   border-radius: 2px;
   height: 0.7em;
+  overflow: hidden;
 }
 
 .statusBar {
   display: inline-block;
-  height: 0.7em;
+  height: 100%;
   border-radius: 2px 0 0 2px;
+}
+
+.baseline {
+  position: absolute;
+  display: inline-block;
+  width: 2px;
+  height: 100%;
+  background-color: #000;
 }
 
 .ac {
@@ -91,16 +100,107 @@ body{
   width: 100%;
 }
 
+#teamBuilder p {
+  display: inline;
+  margin: 0;
+}
+
+#jobView {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.btn {
+  border: 0.5px solid #9e9e9e;
+  border-radius: 5px;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  margin: 0.5rem 0;
+  background-color: yellow;
+  cursor: pointer;
+  text-align: center;
+  font-weight: bold;
+  width: auto;
+}
+
+.btn p {
+  width: auto;
+}
+
+#jobView .header {
+  padding: 1rem;
+  box-sizing: border-box;
+  width: 17rem;
+}
+
+#jobView img, .imgPlaceholder {
+  width: 100%;
+  height: auto;
+}
+
+.imgPlaceholder {
+  background-color: #9e9e9e;
+  height: 9.2rem;
+}
+
+#jobView .statInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 16rem;
+  height: 6rem;
+}
+
+#jobView .attr {
+  width: 15rem;
+}
+
+#jobView .progressText {
+  width: 3rem;
+}
+
+#progressBarContainer {
+  position: relative;
+  display: flex;
+  border: 0.5px solid #000;
+  border-radius: 2px;
+  height: 1rem;
+  background-color: white;
+  overflow: hidden;
+}
+
+#progressBarHide {
+  position: absolute;
+  display: inline-block;
+  height: 100%;
+  background-color: #fff;
+  right: 0;
+}
+
+#progressBar {
+  display: inline-block;
+  height: 100%;
+  border-radius: 2px 0 0 2px;
+  background-image: linear-gradient(to right, yellow , orange);
+}
+
+#jobView .status {
+  font-weight: bold;
+  text-align: center;
+}
+
+
 #jobList {
+  position: fixed;
+  bottom: 1rem;
   display: flex;
   flex-direction: row;
   width: auto;
   height: 50%;
-  font-size: 0.8rem;
-}
-
-#jobList p {
-  margin: 0;
+  background-color: #fff;
 }
 
 #jobTabMenu {
@@ -114,6 +214,7 @@ body{
   padding: 1rem 0;
   box-sizing: border-box;
   cursor: pointer;
+  text-align: center;
 }
 
 .jobTab.selected {
@@ -147,7 +248,7 @@ body{
   background-color: yellow;
 }
 
-#jobView {
+#jobDetail {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -157,39 +258,16 @@ body{
   height: 100%;
 }
 
-#jobView > * {
+#jobDetail > * {
   margin-bottom: 0.5rem;
 }
 
-#jobView img, .imgPlaceholder {
-  width: 100%;
-}
-
-.imgPlaceholder {
-  background-color: #9e9e9e;
-  height: 9.2rem;
-}
-
-#jobView p {
+#jobDetail p {
   font-weight: bold;
 }
 
-#jobView .attrList {
-  height: calc(3 * 1rem);
-}
-
-#jobView .attr {
-  width: 11rem;
-}
-
-.selectJobBtn {
-  border: 0.5px solid #9e9e9e;
-  border-radius: 5px;
-  padding: 0.5rem;
-  box-sizing: border-box;
-  margin: 0.5rem 0;
-  background-color: yellow;
-  cursor: pointer;
+#jobDetail .attr {
+  width: 12rem;
 }
 
 #teamView {
@@ -203,6 +281,7 @@ body{
 
 .teamMember {
   flex: 0 1 15%;
+  max-width: 9rem;
   margin-right: 1rem;
   height: auto;
   min-height: 10rem;
@@ -215,10 +294,6 @@ body{
   height: auto;
 }
 
-.teamMember .attrList {
-  height: calc(3 * 1rem);
-}
-
 /* ------------------------------------OUTFIT LIST------------------------------------ */
 #bottomContainer {
   position: fixed;
@@ -229,7 +304,7 @@ body{
   height: calc(100% - 4rem);
   width: calc(100% - 4rem);
   background-color: #fff;
-  transition: 0.3s ease-in-out;
+  /*transition: 0.3s ease-in-out;*/
 }
 
 #sidebar{
