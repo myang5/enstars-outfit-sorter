@@ -2,7 +2,7 @@ import React from 'react';
 import throttle from 'lodash.throttle';
 import { AttrList } from './Main.js';
 
-export default class OutfitList extends React.Component {
+export default class OutfitList extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -10,7 +10,7 @@ export default class OutfitList extends React.Component {
       isLoading: false,
       hasMore: true,
       loadedOutfits: [],
-      outfitsToLoad: 40,
+      outfitsToLoad: 30,
     };
     this.onScroll = this.onScroll.bind(this);
     this.loadOutfits = this.loadOutfits.bind(this);

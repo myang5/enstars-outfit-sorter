@@ -17,24 +17,22 @@ export default class Sidebar extends React.Component {
 
   getSetsFromOutfitArray(outfitsArr) {
     //console.log(outfitsArr);
-    const setsArr = new Array(outfitsArr[0].length);
+    const filters = this.props.filters; //Array of spreadsheet headers that should be filters
+    const setsArr = new Array(filters.length);
     for (let i = 0; i < setsArr.length; i++) { setsArr[i] = new Set() }; //fill with empty Sets
-    for (let i = 0; i < outfitsArr[0].length; i++) { setsArr[i].add(outfitsArr[0][i]) } //add header to Set
-    for (let i = 1; i < outfitsArr.length; i++) { //first row is headers
+    for (let i = 0; i < filters.length; i++) { setsArr[i].add(filters[i]) } //add header to Set
+    for (let i = 0; i < outfitsArr.length; i++) {
       const row = outfitsArr[i];
-      for (let j = 0; j < row.length; j++) {
-        setsArr[j].add(row[j]);
+      for (let j = 0; j < filters.length; j++) {
+        setsArr[j].add(row[filters[j]]);
       }
     }
-    //pop unwanted sets
     return setsArr;
   }
 
   toggleMenu(menu) {
     this.setState((state, props) => { return { activeMenu: state.activeMenu === menu ? '' : menu } })
   }
-
-
 
   //return (
   //  <div id='sidebar' className='toggledOn'>
@@ -50,30 +48,21 @@ export default class Sidebar extends React.Component {
   //)
   render() {
     if (this.state.filters) {
-      const filters = this.state.filters.reduce((accumulator, set) => { //data is Array of Sets of unique values in each column
-        const arr = Array.from(set);
-        if (arr[0] !== 'ImageID' && this.props.attr.indexOf(arr[0]) < 0) {
-          const heading = arr[0];
-          const selKey = 'sel' + heading;
-          const optionsArr = Array.from(new Set(arr)).sort((a, b) => {
-            const valA = isNaN(a) ? a.toUpperCase() : Number(a); //ignores case
-            const valB = isNaN(b) ? b.toUpperCase() : Number(b);
-            if (valA < valB) { return -1; }
-            if (valA > valB) { return 1; }
-            return 0;
-          });
-          accumulator.push(
-            <Filter key={heading}
-              heading={heading}
-              isMenuActive={this.state.activeMenu === heading}
-              toggleMenu={() => (this.toggleMenu(heading))}
-              optionsArr={optionsArr}
-              submitSelection={this.props.submitFilterSelection(selKey)}
-            />
-          );
-        }
-        return accumulator;
-      }, []);
+      const filters = this.state.filters.map(set => { //data is Array of Sets of unique values in each column
+        const optionsArr = Array.from(set);
+        const heading = optionsArr[0];
+        const selKey = 'sel' + heading;
+        optionsArr.sort();
+        return (
+          <Filter key={heading}
+            heading={heading}
+            isMenuActive={this.state.activeMenu === heading}
+            toggleMenu={() => (this.toggleMenu(heading))}
+            optionsArr={optionsArr}
+            submitSelection={this.props.submitFilterSelection(selKey)}
+          />
+        );
+      });
       //console.log(filters);
       return (
         <div id='sidebar' className='toggledOn'>
@@ -229,16 +218,14 @@ class FilterMenu extends React.Component {
 
 function SelectOptions(props) {
   let optionsArr = props.optionsArr.slice(0); //needed to create a real new (shallow) copy of the array
-  if (optionsArr.indexOf(props.heading) > -1) { optionsArr.splice(optionsArr.indexOf(props.heading), 1, '') }
+  if (optionsArr.indexOf(props.heading) > -1) { optionsArr.splice(optionsArr.indexOf(props.heading), 1) }
   const options = optionsArr.map(function (option) {
-    if (option) {
-      return (
-        <li key={option}
-          className={props.selected.has(option) ? 'selected' : ''}
-          onClick={() => props.toggleOption(option)}>
-          <div><span></span>{option}</div>
-        </li>)
-    }
+    return (
+      <li key={option}
+        className={props.selected.has(option) ? 'selected' : ''}
+        onClick={() => props.toggleOption(option)}>
+        <div><span></span>{option}</div>
+      </li>)
   });
   return (
     <ul>

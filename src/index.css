@@ -16,7 +16,7 @@ body{
   justify-content: space-between;
   align-items: flex-start;
   min-width: 8rem;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   text-align: right;
 }
 
@@ -96,13 +96,21 @@ body{
 #teamBuilder {
   display: flex;
   flex-direction: column;
+  align-items: center;
   height: 100%;
   width: 100%;
 }
 
 #teamBuilder p {
-  display: inline;
+  display: inline-block;
   margin: 0;
+}
+
+#userLink {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: auto;
 }
 
 #jobView {
@@ -130,8 +138,11 @@ body{
 }
 
 #jobView .header {
+  display: flex;
+  flex-direction: column;
   padding: 1rem;
   box-sizing: border-box;
+  align-items: center;
   width: 17rem;
 }
 
@@ -275,6 +286,7 @@ body{
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  width: 100%;
   font-size: 0.8rem;
   flex: 1 0 50%;
 }

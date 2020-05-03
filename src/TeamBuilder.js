@@ -2,13 +2,7 @@ import React from 'react';
 import { AttrList } from './Main.js';
 import { OutfitImage } from './OutfitList.js';
 
-//receive list of jobs from Main
-//Spreadsheet columns:
-//Type	Job	Job JP	Conditions	Idol Slots	Ac	Pa	Un	Sm	Te	Ch	Outfit Drops	Outfit Drops
-
-//mimic Work menu in-game
-
-export class JobView extends React.Component {
+export class JobViewContainer extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,20 +18,13 @@ export class JobView extends React.Component {
 
   render() {
     if (this.props.activeJob) {
-      //console.log('JobView render activeJob', this.props.activeJob);
-      const selectBtn = <div className='btn selectJob' onClick={() => this.toggleJobList()}>Change Job</div>;
-      const attr = this.props.attr.filter(attr => this.props.activeJob[attr] > 0);
-      const baseline = {};
-      const value = {};
-      attr.forEach(attr => {
-        baseline[attr] = this.props.activeJob[attr];
-        //for each attr, iterate over teamMembers Array and accumulate their attr values
-        value[attr] = this.props.teamMembers.reduce((accumulator, member) => {
-          if (member) {
-            return accumulator + member[attr];
-          } else return accumulator
-        }, 0);
-      });
+      console.log('JobViewContainer render');
+      const jobViewProps = {
+        attr: this.props.attr,
+        activeJob: this.props.activeJob,
+        teamMembers: this.props.teamMembers,
+        toggleJobList: this.toggleJobList,
+      }
       const jobListProps = {
         jobs: this.props.jobs,
         attr: this.props.attr,
@@ -47,20 +34,47 @@ export class JobView extends React.Component {
       }
       return (
         <div id='jobView'>
-          <div className='header'>
-            <p>{this.props.activeJob['Job JP']}</p>
-            <JobImage job={this.props.activeJob} />
-            {selectBtn}
-          </div>
-          <div className='statInfo'>
-            <AttrList statusBarWidth={8} maxValue={900} attr={attr} value={value} baseline={baseline} />
-            <ProgressBar baseline={baseline} value={value} />
-          </div>
-
+          <JobView {...jobViewProps} />
           {this.state.isJobList && <JobList {...jobListProps} />}
         </div>
       )
     } else return null;
+  }
+}
+
+class JobView extends React.PureComponent {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    console.log('JobView render');
+    const changeJobBtn = <div className='btn selectJob' onClick={this.props.toggleJobList}>Change Job</div>;
+    const attr = this.props.attr.filter(attr => this.props.activeJob[attr] > 0);
+    const baseline = {};
+    const value = {};
+    attr.forEach(attr => {
+      baseline[attr] = this.props.activeJob[attr];
+      //for each attr, iterate over teamMembers Array and accumulate their attr values
+      value[attr] = this.props.teamMembers.reduce((accumulator, member) => {
+        if (member) {
+          return accumulator + member[attr];
+        } else return accumulator
+      }, 0);
+    });
+    return (
+      <>
+        <div className='header'>
+          <p>{this.props.activeJob['Job JP']}</p>
+          <JobImage job={this.props.activeJob} />
+          {changeJobBtn}
+        </div>
+        <div className='statInfo'>
+          <AttrList statusBarWidth={8} maxValue={900} attr={attr} value={value} baseline={baseline} />
+          <ProgressBar baseline={baseline} value={value} />
+        </div>
+      </>
+    )
   }
 }
 
@@ -72,20 +86,19 @@ function JobImage(props) {
 }
 
 function ProgressBar(props) {
-  console.log('ProgressBar', props.value, props.baseline);
+  //console.log('ProgressBar', props.value, props.baseline);
   const progress = Object.keys(props.baseline).reduce((accumulator, attr) => {
     const percent = props.value[attr] / props.baseline[attr] * (1 / 3);
     return accumulator + Math.min(percent, (1 / 3));
   }, 0);
   const width = 9;
-  console.log('ProgressBar progress', progress);
   return (
     <>
-    <div id='progressBarContainer' style={{ width: `${width}rem` }}>
-      <span id='progressBarHide' style={{ width: `${(1 - progress) * width}rem` }} />
-      <span id='progressBar' style={{ width: `${width}rem` }} />
-    </div>
-  <div className='status'>{`Progress: ${Math.floor(progress * 100)}%`}</div>
+      <div id='progressBarContainer' style={{ width: `${width}rem` }}>
+        <span id='progressBarHide' style={{ width: `${(1 - progress) * width}rem` }} />
+        <span id='progressBar' style={{ width: `${width}rem` }} />
+      </div>
+      <div className='status'>{`Work Result: ${Math.floor(progress * 100)}%`}</div>
     </>
   )
 }
@@ -97,8 +110,8 @@ export class JobList extends React.Component {
       menus: {
         'Beginner': '【初級】',
         'Intermediate': '【中級】',
+        'Advanced': '【上級】',
         'Unit': 'Unit',
-        //'Daily': '日替わり',
         'ES Building': 'ESビル',
         'Limited': '期間限定',
       },
@@ -126,18 +139,19 @@ export class JobList extends React.Component {
   }
 
   getAvailableMenus() {
-    const menus = {};
-    const data = new Set(this.props.jobs.map((job) => job['Type'].trim()));
-    data.forEach(data => menus[data] = this.state.menus[data]);
+    let menuOpts = Object.keys(this.state.menus);
+    let menus = {}
+    const data = new Set(this.props.jobs.map((job) => job['Type'] ? job['Type'].trim() : ''));
+    menuOpts.forEach(opt => { if (opt.length > 0 && data.has(opt)) menus[opt] = this.state.menus[opt] });
     return menus;
   }
 
   getMenuJobs(menu) {
-    return this.props.jobs.filter((job) => job['Type'].trim() === menu);
+    return this.props.jobs.filter((job) => job['Type'] ? job['Type'].trim() === menu : false);
   }
 
   render() {
-    //console.log('JobList render', this.state.viewJob)
+    //console.log('JobList render');
     const jobDetailBtn = <div className='btn selectJob' onClick={() => { this.props.selectJob(this.state.viewJob); this.props.toggleJobList(); }}>Select Job</div>
     const value = this.state.viewJob &&
       (
@@ -203,16 +217,26 @@ export class TeamView extends React.Component {
     super(props);
   }
   render() {
-    //console.log('TeamView render', this.props.activeJob);
+    console.log('TeamView render', this.props.activeJob);
     if (this.props.activeJob && this.props.teamMembers.length > 0) {
       const members = this.props.teamMembers.map((member, index) => {
         return <TeamMember key={index} index={index} member={member} selAttr={this.props.selAttr} toggleOutfitList={this.props.toggleOutfitList} />
       })
+      const button = <div className='btn' onClick={() => this.props.getUserData(document.querySelector('#userData').value)}>Add user data</div>
       return (
-        <div id='teamView'>
-          {members}
-          {/*<TeamStatus />*/}
-        </div>
+        <>
+          <div id='userLink'>
+            <input id='userData' type='text' />
+            {button}
+            <div><a target='_blank' href='https://docs.google.com/spreadsheets/d/1asGXfBIw2qe3xYX_mawgbjO34gYqsj6IBNRbzqtqNAQ/edit?usp=sharing'>
+              Google spreadsheet template for user data</a></div>
+            <div>Make sure to turn on link-sharing for your Google spreadsheet</div>
+          </div>
+          <div id='teamView'>
+            {members}
+            {/*<TeamStatus />*/}
+          </div>
+        </>
       )
     } else return null;
   }
