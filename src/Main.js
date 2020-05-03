@@ -224,19 +224,26 @@ export default class Main extends React.Component {
           }
         })
         .then(outfits => {
-          this.setState((state, props) => {
-            //clear team in case of any outfits that aren't in userList
-            const emptyTeam = state.teamMembers.map(member => 0);
-            return { outfits: outfits, teamMembers: emptyTeam }
-          });
+          if(outfits) {
+            this.setState((state, props) => {
+              //clear team in case of any outfits that aren't in userList
+              const emptyTeam = state.teamMembers.map(member => 0);
+              return { outfits: outfits, teamMembers: emptyTeam }
+            });
+          }
         })
     }
   }
 
   handleErrors(response) {
+    console.log(response);
     if (response.error) {
       if (response.error.code === 403 && response.error.status.includes('PERMISSION_DENIED')) {
-        console.log("Error: don't forget to publish your spreadsheet to the web!")
+        console.log("Error: Sorter did not have permission to access your spreadsheet. Don't forget to turn link-sharing on!")
+        return;
+      }
+      if (response.error.code === 400 && response.error.status.includes('INVALID_ARGUMENT')) {
+        console.log("Error: Sorter did not find a spreadsheet called 'Outfits'.")
         return;
       }
       if (response.error.status === ('HEADER NOT FOUND')) {
@@ -244,7 +251,7 @@ export default class Main extends React.Component {
         return;
       }
     }
-    return response;
+    else return response;
   }
 
   render() {

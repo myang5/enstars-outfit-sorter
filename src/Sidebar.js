@@ -34,18 +34,6 @@ export default class Sidebar extends React.Component {
     this.setState((state, props) => { return { activeMenu: state.activeMenu === menu ? '' : menu } })
   }
 
-  //return (
-  //  <div id='sidebar' className='toggledOn'>
-  //    {/* <SearchButton /> */}
-  //    <CheckBoxOptions id='attrOpts' heading='Stat Bonus' optionsArr={props.attributes} selected={props.selAttr} toggleValue={toggleValue('selAttr')} mapFunc={attrMapFunc} />
-  //    <div className='options'><p>Filter data by...</p></div>
-  //    <SearchType toggleTrue={props.toggleTrue} toggleFalse={props.toggleFalse} />
-  //    <SelectOptions id='unitOpts' heading='Unit' optionsArr={props.units} selected={props.selUnits} toggleValue={toggleValue('selUnits')} clearFilter={props.clearFilter('selUnits')} />
-  //    <SelectOptions id='charaOpts' heading='Character' optionsArr={props.characters} selected={props.selCharas} toggleValue={toggleValue('selCharas')} clearFilter={props.clearFilter('selCharas')} />
-  //    <CheckBoxOptions id='tierOpts' heading='Outfit Tier' optionsArr={props.outfitTiers} selected={props.selTiers} toggleValue={toggleValue('selTiers')} mapFunc={tierMapFunc} />
-  //    <SelectOptions id='outfitOpts' heading='Outfit Type' optionsArr={props.outfitTypes} selected={props.selOutfits} toggleValue={toggleValue('selOutfits')} clearFilter={props.clearFilter('selOutfits')} />
-  //  </div>
-  //)
   render() {
     if (this.state.filters) {
       const filters = this.state.filters.map(set => { //data is Array of Sets of unique values in each column
@@ -233,29 +221,5 @@ function SelectOptions(props) {
     </ul>
   )
 }
-
-//function SelectOptions(props) {
-//  if (props.optionsArr.indexOf(props.heading) > -1) { props.optionsArr.splice(props.optionsArr.indexOf(props.heading), 1, '') }
-//  const options = props.optionsArr.map(function (option) {
-//    if (option) { return <option key={option} value={option}>{option}</option> }
-//  });
-//  const selected = Array.from(props.selected).map((value) =>
-//    <ToggleOptionBtn key={value} value={value} toggleValue={props.toggleValue} />
-//  );
-
-//  return (
-//    <div className='options' id={props.id}>
-//      <div className='row'>
-//        <p>{props.heading}</p>
-//        <ClearFilterButton clearFilter={props.clearFilter} />
-//      </div>
-//      <select className='row' defaultValue='none' onChange={props.toggleValue}>
-//        <option disabled value='none'>(select an option)</option>
-//        {options}
-//      </select>
-//      <div>{selected}</div>
-//    </div>
-//  )
-//}
 
 
