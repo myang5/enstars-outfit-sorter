@@ -9,19 +9,19 @@ export default class Main extends React.Component {
   constructor() {
     super();
     this.state = {
-      allOutfits: null,
-      userOutfits: null,
-      outfits: null,
-      jobs: null,
+      allOutfits: null, //Array of Obj of all outfit rows in database spreadsheet
+      userOutfits: null, //Array of Obj of user outfit rows, null when user has no data/removes their data
+      outfits: null, //Outfits to display after allOutfits or userOutfits has been filtered
+      jobs: null, //Array of Obj of all job rows in database spreadsheet
       attr: ['Ac', 'Pa', 'Un', 'Sm', 'Te', 'Ch'],
-      filters: null,
-      selAttr: [],
+      filters: null, //Array of headers for each column to filter by
+      selAttr: [], //Array of  strings from attr matching relevant attributes
       isInclusive: false,
       view: 'card',
       isOutfitList: false,
       activeJob: null,
       teamMembers: [],
-      teamSlot: null,
+      teamSlot: null, //Store index of teamMember user is currently choosing
     };
     this.prepareOutfitData = this.prepareOutfitData.bind(this)
     this.submitFilterSelection = this.submitFilterSelection.bind(this);
@@ -85,8 +85,9 @@ export default class Main extends React.Component {
         activeJob: job,
         teamMembers: new Array(job['Idol Slots']).fill(0),
       }
+      const outfitSource = this.state.userOutfits ? this.state.userOutfits : this.state.allOutfits;
       newState.selAttr = Object.keys(job).filter(key => this.state.attr.includes(key) && job[key] > 0);
-      if(this.state.outfits) {newState.outfits = this.prepareOutfitData(this.state.outfits, newState);}
+      if(this.state.outfits) {newState.outfits = this.prepareOutfitData(outfitSource, newState);}
       this.setState(newState);
     }
   }
