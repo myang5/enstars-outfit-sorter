@@ -5,28 +5,36 @@ export function filterData(data, config = {}) {
   const result = [];
   if (data) { //should be Array of Objects
     console.log('filterGsData', config);
+    //case 1: no conditions or queries -> return data as is
+    //case 2: conditions but no queries -> filter by conditions
+    //case 3: no conditions but has queries -> filter by queries
+    //case4 4: queries and conditions -> must filter by condition, then queries inclusive/exclusive
     for (let i = 0; i < data.length; i++) { //iterate over Array of rows
       const row = data[i];
-      let queried = false;
+      let meetsConditions = conditions.length <= 0; //if no condition then all rows meet condition (true)
+      let queried = Object.keys(query).length <= 0; //if no queries then all rows are queried (true)
       if (Object.keys(query).length === 0 && conditions.length === 0) { queried = true; } //if no query just push all rows
       else {
-        //map which filters match values in the row
-        let result = matchFilters(query, row, conditions);
-        if (isInclusive) {
-          //if any filter is matched queried = true
-          queried = result.reduce(function (accumulator, currVal) { return accumulator || currVal }, false);
+        if (conditions.length > 0) {
+          conditions.forEach(condition => { if (Object.values(row).includes(condition)) meetsConditions = true });
         }
-        else { //exclusive 
-          //if any filter is not matched queried = false
-          queried = result.reduce(function (accumulator, currVal) { return accumulator && currVal }, true);
+        if (Object.keys(query).length > 0) {
+          //map which filters match values in the row
+          let result = matchFilters(query, row);
+          if (isInclusive) {
+            //if any filter is matched queried = true
+            queried = result.reduce(function (accumulator, currVal) { return accumulator || currVal }, false);
+          }
+          else { //exclusive 
+            //if any filter is not matched queried = false
+            queried = result.reduce(function (accumulator, currVal) { return accumulator && currVal }, true);
+          }
         }
-        conditions.forEach(condition => { if (!Object.values(row).includes(condition)) queried = false });
       }
-      if (queried) {
+      if (meetsConditions && queried) {
         result.push(row);
       }
     }
-    //console.log(responseObj);
     return result;
   }
 }

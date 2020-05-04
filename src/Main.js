@@ -9,6 +9,8 @@ export default class Main extends React.Component {
   constructor() {
     super();
     this.state = {
+      allOutfits: null,
+      userOutfits: null,
       outfits: null,
       jobs: null,
       attr: ['Ac', 'Pa', 'Un', 'Sm', 'Te', 'Ch'],
@@ -26,6 +28,8 @@ export default class Main extends React.Component {
     this.calculateTotalBonus = this.calculateTotalBonus.bind(this);
     this.toggleSearchTypeTrue = this.toggleSearchTypeTrue.bind(this);
     this.toggleSearchTypeFalse = this.toggleSearchTypeFalse.bind(this);
+    this.sortByFilter = this.sortByFilter.bind(this);
+    this.sortOutfits = this.sortOutfits.bind(this);
     this.toggleOutfitList = this.toggleOutfitList.bind(this);
     this.selectJob = this.selectJob.bind(this);
     this.setMember = this.setMember.bind(this);
@@ -34,19 +38,6 @@ export default class Main extends React.Component {
 
   componentDidMount() {
     console.log('Main componentDidMount')
-    const sheetId = 'Stat Bonuses';
-    //fetch info for Sidebar
-    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}`)
-      .then(result => result.json())
-      .then(result => {
-        let data = result.values; //Array of Arrays representing sheet rows
-        const newState = {};
-        const filters = []
-        data[0].forEach((arr) => { if (arr !== 'ImageID' && !this.state.attr.includes(arr)) { filters.push(arr); newState['sel' + arr] = new Set() } }) //Create set for each header to keep track of selected values
-        newState.outfits = convertArraysToObjects(data);
-        newState.filters = filters;
-        this.setState(newState);
-      })
     const nextSheetId = 'Jobs';
     //fetch info for TeamBuilder
     fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${nextSheetId}?key=${apiKey}`)
@@ -59,11 +50,28 @@ export default class Main extends React.Component {
         while (jobs[i]['Type'] !== 'Beginner') { i++; }
         this.selectJob(jobs[i]);
       })
+      .then(() => {
+        const sheetId = 'Stat Bonuses';
+        //fetch info for Sidebar
+        fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}`)
+          .then(result => result.json())
+          .then(result => {
+            let data = result.values; //Array of Arrays representing sheet rows
+            const newState = {};
+            const filters = []
+            data[0].forEach((arr) => { if (arr !== 'ImageID' && !this.state.attr.includes(arr)) { filters.push(arr); newState['sel' + arr] = new Set() } }) //Create set for each header to keep track of selected values
+            const outfits = convertArraysToObjects(data);
+            newState.allOutfits = outfits;
+            newState.outfits = this.prepareOutfitData(outfits, this.state);
+            newState.filters = filters;
+            this.setState(newState);
+          })
+      })
   }
 
   toggleOutfitList(index = null) {
-    console.log('toggleOutfitList', index);
-    this.setState((state, props) => {
+    //console.log('toggleOutfitList', index);
+    this.setState((state) => {
       const newState = { isOutfitList: !state.isOutfitList, teamSlot: index }
       return newState;
     });
@@ -77,6 +85,7 @@ export default class Main extends React.Component {
         teamMembers: new Array(job['Idol Slots']).fill(0),
       }
       newState.selAttr = Object.keys(job).filter(key => this.state.attr.includes(key) && job[key] > 0);
+      if(this.state.outfits) {newState.outfits = this.prepareOutfitData(this.state.outfits, newState);}
       this.setState(newState);
     }
   }
@@ -106,16 +115,44 @@ export default class Main extends React.Component {
   submitFilterSelection(filter) {
     return (value) => {
       console.log('submitFilterSelection', value)
-      this.setState({ [filter]: value });
+      this.setState((state, props) => {
+        let newState = { ...state };
+        newState[filter] = value;
+        const outfitSource = newState.userOutfits ? newState.userOutfits : newState.allOutfits;
+        const outfits = this.prepareOutfitData(outfitSource, newState)
+        newState.outfits = outfits;
+        return newState;
+      });
     }
   }
 
-  prepareOutfitData(data, queryConfig) {
+  //returns Object with query and conditions given passed-in state
+  getQueryAndConditions(state) {
+    const query = Object.keys(state).reduce((accumulator, key) => { //make Object of Sets that hold selected values
+      const value = state[key];
+      if (key.includes('sel') && key !== 'selAttr' && value.size > 0) { accumulator[key] = value; }
+      return accumulator;
+    }, {});
+    //console.log(query);
+    const conditions = state.activeJob ?
+      state.activeJob['Conditions'] ? state.activeJob['Conditions'].split(',').map(str => str.trim()) : []
+      : [];
+    return {query: query, conditions: conditions};
+  }
+
+  //filter outfits based on any selected queries and conditions in activeJob
+  //calculate total bonus for selected attributes
+  //sort outfits in descending order by total bonus
+  //return outfit Obj of Arrays
+  prepareOutfitData(data, state) {
+    let queryConfig = this.getQueryAndConditions(state);
+    queryConfig.isInclusive = state.isInclusive;
     let outfits = filterData(data, queryConfig);
-    if (this.state.selAttr.length > 0) {
-      outfits = this.calculateTotalBonus(outfits, this.state.selAttr);
+    if (state.selAttr.length > 0) {
+      outfits = this.calculateTotalBonus(outfits, state.selAttr);
       this.sortByFilter(outfits, 'Total Bonus', false);
     }
+    //console.log('prepareOutfitData', selAttr)
     return outfits;
   }
 
@@ -130,9 +167,16 @@ export default class Main extends React.Component {
   }
 
   sortByFilter(outfits, filter, isAscending = true) {
-    if (filter === 'Total Bonus') {
       outfits.sort((a, b) => isAscending ? a[filter] - b[filter] : b[filter] - a[filter])
-    }
+  }
+
+  sortOutfits(filter, isAscending){
+    this.setState((state, props) => {
+      let outfits = [...state.outfits];
+      this.sortByFilter(outfits, filter, isAscending);
+      //console.log('sortOutfits', filter, outfits);
+      return {outfits: outfits}
+    })
   }
 
   getUserData(url) {
@@ -182,7 +226,7 @@ export default class Main extends React.Component {
               //both are O(userList.length * outfits.length)
               //c) check if outfit is in userList when filtering data
               //adds complexity to filtering so no good
-              let outfits = [...this.state.outfits];
+              let outfits = [...this.state.allOutfits];
               let userOutfits = outfits.reduce((acc, outfit) => {
                 //practice binary search algorithm
                 let outfitMatch = false;
@@ -224,11 +268,12 @@ export default class Main extends React.Component {
           }
         })
         .then(outfits => {
-          if(outfits) {
-            this.setState((state, props) => {
-              //clear team in case of any outfits that aren't in userList
+          if (outfits) {
+            this.setState((state) => {
+              //clear team in case of outfits that aren't in userList
               const emptyTeam = state.teamMembers.map(member => 0);
-              return { outfits: outfits, teamMembers: emptyTeam }
+              const preparedOutfits = this.prepareOutfitData(outfits, state)
+              return { userOutfits: outfits, outfits: preparedOutfits, teamMembers: emptyTeam }
             });
           }
         })
@@ -243,7 +288,7 @@ export default class Main extends React.Component {
         return;
       }
       if (response.error.code === 400 && response.error.status.includes('INVALID_ARGUMENT')) {
-        console.log("Error: Sorter did not find a spreadsheet called 'Outfits'.")
+        console.log("Error: Sorter did not find a sheet called 'Outfits' in your spreadsheet.")
         return;
       }
       if (response.error.status === ('HEADER NOT FOUND')) {
@@ -256,24 +301,9 @@ export default class Main extends React.Component {
 
   render() {
     if (this.state.outfits && this.state.jobs) {
-      const query = Object.keys(this.state).reduce((accumulator, key) => { //make Object of Sets that hold selected values
-        const value = this.state[key];
-        if (key.includes('sel') && key !== 'selAttr' && value.size > 0) { accumulator[key] = value; }
-        return accumulator;
-      }, {});
-      let queryStr = Object.keys(this.state).reduce((accumulator, key) => {
-        const value = this.state[key];
-        if (key.includes('sel') && (value.size > 0 || value.length > 0)) {
-          accumulator += key + ':' + Array.from(value) + ' ';
-        }
-        return accumulator;
-      }, '');
-      queryStr += `isInclusive: ${this.state.isInclusive}`
-      const conditions = this.state.activeJob ?
-        this.state.activeJob['Conditions'] ? this.state.activeJob['Conditions'].split(',') : []
-        : [];
-      console.log('Main render outfits', this.state.outfits);
-      const outfits = this.prepareOutfitData(this.state.outfits, { query: query, isInclusive: this.state.isInclusive, conditions: conditions })
+      //outfitList doesn't update without key. 100 is an arbitrary number
+      let outfitListKey = this.state.outfits.slice(0,100);
+      outfitListKey = JSON.stringify(outfitListKey);
       const jobViewProps = {
         activeJob: this.state.activeJob,
         teamMembers: this.state.teamMembers,
@@ -290,26 +320,25 @@ export default class Main extends React.Component {
         getUserData: this.getUserData,
       }
       const outfitListProps = {
-        key: queryStr,
-        queryStr: queryStr,
-        query: query,
-        outfits: outfits,
+        key: outfitListKey,
+        outfits: this.state.outfits,
         teamMembers: this.state.teamMembers,
         view: this.state.view,
-        status: `${outfits.length} outfits found`,
+        status: `${this.state.outfits.length} outfits found`,
         attr: this.state.attr,
         selAttr: this.state.selAttr,
         setMember: this.setMember,
         toggleOutfitList: this.toggleOutfitList,
       }
       const sidebarProps = {
-        attr: this.state.attr,
-        data: this.state.outfits,
+        selAttr: this.state.selAttr,
+        data: this.state.allOutfits,
         filters: this.state.filters,
         submitFilterSelection: this.submitFilterSelection,
         toggleTrue: this.toggleSearchTypeTrue,
         toggleFalse: this.toggleSearchTypeFalse,
         toggleOutfitList: this.toggleOutfitList,
+        sortOutfits: this.sortOutfits,
       }
       return (
         <>
@@ -324,7 +353,7 @@ export default class Main extends React.Component {
         </>
       )
     }
-    else return null;
+    else return <div>Loading...</div>;
   }
 }
 
@@ -338,6 +367,7 @@ export default class Main extends React.Component {
 export function AttrList(props) {
   const statusBarWidth = props.statusBarWidth || 5;
   const height = props.attr.length * 1.2 + 'rem';
+  const hideIcon = props.hideIcon || false;
   return (
     <div className='attrList' style={{ height: height }}>
       {props.attr.map(attr => {
@@ -347,7 +377,7 @@ export function AttrList(props) {
           `${props.value[attr]}/${props.baseline[attr]}`
           : '';
         const statusBarProps = {
-          width: props.statusBarWidth,
+          width: statusBarWidth,
           attr: attr,
           value: value,
           maxValue: props.maxValue,
@@ -355,7 +385,7 @@ export function AttrList(props) {
         if (props.baseline) { statusBarProps.baseline = props.baseline[attr] }
         return (
           <div className='attr' key={attr}>
-            <span className={'icon ' + attr.toLowerCase()}>{attr}</span>
+            {!hideIcon && <AttrIcon attr={attr} />}
             {props.baseline ?
               <span className='progressText'>{progressText}</span> :
               <span className='numberText'>{numberText}</span>
@@ -383,6 +413,6 @@ function StatusBar(props) {
   )
 }
 
-export function ProgressAttrList(props) {
-  return <AttrList {...props} />;
+export function AttrIcon(props) {
+  return <span className={'icon ' + props.attr.toLowerCase()}>{props.attr}</span>
 }

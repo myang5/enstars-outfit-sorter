@@ -21,6 +21,7 @@ export default class OutfitList extends React.PureComponent {
   }
 
   componentDidMount() {
+    //console.log('OutfitList componentDidMount')
     this.loadOutfits();
   }
 
@@ -57,6 +58,7 @@ export default class OutfitList extends React.PureComponent {
   }
 
   render() {
+    console.log(this.props);
     const outfits = this.state.loadedOutfits.map((elt) =>
       !this.props.teamMembers.includes(elt) ?
         <OutfitCard key={elt.Character + elt.Outfit + elt['Total Bonus']}
@@ -75,7 +77,7 @@ export default class OutfitList extends React.PureComponent {
       <div id='outfitView' onScroll={this.onScrollThrottled}>
         <div id='toggleSidebarBtn' onClick={this.toggleSidebar}></div>
         {this.props.view === 'card' && <p className='status'>{this.props.status}</p>}
-        <div key={this.props.queryStr} id='outfitList' className={this.props.view}>
+        <div id='outfitList' className={this.props.view}>
           {outfits}
           {this.props.view === 'card' && placeholders}
         </div>
@@ -101,8 +103,9 @@ export default class OutfitList extends React.PureComponent {
 }
 
 function OutfitCard(props) {
+  const cls = 'outfitCard' + (props.info.hasOwnProperty('Made') ? (!props.info['Made'] ? ' notMade' : '') : '');
   return (
-    <div className='outfitCard' onClick={() => props.setMember(props.info)}>
+    <div className={cls} onClick={() => props.setMember(props.info)}>
       <p>{props.info['Character']}</p>
       <p>{props.info['Outfit']}</p>
       <hr />

@@ -217,7 +217,7 @@ export class TeamView extends React.Component {
     super(props);
   }
   render() {
-    console.log('TeamView render', this.props.activeJob);
+    //console.log('TeamView render', this.props.activeJob);
     if (this.props.activeJob && this.props.teamMembers.length > 0) {
       const members = this.props.teamMembers.map((member, index) => {
         return <TeamMember key={index} index={index} member={member} selAttr={this.props.selAttr} toggleOutfitList={this.props.toggleOutfitList} />
@@ -248,7 +248,7 @@ function TeamMember(props) {
       {props.member !== 0 &&
         <>
           {props.member['ImageID'] && <OutfitImage {...props.member} />}
-          <AttrList attr={props.selAttr} bonus={props.member} statusBarWidth={4.2} maxValue={300} />
+          <AttrList attr={props.selAttr} bonus={props.member} statusBarWidth={4.2} maxValue={300} hideIcon={true}/>
         </>
       }
     </div>

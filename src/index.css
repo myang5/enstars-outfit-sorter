@@ -33,7 +33,7 @@ body{
   font-weight: bold;
   text-align:center;
   width: 2em;
-  height: auto;
+  height: fit-content;
   padding: 0.1em;
   box-sizing: border-box;
   color: #fff;
@@ -131,6 +131,12 @@ body{
   text-align: center;
   font-weight: bold;
   width: auto;
+  transition: 0.1s;
+  -webkit-transition: 0.1s;
+}
+
+.btn:active {
+  transform: scale(0.9)
 }
 
 .btn p {
@@ -202,7 +208,6 @@ body{
   font-weight: bold;
   text-align: center;
 }
-
 
 #jobList {
   position: fixed;
@@ -320,9 +325,9 @@ body{
 }
 
 #sidebar{
+  position: relative;
   display: flex;
   flex-direction: column;
-  flex: 0 0 300px;
   padding: 2rem 1.5rem;
   box-sizing: border-box;
   height: 100%;
@@ -344,6 +349,31 @@ body{
 
 #sidebar .radioBtn .desc {
   font-size: 0.8em;
+}
+
+#sortMenu {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  align-items: center;
+}
+
+.btn.sortOpt {
+  display: flex;
+  flex-direction: horizontal;
+  align-items: baseline;
+  background-color: #fff;
+  text-align: right;
+  height: auto;
+}
+
+.btn.sortOpt * {
+  margin: 0 0.25rem; 
+}
+
+.btn.sortOpt.active {
+  background-color: yellow;
 }
 
 .filter {
@@ -374,7 +404,7 @@ body{
   font-size: 0.8rem;
 }
 
-.filterMenu {
+.filterOptions {
   display: flex;
   flex-direction: column;
   width: 15rem;
@@ -385,7 +415,7 @@ body{
   font-size: 0.9rem;
 }
 
-.filterMenu ul {
+.filterOptions ul {
   height: 10em;
   width: 100%;
   overflow-y: auto;
@@ -393,7 +423,7 @@ body{
   padding: 0;
 }
 
-.filterMenu li {
+.filterOptions li {
   display: flex;
   height: 2em;
   align-items: center;
@@ -401,23 +431,23 @@ body{
 }
 
 
-.filterMenu li:hover {
+.filterOptions li:hover {
   background-color: #d1d1d1;
 }
 
-.filterMenu li div {
+.filterOptions li div {
   display: flex;
   height: 1em;
   align-items: flex-end;
   padding-left: 0.5em;
 }
 
-.filterMenu li span {
+.filterOptions li span {
   display: inline-block;
   width: 1.5em;
 }
 
-.filterMenu li.selected span::before {
+.filterOptions li.selected span::before {
   content: '✓'
 }
 
@@ -504,6 +534,13 @@ body{
   border: solid 1px #adadad;
   border-radius: 5px;
   padding: 1rem 0;
+  opacity: 1;
+  background-color: #fff;
+}
+
+.outfitCard.notMade {
+  opacity: 0.6;
+  background-color: #c9c9c9;
 }
 
 /*.outfitCard { //for horizontal layout
