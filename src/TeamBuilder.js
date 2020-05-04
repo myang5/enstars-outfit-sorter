@@ -1,6 +1,59 @@
 import React from 'react';
-import { AttrList } from './Main.js';
-import { OutfitImage } from './OutfitList.js';
+import { Image, AttrList } from './Main.js';
+import Instructions from './Instructions.js';
+
+export class TeamView extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isInstructions: false
+    }
+    this.toggleInstructions = this.toggleInstructions.bind(this);
+  }
+
+  toggleInstructions() {
+    this.setState(state => { return { isInstructions: !state.isInstructions } });
+  }
+
+  render() {
+    //console.log('TeamView render', this.props.activeJob);
+    if (this.props.activeJob && this.props.teamMembers.length > 0) {
+      const members = this.props.teamMembers.map((member, index) => {
+        return <TeamMember key={index} index={index} member={member} selAttr={this.props.selAttr} toggleOutfitList={this.props.toggleOutfitList} />
+      })
+      const dataBtn = <div className='btn addData' onClick={() => this.props.getUserData(document.querySelector('#userData').value)}>Add user data</div>
+      const helpBtn = <div className='btn help' onClick={this.toggleInstructions}>?</div>
+      return (
+        <>
+          <div id='topMenu'>
+            <input id='userData' type='text' />
+            {dataBtn}
+            {helpBtn}
+            {/*<div>Make sure to turn on link-sharing for your Google spreadsheet</div>*/}
+          </div>
+          <div id='teamView'>
+            {members}
+          </div>
+          {this.state.isInstructions && <Instructions toggleInstructions={this.toggleInstructions}/>}
+        </>
+      )
+    } else return null;
+  }
+}
+
+function TeamMember(props) {
+  const cls = 'teamMember' + (props.member.hasOwnProperty('Made') ? (!props.member['Made'] ? ' notMade' : '') : '');
+  return (
+    <div className={cls} onClick={() => props.toggleOutfitList(props.index)}>
+      {props.member !== 0 &&
+        <>
+          <Image obj={props.member} alt={`${props.member['Character']} ${props.member['Outfit']}`} />
+          <AttrList attr={props.selAttr} bonus={props.member} statusBarWidth={4.2} maxValue={300} hideIcon={true} />
+        </>
+      }
+    </div>
+  )
+}
 
 export class JobViewContainer extends React.PureComponent {
   constructor(props) {
@@ -66,11 +119,11 @@ class JobView extends React.PureComponent {
       <>
         <div className='header'>
           <p>{this.props.activeJob['Job JP']}</p>
-          <JobImage job={this.props.activeJob} />
+          <Image obj={this.props.activeJob} alt={this.props.activeJob['Job']}/>
           {changeJobBtn}
         </div>
         <div className='statInfo'>
-          <AttrList statusBarWidth={8} maxValue={900} attr={attr} value={value} baseline={baseline} />
+          <AttrList statusBarWidth={8} maxValue={1500} attr={attr} value={value} baseline={baseline} />
           <ProgressBar baseline={baseline} value={value} />
         </div>
       </>
@@ -194,9 +247,6 @@ function JobSelect(props) {
 }
 
 function JobDetail(props) {
-  const image = props.job['ImageID'] ?
-    <img src={'https://drive.google.com/thumbnail?&id=' + props.job['ImageID']} alt={props.job['Job']} /> :
-    <div className='imgPlaceholder'><p>Image N/A</p></div>;
   const attr = props.attr.filter(attr => props.job[attr] > 0);
   const value = {};
   attr.forEach(attr => value[attr] = props.job[attr]);
@@ -204,55 +254,10 @@ function JobDetail(props) {
   return (
     <div id='jobDetail'>
       <p>{props.job['Job JP']}</p>
-      <JobImage job={props.job} />
-      <AttrList statusBarWidth={8} maxValue={900} attr={attr} value={value} />
+      <Image obj={props.job} alt={props.job['Job']}/>
+      <AttrList statusBarWidth={8} maxValue={1500} attr={attr} value={value} />
       {props.button}
       {closeBtn}
     </div>
   )
 }
-
-export class TeamView extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    //console.log('TeamView render', this.props.activeJob);
-    if (this.props.activeJob && this.props.teamMembers.length > 0) {
-      const members = this.props.teamMembers.map((member, index) => {
-        return <TeamMember key={index} index={index} member={member} selAttr={this.props.selAttr} toggleOutfitList={this.props.toggleOutfitList} />
-      })
-      const button = <div className='btn' onClick={() => this.props.getUserData(document.querySelector('#userData').value)}>Add user data</div>
-      return (
-        <>
-          <div id='userLink'>
-            <input id='userData' type='text' />
-            {button}
-            <div><a target='_blank' href='https://docs.google.com/spreadsheets/d/1asGXfBIw2qe3xYX_mawgbjO34gYqsj6IBNRbzqtqNAQ/edit?usp=sharing'>
-              Google spreadsheet template for user data</a></div>
-            <div>Make sure to turn on link-sharing for your Google spreadsheet</div>
-          </div>
-          <div id='teamView'>
-            {members}
-            {/*<TeamStatus />*/}
-          </div>
-        </>
-      )
-    } else return null;
-  }
-}
-
-function TeamMember(props) {
-  const cls = 'teamMember' + (props.member.hasOwnProperty('Made') ? (!props.member['Made'] ? ' notMade' : '') : '');
-  return (
-    <div className={cls} onClick={() => props.toggleOutfitList(props.index)}>
-      {props.member !== 0 &&
-        <>
-          {props.member['ImageID'] && <OutfitImage {...props.member} />}
-          <AttrList attr={props.selAttr} bonus={props.member} statusBarWidth={4.2} maxValue={300} hideIcon={true}/>
-        </>
-      }
-    </div>
-  )
-}
-

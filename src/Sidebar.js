@@ -34,13 +34,15 @@ export default class Sidebar extends React.Component {
       return (
         <div id='sidebar' className='toggledOn'>
           <button onClick={this.props.toggleOutfitList}>Close</button>
-          {/*<div className='filterHeading filter'><p>Stat Bonus</p></div>*/}
           {/*<CheckBoxOptions optionsArr={this.props.attr} submitSelection={this.props.submitFilterSelection('selAttr')} />*/}
-          <SortMenu selAttr={this.props.selAttr} sortOutfits={this.props.sortOutfits} />
-          <div className='filterHeading filter'><p>Filter data by...</p></div>
-          <SearchType toggleTrue={this.props.toggleTrue} toggleFalse={this.props.toggleFalse} />
-          {this.props.toggleMade && <ToggleMade toggleMade={this.props.toggleMade}/>}
-          <FilterMenu filters={this.state.filters} submitFilterSelection={this.props.submitFilterSelection} />
+          <span id='status'>{this.props.status}</span>
+          <div className='right'>
+            {this.props.toggleMade && <ToggleMade toggleMade={this.props.toggleMade} />}
+            <SortMenu selAttr={this.props.selAttr} sortOutfits={this.props.sortOutfits} />
+          </div>
+          {/*<div className='filterHeading filter'><p>Filter data by...</p></div>*/}
+          {/*<SearchType toggleTrue={this.props.toggleTrue} toggleFalse={this.props.toggleFalse} />*/}
+          {/*<FilterMenu filters={this.state.filters} submitFilterSelection={this.props.submitFilterSelection} />*/}
 
         </div>
       )
@@ -130,7 +132,7 @@ class SortMenu extends React.Component {
 function SortOpt(props) {
   return (
     <div className={'btn sortOpt' + (props.isActive ? ' active' : '')} onClick={props.onClick}>
-      <span style={{ width: '1rem' }}>{props.isActive ? (props.isAscending ? '⬆️' : '⬇️') : ''}</span>
+      <span style={{ width: '0.5rem', height: '1rem' }}>{props.isActive ? (props.isAscending ? '↑' : '↓') : ''}</span>
       {props.opt !== 'Total' ? <AttrIcon attr={props.opt} /> : <span>{props.opt}</span>}
     </div>
   )
@@ -153,11 +155,9 @@ function SearchType(props) {
 
 function ToggleMade(props) {
   return (
-    <div className='filter'>
-      <div className='radioBtn'>
-        <input type='checkbox' id='toggleMade' onClick={props.toggleMade} />
-        <label htmlFor='toggleMade'>Only show made outfits</label>
-      </div>
+    <div className='radioBtn'>
+      <input type='checkbox' id='toggleMade' onClick={props.toggleMade} />
+      <label htmlFor='toggleMade'>Only show made outfits</label>
     </div>
   )
 }

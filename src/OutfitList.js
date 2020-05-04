@@ -1,6 +1,6 @@
 import React from 'react';
 import throttle from 'lodash.throttle';
-import { AttrList } from './Main.js';
+import { Image, AttrList } from './Main.js';
 
 export default class OutfitList extends React.PureComponent {
   constructor(props) {
@@ -75,7 +75,6 @@ export default class OutfitList extends React.PureComponent {
     //console.log('OutfitList render');
     return (
       <div id='outfitView' onScroll={this.onScrollThrottled}>
-        <OutfitHeader status={this.props.status} toggleSidebar={this.toggleSidebar} />
         <div id='outfitList' className={this.props.view}>
           {outfits}
           {this.props.view === 'card' && placeholders}
@@ -101,15 +100,6 @@ export default class OutfitList extends React.PureComponent {
   }
 }
 
-function OutfitHeader(props) {
-  return (
-    <div className='header'>
-      <div id='toggleSidebarBtn' onClick={props.toggleSidebar} />
-      <p className='status'>{props.status}</p>
-    </div>
-  )
-}
-
 function OutfitCard(props) {
   const cls = 'outfitCard' + (props.info.hasOwnProperty('Made') ? (!props.info['Made'] ? ' notMade' : '') : '');
   return (
@@ -118,8 +108,7 @@ function OutfitCard(props) {
       <p>{props.info['Outfit']}</p>
       <hr />
       <div className='rowContainer'>
-        <OutfitImage {...props.info} />
-        {/*<OutfitImage imageId={props.info['ImageID']} alt={`${props.info['Character']} ${props.info['Outfit']}`} />*/}
+        <Image obj={props.info} alt={`${props.info['Character']} ${props.info['Outfit']}`} />
         <AttrList attr={props.selAttr} bonus={props.info} statusBarWidth={4.2} maxValue={300} />
       </div>
       {('Total Bonus' in props.info) && <span>{`TOTAL BONUS: ${props.info['Total Bonus']}`}</span>}
@@ -142,17 +131,3 @@ function OutfitCard(props) {
 //    </>
 //  )
 //}
-
-export function OutfitImage(props) {
-  //OLD METHOD, OutfitImage should now receive the image id directly
-  //props link looks like this https://drive.google.com/open?id=IMAGE_ID
-  //or it could look like this https://drive.google.com/file/d/IMAGE_ID/view?usp=drivesdk
-  //or it could look like this https://drive.google.com/file/d/IMAGE_ID/view
-  //need to change it to be    https://drive.google.com/thumbnail?&id=IMAGE_ID
-  let imageUrl = null;
-  if (props['ImageID'] && props['ImageID'].toLowerCase() !== 'missing') {
-    imageUrl = 'https://drive.google.com/thumbnail?&id=' + props['ImageID']
-    return <img className='outfitImg' alt={`${props['Character']} ${props['Outfit']}`} src={imageUrl} />
-  }
-  else return <div className='outfitImg'>Image N/A</div>
-}

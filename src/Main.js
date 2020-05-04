@@ -87,7 +87,7 @@ export default class Main extends React.Component {
       }
       const outfitSource = this.state.userOutfits ? this.state.userOutfits : this.state.allOutfits;
       newState.selAttr = Object.keys(job).filter(key => this.state.attr.includes(key) && job[key] > 0);
-      if(this.state.outfits) {newState.outfits = this.prepareOutfitData(outfitSource, newState);}
+      if (this.state.outfits) { newState.outfits = this.prepareOutfitData(outfitSource, newState); }
       this.setState(newState);
     }
   }
@@ -114,9 +114,9 @@ export default class Main extends React.Component {
     this.setState({ isInclusive: false })
   }
 
-  toggleMade(){
+  toggleMade() {
     let newMade = null;
-    if(this.state.selMade.size === 0){
+    if (this.state.selMade.size === 0) {
       newMade = new Set([true]);
     } else newMade = new Set()
     this.submitFilterSelection('selMade')(newMade);
@@ -147,7 +147,7 @@ export default class Main extends React.Component {
     const conditions = state.activeJob ?
       state.activeJob['Conditions'] ? state.activeJob['Conditions'].split(',').map(str => str.trim()) : []
       : [];
-    return {query: query, conditions: conditions};
+    return { query: query, conditions: conditions };
   }
 
   //filter outfits based on any selected queries and conditions in activeJob
@@ -177,15 +177,15 @@ export default class Main extends React.Component {
   }
 
   sortByFilter(outfits, filter, isAscending = true) {
-      outfits.sort((a, b) => isAscending ? a[filter] - b[filter] : b[filter] - a[filter])
+    outfits.sort((a, b) => isAscending ? a[filter] - b[filter] : b[filter] - a[filter])
   }
 
-  sortOutfits(filter, isAscending){
+  sortOutfits(filter, isAscending) {
     this.setState((state, props) => {
       let outfits = [...state.outfits];
       this.sortByFilter(outfits, filter, isAscending);
       //console.log('sortOutfits', filter, outfits);
-      return {outfits: outfits}
+      return { outfits: outfits }
     })
   }
 
@@ -312,7 +312,7 @@ export default class Main extends React.Component {
   render() {
     if (this.state.outfits && this.state.jobs) {
       //outfitList doesn't update without key. 100 is an arbitrary number
-      let outfitListKey = this.state.outfits.slice(0,100);
+      let outfitListKey = this.state.outfits.slice(0, 100);
       outfitListKey = JSON.stringify(outfitListKey);
       const jobViewProps = {
         activeJob: this.state.activeJob,
@@ -334,7 +334,6 @@ export default class Main extends React.Component {
         outfits: this.state.outfits,
         teamMembers: this.state.teamMembers,
         view: this.state.view,
-        status: `${this.state.outfits.length} outfits found`,
         attr: this.state.attr,
         selAttr: this.state.selAttr,
         setMember: this.setMember,
@@ -344,6 +343,7 @@ export default class Main extends React.Component {
         selAttr: this.state.selAttr,
         data: this.state.allOutfits,
         filters: this.state.filters,
+        status: `showing ${this.state.outfits.length} outfits`,
         submitFilterSelection: this.submitFilterSelection,
         toggleTrue: this.toggleSearchTypeTrue,
         toggleFalse: this.toggleSearchTypeFalse,
@@ -357,9 +357,11 @@ export default class Main extends React.Component {
             <TeamView {...teamViewProps} />
             {this.state.activeJob && <JobViewContainer {...jobViewProps} />}
           </div>
-          <div id='bottomContainer' style={{ top: this.state.isOutfitList ? '2rem' : '100vh' }}>
-            <SideBar {...sidebarProps} />
-            <OutfitList {...outfitListProps} />
+          <div className='overlay' style={{ top: this.state.isOutfitList ? '0' : '100vh' }}>
+            <div className='overlayContent'>
+              <SideBar {...sidebarProps} />
+              <OutfitList {...outfitListProps} />
+            </div>
           </div>
         </>
       )
@@ -367,6 +369,48 @@ export default class Main extends React.Component {
     else return <div>Loading...</div>;
   }
 }
+
+export function Image(props) {
+  let image = null;
+  if (!props.obj['ImageID'] || props.obj['ImageID'] === 'MISSING') {
+    image = <div className='imgPlaceholder'>{props.alt}</div>
+  }
+  else {
+    image = <img src={'https://drive.google.com/thumbnail?&id=' + props.obj['ImageID']} alt={props.alt} />
+  }
+  return image;
+}
+
+
+//this Image class slows down load time...
+//class Image extends React.PureComponent {
+//  constructor(props) {
+//    super(props);
+//    this.state = {
+//      error: null,
+//    }
+//    this.onError = this.onError.bind(this);
+//  }
+//  onError() {
+//    this.setState({ isLoaded: true, error: true });
+//  }
+
+//  render() {
+//    console.log(this.props.obj);
+//    if (this.state.error) {
+//      if (!this.props.obj['ImageID'] || this.props.obj['ImageID'] === 'MISSING') {
+//        return <div className='imgPlaceholder'>Image N/A</div>
+//      }
+//      return <div className='imgPlaceholder'>Failed to load image</div>
+//    }
+//    return (
+//      <img src={'http://drive.google.com/uc?export=view&id=' + this.props.obj['ImageID']}
+//        alt={this.props.alt}
+//        ref={this.image}
+//        onError={this.onError} />
+//    )
+//  }
+//}
 
 
 //statusBarWidth: Integer as width of status bar in rem
@@ -384,9 +428,9 @@ export function AttrList(props) {
       {props.attr.map(attr => {
         const value = (props.value ? props.value[attr] : 0) + (props.bonus ? props.bonus[attr] : 0);
         const numberText = (props.value ? props.value[attr] : '') + (props.bonus ? ` +${props.bonus[attr]}` : '').trim();
-        const progressText = props.baseline ?
-          `${props.value[attr]}/${props.baseline[attr]}`
-          : '';
+        //const progressText = props.baseline ?
+        //  `${props.value[attr]}/${props.baseline[attr]}`
+        //  : '';
         const statusBarProps = {
           width: statusBarWidth,
           attr: attr,
@@ -397,11 +441,7 @@ export function AttrList(props) {
         return (
           <div className='attr' key={attr}>
             {!hideIcon && <AttrIcon attr={attr} />}
-            {props.baseline ?
-              <span className='progressText'>{progressText}</span> :
-              <span className='numberText'>{numberText}</span>
-
-            }
+            <span className='numberText'>{numberText}</span>
             <StatusBar {...statusBarProps} />
             {props.baseline && <span className='numberText'>{`${props.value[attr] > props.baseline[attr] ? '+' : ''}${props.value[attr] - props.baseline[attr]}`}</span>}
           </div>
