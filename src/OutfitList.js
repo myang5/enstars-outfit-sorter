@@ -58,14 +58,14 @@ export default class OutfitList extends React.PureComponent {
   }
 
   render() {
-    console.log(this.props);
+    //console.log(this.props);
     const outfits = this.state.loadedOutfits.map((elt) =>
       !this.props.teamMembers.includes(elt) ?
         <OutfitCard key={elt.Character + elt.Outfit + elt['Total Bonus']}
           info={elt}
           selAttr={this.props.selAttr}
           setMember={this.props.setMember} /> :
-          null
+        null
     );
     //console.log('finished loading outfit list', performance.now())
     let placeholders = [];
@@ -75,8 +75,7 @@ export default class OutfitList extends React.PureComponent {
     //console.log('OutfitList render');
     return (
       <div id='outfitView' onScroll={this.onScrollThrottled}>
-        <div id='toggleSidebarBtn' onClick={this.toggleSidebar}></div>
-        {this.props.view === 'card' && <p className='status'>{this.props.status}</p>}
+        <OutfitHeader status={this.props.status} toggleSidebar={this.toggleSidebar} />
         <div id='outfitList' className={this.props.view}>
           {outfits}
           {this.props.view === 'card' && placeholders}
@@ -100,6 +99,15 @@ export default class OutfitList extends React.PureComponent {
     //  </div>
     //)
   }
+}
+
+function OutfitHeader(props) {
+  return (
+    <div className='header'>
+      <div id='toggleSidebarBtn' onClick={props.toggleSidebar} />
+      <p className='status'>{props.status}</p>
+    </div>
+  )
 }
 
 function OutfitCard(props) {

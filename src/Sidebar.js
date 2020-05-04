@@ -39,6 +39,7 @@ export default class Sidebar extends React.Component {
           <SortMenu selAttr={this.props.selAttr} sortOutfits={this.props.sortOutfits} />
           <div className='filterHeading filter'><p>Filter data by...</p></div>
           <SearchType toggleTrue={this.props.toggleTrue} toggleFalse={this.props.toggleFalse} />
+          {this.props.toggleMade && <ToggleMade toggleMade={this.props.toggleMade}/>}
           <FilterMenu filters={this.state.filters} submitFilterSelection={this.props.submitFilterSelection} />
 
         </div>
@@ -145,6 +146,17 @@ function SearchType(props) {
       <div className='radioBtn'>
         <input type='radio' name='searchType' id='true' onClick={props.toggleTrue} />
         <label htmlFor='true'>Inclusive match <br /><span className='desc'>(find outfits that match 1 or more criteria)</span></label>
+      </div>
+    </div>
+  )
+}
+
+function ToggleMade(props) {
+  return (
+    <div className='filter'>
+      <div className='radioBtn'>
+        <input type='checkbox' id='toggleMade' onClick={props.toggleMade} />
+        <label htmlFor='toggleMade'>Only show made outfits</label>
       </div>
     </div>
   )

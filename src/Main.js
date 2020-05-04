@@ -28,6 +28,7 @@ export default class Main extends React.Component {
     this.calculateTotalBonus = this.calculateTotalBonus.bind(this);
     this.toggleSearchTypeTrue = this.toggleSearchTypeTrue.bind(this);
     this.toggleSearchTypeFalse = this.toggleSearchTypeFalse.bind(this);
+    this.toggleMade = this.toggleMade.bind(this);
     this.sortByFilter = this.sortByFilter.bind(this);
     this.sortOutfits = this.sortOutfits.bind(this);
     this.toggleOutfitList = this.toggleOutfitList.bind(this);
@@ -112,10 +113,18 @@ export default class Main extends React.Component {
     this.setState({ isInclusive: false })
   }
 
+  toggleMade(){
+    let newMade = null;
+    if(this.state.selMade.size === 0){
+      newMade = new Set([true]);
+    } else newMade = new Set()
+    this.submitFilterSelection('selMade')(newMade);
+  }
+
   submitFilterSelection(filter) {
     return (value) => {
       console.log('submitFilterSelection', value)
-      this.setState((state, props) => {
+      this.setState((state) => {
         let newState = { ...state };
         newState[filter] = value;
         const outfitSource = newState.userOutfits ? newState.userOutfits : newState.allOutfits;
@@ -273,7 +282,7 @@ export default class Main extends React.Component {
               //clear team in case of outfits that aren't in userList
               const emptyTeam = state.teamMembers.map(member => 0);
               const preparedOutfits = this.prepareOutfitData(outfits, state)
-              return { userOutfits: outfits, outfits: preparedOutfits, teamMembers: emptyTeam }
+              return { userOutfits: outfits, outfits: preparedOutfits, teamMembers: emptyTeam, selMade: new Set() }
             });
           }
         })
@@ -281,7 +290,7 @@ export default class Main extends React.Component {
   }
 
   handleErrors(response) {
-    console.log(response);
+    //console.log(response);
     if (response.error) {
       if (response.error.code === 403 && response.error.status.includes('PERMISSION_DENIED')) {
         console.log("Error: Sorter did not have permission to access your spreadsheet. Don't forget to turn link-sharing on!")
@@ -337,6 +346,7 @@ export default class Main extends React.Component {
         submitFilterSelection: this.submitFilterSelection,
         toggleTrue: this.toggleSearchTypeTrue,
         toggleFalse: this.toggleSearchTypeFalse,
+        toggleMade: this.state.hasOwnProperty('selMade') && this.toggleMade,
         toggleOutfitList: this.toggleOutfitList,
         sortOutfits: this.sortOutfits,
       }
