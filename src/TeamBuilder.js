@@ -243,8 +243,9 @@ export class TeamView extends React.Component {
 }
 
 function TeamMember(props) {
+  const cls = 'teamMember' + (props.member.hasOwnProperty('Made') ? (!props.member['Made'] ? ' notMade' : '') : '');
   return (
-    <div className={`teamMember ${props.index}`} onClick={() => props.toggleOutfitList(props.index)}>
+    <div className={cls} onClick={() => props.toggleOutfitList(props.index)}>
       {props.member !== 0 &&
         <>
           {props.member['ImageID'] && <OutfitImage {...props.member} />}

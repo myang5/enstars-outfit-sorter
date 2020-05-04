@@ -306,6 +306,10 @@ body{
   cursor: pointer;
 }
 
+.teamMember.notMade .outfitImg{
+  opacity: 0.5;
+}
+
 .teamMember .outfitImg {
   width: 100%;
   height: auto;
