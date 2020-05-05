@@ -19,7 +19,11 @@ export class TeamView extends React.Component {
     //console.log('TeamView render', this.props.activeJob);
     if (this.props.activeJob && this.props.teamMembers.length > 0) {
       const members = this.props.teamMembers.map((member, index) => {
-        return <TeamMember key={index} index={index} member={member} selAttr={this.props.selAttr} toggleOutfitList={this.props.toggleOutfitList} />
+        return <TeamMember key={index} 
+        index={index} 
+        member={member}
+        selAttr={this.props.selAttr} 
+        toggleOutfitList={this.props.toggleOutfitList} />
       })
       const dataBtn = <div className='btn addData' onClick={() => this.props.getUserData(document.querySelector('#userData').value)}>Add user data</div>
       const helpBtn = <div className='btn help' onClick={this.toggleInstructions}>?</div>
@@ -133,13 +137,6 @@ class JobView extends React.PureComponent {
       </>
     )
   }
-}
-
-function JobImage(props) {
-  const image = props.job['ImageID'] ?
-    <img src={'https://drive.google.com/thumbnail?&id=' + props.job['ImageID']} alt={props.job['Job']} /> :
-    <div className='imgPlaceholder'><p>Image N/A</p></div>;
-  return image;
 }
 
 function ProgressBar(props) {

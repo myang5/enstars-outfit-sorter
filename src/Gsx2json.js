@@ -1,10 +1,12 @@
+//filter Array of Objs based on query and job conditions
+//returns deep copy of new Array (with new copy of Objs)
 export function filterData(data, config = {}) {
   let query = config.query || {}; //Object with Sets of values selected for each filter
   let conditions = config.conditions || []; //Array with values of job conditions
   const isInclusive = config.isInclusive || false; //whether row should match query with OR (inclusive) or AND (exclusive)
   const result = [];
   if (data) { //should be Array of Objects
-    console.log('filterGsData', data, config);
+    console.log('filterGsData',config);
     //case 1: no conditions or queries -> return data as is
     //case 2: conditions but no queries -> filter by conditions
     //case 3: no conditions but has queries -> filter by queries
@@ -32,10 +34,11 @@ export function filterData(data, config = {}) {
         }
       }
       if (meetsConditions && queried) {
-        result.push(row);
+        result.push(JSON.parse(JSON.stringify(row))
+
+        );
       }
     }
-    console.log(result);
     return result;
   }
 }
@@ -53,6 +56,8 @@ function matchFilters(query, row) {
   return result;
 }
 
+//convert Array of Arrays to Array of objects assuming first Array holds key values
+//does not mutate original Array, but would only make shallow copy
 export function convertArraysToObjects(arrs) {
   const result = [];
   const headers = arrs[0]; //first row is header row

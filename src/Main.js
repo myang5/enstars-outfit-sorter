@@ -13,14 +13,15 @@ export default class Main extends React.Component {
       userOutfits: null, //Array of Obj of user outfit rows, null when user has no data/removes their data
       outfits: null, //Outfits to display after allOutfits or userOutfits has been filtered
       userSheetId: null,
-      jobs: null, //Array of Obj of all job rows in database spreadsheet
+      idolStats: null,
       attr: ['Ac', 'Pa', 'Un', 'Sm', 'Te', 'Ch'],
-      filters: null, //Array of headers for each column to filter by
       selAttr: [], //Array of  strings from attr matching relevant attributes
-      isInclusive: false,
-      view: 'card',
-      isOutfitList: false,
+      jobs: null, //Array of Obj of all job rows in database spreadsheet
       activeJob: null,
+      filters: null, //Array of headers for each column to filter by
+      isInclusive: false,
+      //view: 'card',
+      isOutfitList: false,
       teamMembers: [],
       teamSlot: null, //Store index of teamMember user is currently choosing
     };
@@ -93,20 +94,6 @@ export default class Main extends React.Component {
     }
   }
 
-  setMember(newMember) {
-    this.setState((state, props) => {
-      let newTeam = state.teamMembers.slice();
-      let index = state.teamSlot;
-      //can't have same chara on team twice
-      //assume if user chooses outfit for chara on team they are changing their outfit
-      for (let i = 0; i < newTeam.length; i++) {
-        if (newMember['Character'] === newTeam[i]['Character']) { index = i; break; }
-      }
-      newTeam[index] = newMember;
-      return { teamMembers: newTeam, isOutfitList: false };
-    })
-  }
-
   toggleSearchTypeTrue() {
     this.setState({ isInclusive: true })
   }
@@ -121,6 +108,33 @@ export default class Main extends React.Component {
       newMade = new Set([true]);
     } else newMade = new Set()
     this.submitFilterSelection('selMade')(newMade);
+  }
+
+  sortByFilter(outfits, filter, isAscending = true) {
+    outfits.sort((a, b) => isAscending ? a[filter] - b[filter] : b[filter] - a[filter])
+  }
+
+  sortOutfits(filter, isAscending) {
+    this.setState((state, props) => {
+      let outfits = [...state.outfits];
+      this.sortByFilter(outfits, filter, isAscending);
+      //console.log('sortOutfits', filter, outfits);
+      return { outfits: outfits }
+    })
+  }
+
+  setMember(newMember) {
+    this.setState((state, props) => {
+      let newTeam = state.teamMembers.slice();
+      let index = state.teamSlot;
+      //can't have same chara on team twice
+      //assume if user chooses outfit for chara on team they are changing their outfit
+      for (let i = 0; i < newTeam.length; i++) {
+        if (newMember['Character'] === newTeam[i]['Character']) { index = i; break; }
+      }
+      newTeam[index] = newMember;
+      return { teamMembers: newTeam, isOutfitList: false };
+    })
   }
 
   submitFilterSelection(filter) {
@@ -156,14 +170,17 @@ export default class Main extends React.Component {
   //sort outfits in descending order by total bonus
   //return outfit Obj of Arrays
   prepareOutfitData(data, state) {
+    //create new deep copy of outfitList, but slows performance
+    //be careful about how other functions may mutate data
+    //let newData = JSON.parse(JSON.stringify(data)) 
     let queryConfig = this.getQueryAndConditions(state);
     queryConfig.isInclusive = state.isInclusive;
     let outfits = filterData(data, queryConfig);
+    outfits = this.addIdolStatus(outfits, state.idolStats);
     if (state.selAttr.length > 0) {
       outfits = this.calculateTotalBonus(outfits, state.selAttr);
       this.sortByFilter(outfits, 'Total Bonus', false);
     }
-    //console.log('prepareOutfitData', selAttr)
     return outfits;
   }
 
@@ -177,17 +194,24 @@ export default class Main extends React.Component {
     return outfits;
   }
 
-  sortByFilter(outfits, filter, isAscending = true) {
-    outfits.sort((a, b) => isAscending ? a[filter] - b[filter] : b[filter] - a[filter])
-  }
-
-  sortOutfits(filter, isAscending) {
-    this.setState((state, props) => {
-      let outfits = [...state.outfits];
-      this.sortByFilter(outfits, filter, isAscending);
-      //console.log('sortOutfits', filter, outfits);
-      return { outfits: outfits }
-    })
+  addIdolStatus(outfits, idolStats) {
+    if (idolStats) {
+      outfits.forEach(outfitObj => {
+        const stats = idolStats[outfitObj['Character']];
+        //stats might not exist if user has misspelled idol name
+        if (stats && !outfitObj['AddedStat']) {
+          Object.keys(stats).forEach(attr => {
+            //attr might not exist if user has misspelled attr
+            if (outfitObj.hasOwnProperty(attr)) {
+              outfitObj[attr] += stats[attr];
+            }
+          });
+          outfitObj['AddedStat'] = true;
+        }
+      });
+    }
+    console.log('addIdolStatus', outfits)
+    return outfits
   }
 
   getUserData(url) {
@@ -288,6 +312,26 @@ export default class Main extends React.Component {
             });
           }
         })
+        .then(
+          fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${'Idol Status'}?key=${apiKey}`)
+            .then(res => res.json())
+            .then(res => {
+              if (res.values) {
+                const userStatus = convertArraysToObjects(res.values);
+                const idolStats = {};
+                userStatus.forEach(idol => {
+                  const name = idol['Character'];
+                  delete idol['Character'];
+                  idolStats[name] = idol;
+                });
+                const newState = { ...this.state };
+                newState.idolStats = idolStats;
+                const outfits = this.prepareOutfitData(this.state.outfits, newState);
+                newState.outfits = outfits;
+                this.setState(newState);
+              }
+            })
+        )
     }
   }
 
@@ -312,6 +356,7 @@ export default class Main extends React.Component {
 
   render() {
     if (this.state.outfits && this.state.jobs) {
+      //console.log('Main render', this.state.allOutfits, this.state.userOutfits, this.state.outfits)
       //outfitList doesn't update without key. 100 is an arbitrary number
       let outfitListKey = this.state.outfits.slice(0, 100);
       outfitListKey = JSON.stringify(outfitListKey);

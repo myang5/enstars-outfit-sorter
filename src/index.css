@@ -212,7 +212,7 @@ body{
   display: flex;
   flex-direction: row;
   align-items: center;
-  /*font-size: 0.8rem;*/
+  flex: 1 1 50%;
 }
 
 #jobView .header {
@@ -364,7 +364,7 @@ body{
   align-items: center;
   width: 100%;
   font-size: 0.8rem;
-  flex: 1 0 50%;
+  flex: 1 1 50%;
 }
 
 .teamMember {
@@ -608,7 +608,7 @@ body{
   width: 100%;
 }
 
-#outfitList.card {
+#outfitList {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
