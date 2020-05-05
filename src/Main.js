@@ -423,7 +423,7 @@ export function Image(props) {
     image = <div className='imgPlaceholder'>{props.alt}</div>
   }
   else {
-    image = <img src={'https://drive.google.com/thumbnail?&id=' + props.obj['ImageID']} alt={props.alt} />
+    image = <img src={'https://drive.google.com/uc?export=view&id=' + props.obj['ImageID']} alt={props.alt} />
   }
   return image;
 }
@@ -475,7 +475,11 @@ export function AttrList(props) {
     <div className='attrList' style={{ height: height }}>
       {props.attr.map(attr => {
         const value = (props.value ? props.value[attr] : 0) + (props.bonus ? props.bonus[attr] : 0);
-        const numberText = (props.value ? props.value[attr] : '') + (props.bonus ? ` +${props.bonus[attr]}` : '').trim();
+        //const numberText = (props.value ? props.value[attr] : '') + (props.bonus ? ` +${props.bonus[attr]}` : '').trim();
+        let numberText = value;
+        if(props.bonus) {
+          if(!props.bonus['AddedStat']) { numberText = '+' + numberText}
+        }
         //const progressText = props.baseline ?
         //  `${props.value[attr]}/${props.baseline[attr]}`
         //  : '';
@@ -507,7 +511,7 @@ function StatusBar(props) {
           style={{ marginLeft: `${props.baseline / props.maxValue * props.width}rem` }} />
       }
       <span className={'statusBar ' + props.attr.toLowerCase()}
-        style={{ width: `${props.value / props.maxValue * props.width}rem` }} />
+        style={{ width: `${props.value / props.maxValue * 100}%` }} />
     </span>
   )
 }

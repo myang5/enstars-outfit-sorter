@@ -102,9 +102,6 @@ export default class OutfitList extends React.PureComponent {
 
 function OutfitCard(props) {
   const cls = 'outfitCard' + (props.info.hasOwnProperty('Made') ? (!props.info['Made'] ? ' notMade' : '') : '');
-  const attrListProps = { attr: props.selAttr, statusBarWidth: 4.2, maxValue: 300 }
-  if (props['AddedStat']) { attrListProps.value = props.info }
-  else { attrListProps.bonus = props.info }
   return (
     <div className={cls} onClick={() => props.setMember(props.info)}>
       <p>{props.info['Character']}</p>
@@ -112,7 +109,7 @@ function OutfitCard(props) {
       <hr />
       <div className='rowContainer'>
         <Image obj={props.info} alt={`${props.info['Character']} ${props.info['Outfit']}`} />
-        <AttrList {...attrListProps} />
+        <AttrList attr={props.selAttr} bonus={props.info} statusBarWidth={4.2} maxValue={300} />
       </div>
       {('Total Bonus' in props.info) && <span>{`TOTAL BONUS: ${props.info['Total Bonus']}`}</span>}
     </div>

@@ -19,11 +19,11 @@ export class TeamView extends React.Component {
     //console.log('TeamView render', this.props.activeJob);
     if (this.props.activeJob && this.props.teamMembers.length > 0) {
       const members = this.props.teamMembers.map((member, index) => {
-        return <TeamMember key={index} 
-        index={index} 
-        member={member}
-        selAttr={this.props.selAttr} 
-        toggleOutfitList={this.props.toggleOutfitList} />
+        return <TeamMember key={index}
+          index={index}
+          member={member}
+          selAttr={this.props.selAttr}
+          toggleOutfitList={this.props.toggleOutfitList} />
       })
       const dataBtn = <div className='btn addData' onClick={() => this.props.getUserData(document.querySelector('#userData').value)}>Add user data</div>
       const helpBtn = <div className='btn help' onClick={this.toggleInstructions}>?</div>
@@ -53,12 +53,8 @@ function TeamMember(props) {
   const cls = 'teamMember' + (props.member.hasOwnProperty('Made') ? (!props.member['Made'] ? ' notMade' : '') : '');
   return (
     <div className={cls} onClick={() => props.toggleOutfitList(props.index)}>
-      {props.member !== 0 &&
-        <>
-          <Image obj={props.member} alt={`${props.member['Character']} ${props.member['Outfit']}`} />
-          <AttrList attr={props.selAttr} bonus={props.member} statusBarWidth={4.2} maxValue={300} hideIcon={true} />
-        </>
-      }
+      <Image obj={props.member} alt={`${props.member['Character']} ${props.member['Outfit']}`} />
+      <AttrList attr={props.selAttr} bonus={props.member} statusBarWidth={4.2} maxValue={300} hideIcon={true} />
     </div>
   )
 }
