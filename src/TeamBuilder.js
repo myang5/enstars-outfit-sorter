@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, AttrList } from './Main.js';
 import Instructions from './Instructions.js';
+import platform from './platform.svg';
 
 export class TeamView extends React.Component {
   constructor(props) {
@@ -25,22 +26,25 @@ export class TeamView extends React.Component {
           selAttr={this.props.selAttr}
           toggleOutfitList={this.props.toggleOutfitList} />
       })
-      const dataBtn = <div className='btn addData' onClick={() => this.props.getUserData(document.querySelector('#userData').value)}>Add user data</div>
+      const dataBtn = <div className='btn addData' onClick={() => this.props.getUserData(document.querySelector('#userData').value)}>Add</div>
       const helpBtn = <div className='btn help' onClick={this.toggleInstructions}>?</div>
       const sheetHref = 'https://docs.google.com/spreadsheets/d/' + this.props.sheetId;
       return (
         <>
           <div id='topMenu'>
-            {this.props.sheetId &&
+            {/*{this.props.sheetId &&
               <span>using spreadsheet <a href={sheetHref}>{this.props.sheetId.slice(0, 7) + '...'}</a></span>
-            }
-            <input id='userData' type='text' />
+            }*/}
+            <span>spreadsheet: </span>
+            <input id='userData' type='text' value={this.props.sheetId} />
             {dataBtn}
             {helpBtn}
             {/*<div>Make sure to turn on link-sharing for your Google spreadsheet</div>*/}
           </div>
-          <div id='teamView'>
-            {members}
+          <div id='teamViewContainer'>
+            <div id='teamView'>
+              {members}
+            </div>
           </div>
           {this.state.isInstructions && <Instructions toggleInstructions={this.toggleInstructions} />}
         </>
@@ -53,8 +57,18 @@ function TeamMember(props) {
   const cls = 'teamMember' + (props.member.hasOwnProperty('Made') ? (!props.member['Made'] ? ' notMade' : '') : '');
   return (
     <div className={cls} onClick={() => props.toggleOutfitList(props.index)}>
-      <Image obj={props.member} alt={`${props.member['Character']} ${props.member['Outfit']}`} />
-      <AttrList attr={props.selAttr} bonus={props.member} statusBarWidth={4.2} maxValue={300} hideIcon={true} />
+      <Image obj={props.member} />
+      <Platform hasMember={props.member} />
+      <AttrList attr={props.selAttr} bonus={props.member} maxValue={300} hideIcon={true} />
+    </div>
+  )
+}
+
+function Platform(props) {
+  return (
+    <div className='platformContainer'>
+      {props.hasMember ? <div className='shadow'/> : null}
+      <img className='platform' src={platform}/>
     </div>
   )
 }
@@ -127,7 +141,7 @@ class JobView extends React.PureComponent {
           {changeJobBtn}
         </div>
         <div className='statInfo'>
-          <AttrList statusBarWidth={8} maxValue={1500} attr={attr} value={value} baseline={baseline} />
+          <AttrList maxValue={1500} attr={attr} value={value} baseline={baseline} />
           <ProgressBar baseline={baseline} value={value} />
         </div>
       </>
@@ -252,7 +266,7 @@ function JobDetail(props) {
     <div id='jobDetail'>
       <p>{props.job['Job JP']}</p>
       <Image obj={props.job} alt={props.job['Job']} />
-      <AttrList statusBarWidth={8} maxValue={1500} attr={attr} value={value} />
+      <AttrList maxValue={1500} attr={attr} value={value} />
       {props.button}
       {closeBtn}
     </div>

@@ -109,7 +109,7 @@ function OutfitCard(props) {
       <hr />
       <div className='rowContainer'>
         <Image obj={props.info} alt={`${props.info['Character']} ${props.info['Outfit']}`} />
-        <AttrList attr={props.selAttr} bonus={props.info} statusBarWidth={4.2} maxValue={300} />
+        <AttrList attr={props.selAttr} bonus={props.info} maxValue={300} />
       </div>
       {('Total Bonus' in props.info) && <span>{`TOTAL BONUS: ${props.info['Total Bonus']}`}</span>}
     </div>

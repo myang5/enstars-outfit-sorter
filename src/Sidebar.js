@@ -1,5 +1,8 @@
 import React from 'react';
 import { AttrIcon } from './Main.js';
+import arrowLeft from './arrow_left_darkblue.svg';
+import arrowUp from './arrow_up_darkblue.svg';
+import arrowDown from './arrow_down_darkblue.svg';
 
 export default class Sidebar extends React.Component {
   constructor(props) {
@@ -33,7 +36,7 @@ export default class Sidebar extends React.Component {
     if (this.state.filters) {
       return (
         <div id='sidebar' className='toggledOn'>
-          <button onClick={this.props.toggleOutfitList}>Close</button>
+          <div className='btn close' onClick={this.props.toggleOutfitList}><img src={arrowLeft} alt='←'/></div>
           {/*<CheckBoxOptions optionsArr={this.props.attr} submitSelection={this.props.submitFilterSelection('selAttr')} />*/}
           <span id='status'>{this.props.status}</span>
           <div className='right'>
@@ -132,7 +135,9 @@ class SortMenu extends React.Component {
 function SortOpt(props) {
   return (
     <div className={'btn sortOpt' + (props.isActive ? ' active' : '')} onClick={props.onClick}>
-      <span style={{ width: '0.5rem', height: '1rem' }}>{props.isActive ? (props.isAscending ? '↑' : '↓') : ''}</span>
+      <span className='arrow' style={{ width: '0.7rem', height: '1rem' }}>
+        {props.isActive && (props.isAscending ? <img src={arrowUp} alt='↑' /> : <img src={arrowDown} alt='↓' />)}
+      </span>
       {props.opt !== 'Total' ? <AttrIcon attr={props.opt} /> : <span>{props.opt}</span>}
     </div>
   )
@@ -157,7 +162,7 @@ function ToggleMade(props) {
   return (
     <div className='radioBtn'>
       <input type='checkbox' id='toggleMade' onClick={props.toggleMade} />
-      <label htmlFor='toggleMade'>Only show made outfits</label>
+      <label htmlFor='toggleMade'>Show made outfits</label>
     </div>
   )
 }

@@ -16,8 +16,7 @@ body{
   display: flex;
   height: auto;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   min-width: 8rem;
   font-size: 0.8rem;
   text-align: right;
@@ -27,7 +26,8 @@ body{
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 8.5rem;
+  margin: 0.1em 0;
+  width: 100%;
 }
 
 .attr > * {
@@ -56,10 +56,10 @@ body{
 .statusBarContainer {
   position: relative;
   display: flex;
-  flex: 0 0 auto;
-  border: 0.5px solid #000;
+  flex: 1 1 auto;
+  border: 0.5px solid #0F1959;
   border-radius: 2px;
-  height: 0.7em;
+  height: 0.8em;
   overflow: hidden;
 }
 
@@ -74,7 +74,7 @@ body{
   display: inline-block;
   width: 2px;
   height: 100%;
-  background-color: #000;
+  background-color: #0F1959;
 }
 
 .ac {
@@ -102,9 +102,9 @@ body{
 }
 
 .btn {
-  border: 0.5px solid #9e9e9e;
+  border: 1px solid #0F1959;
   border-radius: 5px;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   box-sizing: border-box;
   margin: 0.5rem 0;
   background-color: #fff100;
@@ -126,9 +126,9 @@ body{
 
 .imgPlaceholder {
   display: flex;
+  justify-content: center;
   align-items: center;
   color: #9e9e9e;
-  text-align: center;
 }
 
 /* ------------------------------------TEAM BUILDER------------------------------------ */
@@ -153,15 +153,18 @@ body{
   align-items: center;
   width: 100%;
   height: auto;
+  padding: 0 1em;
+  box-sizing: border-box;
+  border-bottom: solid 2px #0F1959;
 }
 
 #topMenu > * {
-  margin-right: 1em;
-  margin-top: 1em;
+  margin-left: 1em;
 }
 
 .btn.help {
   width: 2rem;
+  padding: 0.5rem;
 }
 
 #instructions {
@@ -210,9 +213,9 @@ body{
 
 #jobView {
   display: flex;
+  flex: 1 1 50%;
   flex-direction: row;
   align-items: center;
-  flex: 1 1 50%;
 }
 
 #jobView .header {
@@ -224,12 +227,14 @@ body{
   width: 17rem;
 }
 
-#jobView img, .imgPlaceholder {
+#jobView img, #jobView .imgPlaceholder {
   width: 100%;
   height: auto;
 }
 
 #jobView .imgPlaceholder {
+  border: solid 2px #CBCFE4;
+  box-sizing: border-box;
   height: 9.2rem;
 }
 
@@ -246,11 +251,15 @@ body{
   width: 3rem;
 }
 
+#jobView .attrList {
+  width: 90%;
+}
+
 #progressBarContainer {
   position: relative;
   display: flex;
-  border: 0.5px solid #000;
-  border-radius: 2px;
+  border: 0.5px solid #0F1959;
+  border-radius: 0.18rem;
   height: 1rem;
   background-color: white;
   overflow: hidden;
@@ -268,7 +277,7 @@ body{
   display: inline-block;
   height: 100%;
   border-radius: 2px 0 0 2px;
-  background-image: linear-gradient(to right, #fff100 , orange);
+  background-image: linear-gradient(to left, #fff100 , #E9722D);
 }
 
 #jobView .status {
@@ -357,34 +366,95 @@ body{
 
 /* ------------------------------------TEAMVIEW------------------------------------ */
 
+#teamViewContainer {
+  display: flex;
+  flex: 1 1 50%;
+  width: 100%;
+  overflow-x: auto;
+  background-image: linear-gradient(to right, #ECF4F9, #D1E2F3);
+  border-bottom: solid 2px #0F1959;
+}
+
 #teamView {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  padding: 0.5rem;
+  margin: auto;
+  box-sizing: border-box;
   font-size: 0.8rem;
-  flex: 1 1 50%;
 }
 
 .teamMember {
-  flex: 0 1 15%;
-  max-width: 9rem;
-  margin-right: 1rem;
+  flex: 1 1 calc(20% - 1rem);
+  max-width: 14rem;
+  min-width: 8rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 0.5rem;
   height: auto;
   min-height: 10rem;
-  background-color: #9e9e9e;
+  border: solid 1px #9e9e9e;
   cursor: pointer;
+}
+
+.teamMember .attrList {
+  width: 100%;
+}
+
+.teamMember .attr {
+  width: 55%;
+  justify-content: flex-end;
+}
+
+.teamMember .statusBarContainer {
+  flex: 1 0 calc(100% - 0.5rem);
+}
+
+.teamMember .platformContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 83%;
+  height: auto;
+}
+
+.teamMember .shadow{
+  position: absolute;
+  top: 9%;
+  border-radius: 50%;
+  width: 25%;
+  height: 50%;
+  background-color: #BBBEBF;
+}
+
+.teamMember .platform {
+  width: 55%;
+}
+
+.teamMember > img, .teamMember .imgPlaceholder {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  z-index: 1;
 }
 
 .teamMember.notMade img{
   opacity: 0.5;
 }
 
-.teamMember img {
-  width: 100%;
-  height: auto;
+.teamMember .imgPlaceholder {
+  height: 0;
+  margin-top: 100%;
+  box-sizing: border-box;
 }
+
+
 
 /* ------------------------------------SIDEBAR------------------------------------ */
 .overlay {
@@ -394,7 +464,7 @@ body{
   width: 100%;
   height: 100%;
   background-color: rgba(0,0,0,0.4);
-  z-index: 1;
+  z-index: 99;
 }
 
 .overlayContent {
@@ -423,8 +493,18 @@ body{
   border-bottom: solid 1px #9e9e9e;
 }
 
-#sidebar button {
+#sidebar .close {
+  display: flex;
   margin-left: 1rem;
+  border: 1px solid #0F1959;
+  border-radius: 2px;
+  padding: 0.4em;
+  background-color: #fff;
+}
+
+#sidebar .close img {
+  width: 1em;
+  height: auto;
 }
 
 #sidebar #status {
@@ -462,21 +542,32 @@ body{
   width: fit-content;
 }
 
-.btn.sortOpt {
+.sortOpt {
   display: flex;
   flex-direction: row;
-  align-items: baseline;
+  align-items: center;
   background-color: #fff;
   text-align: center;
   height: auto;
   border: none;
 }
 
-.btn.sortOpt * {
+.sortOpt * {
   margin: 0 0.25rem;  
 }
 
-.btn.sortOpt.active {
+.sortOpt .arrow {
+  display: flex;
+  align-items: center;
+}
+
+.sortOpt img {
+  width: 100%;
+  height: auto;
+  margin: auto;
+}
+
+.sortOpt.active {
   background-color: #fff100;
 }
 
@@ -638,6 +729,10 @@ body{
   background-color: rgba(0,0,0,0);
 }
 
+.outfitCard .attrList {
+  width: 5rem;
+}
+
 /*.outfitCard { //for horizontal layout
   display: flex;
   justify-content: center;
@@ -690,7 +785,7 @@ body{
   width: 100%;
 }
 
-.outfitCard img, .imgPlaceholder {
+.outfitCard img, .outfitCard .imgPlaceholder {
   height: 7rem;
   width: 7rem;
   margin-bottom: 0.3rem;
