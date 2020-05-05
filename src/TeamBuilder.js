@@ -23,9 +23,13 @@ export class TeamView extends React.Component {
       })
       const dataBtn = <div className='btn addData' onClick={() => this.props.getUserData(document.querySelector('#userData').value)}>Add user data</div>
       const helpBtn = <div className='btn help' onClick={this.toggleInstructions}>?</div>
+      const sheetHref = 'https://docs.google.com/spreadsheets/d/' + this.props.sheetId;
       return (
         <>
           <div id='topMenu'>
+            {this.props.sheetId &&
+              <span>using spreadsheet <a href={sheetHref}>{this.props.sheetId.slice(0, 7) + '...'}</a></span>
+            }
             <input id='userData' type='text' />
             {dataBtn}
             {helpBtn}
@@ -34,7 +38,7 @@ export class TeamView extends React.Component {
           <div id='teamView'>
             {members}
           </div>
-          {this.state.isInstructions && <Instructions toggleInstructions={this.toggleInstructions}/>}
+          {this.state.isInstructions && <Instructions toggleInstructions={this.toggleInstructions} />}
         </>
       )
     } else return null;
@@ -119,7 +123,7 @@ class JobView extends React.PureComponent {
       <>
         <div className='header'>
           <p>{this.props.activeJob['Job JP']}</p>
-          <Image obj={this.props.activeJob} alt={this.props.activeJob['Job']}/>
+          <Image obj={this.props.activeJob} alt={this.props.activeJob['Job']} />
           {changeJobBtn}
         </div>
         <div className='statInfo'>
@@ -254,7 +258,7 @@ function JobDetail(props) {
   return (
     <div id='jobDetail'>
       <p>{props.job['Job JP']}</p>
-      <Image obj={props.job} alt={props.job['Job']}/>
+      <Image obj={props.job} alt={props.job['Job']} />
       <AttrList statusBarWidth={8} maxValue={1500} attr={attr} value={value} />
       {props.button}
       {closeBtn}

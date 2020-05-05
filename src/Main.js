@@ -12,6 +12,7 @@ export default class Main extends React.Component {
       allOutfits: null, //Array of Obj of all outfit rows in database spreadsheet
       userOutfits: null, //Array of Obj of user outfit rows, null when user has no data/removes their data
       outfits: null, //Outfits to display after allOutfits or userOutfits has been filtered
+      userSheetId: null,
       jobs: null, //Array of Obj of all job rows in database spreadsheet
       attr: ['Ac', 'Pa', 'Un', 'Sm', 'Te', 'Ch'],
       filters: null, //Array of headers for each column to filter by
@@ -283,7 +284,7 @@ export default class Main extends React.Component {
               //clear team in case of outfits that aren't in userList
               const emptyTeam = state.teamMembers.map(member => 0);
               const preparedOutfits = this.prepareOutfitData(outfits, state)
-              return { userOutfits: outfits, outfits: preparedOutfits, teamMembers: emptyTeam, selMade: new Set() }
+              return { userSheetId: sheetId, userOutfits: outfits, outfits: preparedOutfits, teamMembers: emptyTeam, selMade: new Set() }
             });
           }
         })
@@ -323,6 +324,7 @@ export default class Main extends React.Component {
         selectJob: this.selectJob,
       }
       const teamViewProps = {
+        sheetId: this.state.userSheetId,
         selAttr: this.state.selAttr,
         activeJob: this.state.activeJob,
         teamMembers: this.state.teamMembers,
@@ -383,6 +385,7 @@ export function Image(props) {
 
 
 //this Image class slows down load time...
+//https://stackoverflow.com/questions/39777833/image-onload-event-in-isomorphic-universal-react-register-event-after-image-is
 //class Image extends React.PureComponent {
 //  constructor(props) {
 //    super(props);
