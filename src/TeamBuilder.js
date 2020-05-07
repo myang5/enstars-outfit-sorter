@@ -36,7 +36,7 @@ export class TeamView extends React.Component {
               <span>using spreadsheet <a href={sheetHref}>{this.props.sheetId.slice(0, 7) + '...'}</a></span>
             }*/}
             <span>spreadsheet: </span>
-            <input id='userData' type='text' value={this.props.sheetId} />
+            <input id='userData' type='text' defaultValue={this.props.sheetId} />
             {dataBtn}
             {helpBtn}
             {/*<div>Make sure to turn on link-sharing for your Google spreadsheet</div>*/}
@@ -53,12 +53,17 @@ export class TeamView extends React.Component {
   }
 }
 
+//trying to keep div same ratio
+//https://stackoverflow.com/questions/12170261/how-to-auto-resize-a-div-with-css-while-keeping-aspect-ratio
 function TeamMember(props) {
   const cls = 'teamMember' + (props.member.hasOwnProperty('Made') ? (!props.member['Made'] ? ' notMade' : '') : '');
   return (
     <div className={cls} onClick={() => props.toggleOutfitList(props.index)}>
-      <Image obj={props.member} />
+      <div className='imgContainer'>
       <Platform hasMember={props.member} />
+        <Image obj={props.member} />
+        
+      </div>
       <AttrList attr={props.selAttr} bonus={props.member} maxValue={300} hideIcon={true} />
     </div>
   )
@@ -66,10 +71,10 @@ function TeamMember(props) {
 
 function Platform(props) {
   return (
-    <div className='platformContainer'>
-      {props.hasMember ? <div className='shadow'/> : null}
-      <img className='platform' src={platform}/>
-    </div>
+    <>
+      <img className='platform' src={platform} />
+      {props.hasMember ? <div className='shadow' /> : null}
+    </>
   )
 }
 
@@ -106,7 +111,10 @@ export class JobViewContainer extends React.PureComponent {
       return (
         <div id='jobView'>
           <JobView {...jobViewProps} />
-          {this.state.isJobList && <JobList {...jobListProps} />}
+          <div className='overlay' style={{ top: this.state.isJobList ? '0' : '100vh' }}>
+            <JobList {...jobListProps} />
+          </div>
+
         </div>
       )
     } else return null;
@@ -136,12 +144,17 @@ class JobView extends React.PureComponent {
     return (
       <>
         <div className='header'>
-          <p>{this.props.activeJob['Job JP']}</p>
-          <Image obj={this.props.activeJob} alt={this.props.activeJob['Job']} />
-          {changeJobBtn}
+          <div className='title'>
+            <p>{this.props.activeJob['Job JP']}</p>
+            {changeJobBtn}
+          </div>
+          <hr />
+          <div className='statInfo'>
+            <Image obj={this.props.activeJob} alt={this.props.activeJob['Job']} />
+            <AttrList maxValue={1500} attr={attr} value={value} baseline={baseline} />
+          </div>
         </div>
-        <div className='statInfo'>
-          <AttrList maxValue={1500} attr={attr} value={value} baseline={baseline} />
+        <div className='workResult'>
           <ProgressBar baseline={baseline} value={value} />
         </div>
       </>
@@ -155,12 +168,11 @@ function ProgressBar(props) {
     const percent = props.value[attr] / props.baseline[attr] * (1 / 3);
     return accumulator + Math.min(percent, (1 / 3));
   }, 0);
-  const width = 9;
   return (
     <>
-      <div id='progressBarContainer' style={{ width: `${width}rem` }}>
-        <span id='progressBarHide' style={{ width: `${(1 - progress) * width}rem` }} />
-        <span id='progressBar' style={{ width: `${width}rem` }} />
+      <div id='progressBarContainer'>
+        <span id='progressBarHide' style={{ width: `${(1 - progress) * 100}%` }} />
+        <span id='progressBar' style={{ width: `100%` }} />
       </div>
       <div className='status'>{`Work Result: ${Math.floor(progress * 100)}%`}</div>
     </>
@@ -219,10 +231,14 @@ export class JobList extends React.Component {
     const jobDetailBtn = <div className='btn selectJob' onClick={() => { this.props.selectJob(this.state.viewJob); this.props.toggleJobList(); }}>Select Job</div>
     const value = this.state.viewJob &&
       (
-        <div id='jobList'>
-          <JobTabMenu menus={this.getAvailableMenus()} activeMenu={this.state.activeMenu} toggleMenu={this.toggleMenu} />
-          <JobSelect jobs={this.getMenuJobs(this.state.activeMenu)} viewJob={this.state.viewJob} toggleProperty={this.toggleProperty} />
-          <JobDetail job={this.state.viewJob} attr={this.props.attr} button={jobDetailBtn} toggleJobList={this.props.toggleJobList} />
+        <div className='overlayContent' id='jobList'>
+          <div className='bottom left'>
+            <JobTabMenu menus={this.getAvailableMenus()} activeMenu={this.state.activeMenu} toggleMenu={this.toggleMenu} />
+            <JobSelect jobs={this.getMenuJobs(this.state.activeMenu)} viewJob={this.state.viewJob} toggleProperty={this.toggleProperty} />
+          </div>
+          <div className='top right'>
+            <JobDetail job={this.state.viewJob} attr={this.props.attr} button={jobDetailBtn} toggleJobList={this.props.toggleJobList} />
+          </div>
         </div>
       )
     return value;
@@ -267,8 +283,10 @@ function JobDetail(props) {
       <p>{props.job['Job JP']}</p>
       <Image obj={props.job} alt={props.job['Job']} />
       <AttrList maxValue={1500} attr={attr} value={value} />
-      {props.button}
-      {closeBtn}
+      <div className='jobDetailBtns'>
+        {props.button}
+        {closeBtn}
+      </div>
     </div>
   )
 }

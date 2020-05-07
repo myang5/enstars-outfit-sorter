@@ -423,7 +423,7 @@ export default class Main extends React.Component {
 export function Image(props) {
   let image = null;
   if (!props.obj['ImageID'] || props.obj['ImageID'] === 'MISSING') {
-    image = <div className='imgPlaceholder'>{props.alt}</div>
+    image = <div className='imgPlaceholder'><div>{props.alt}</div></div>
   }
   else {
     image = <img src={'https://drive.google.com/uc?export=view&id=' + props.obj['ImageID']} alt={props.alt} />
