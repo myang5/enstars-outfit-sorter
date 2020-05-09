@@ -1,22 +1,29 @@
 {
   "files": {
-    "main.css": "/enstars-outfit-sorter/static/css/main.bdd10d07.chunk.css",
-    "main.js": "/enstars-outfit-sorter/static/js/main.cb835c08.chunk.js",
-    "main.js.map": "/enstars-outfit-sorter/static/js/main.cb835c08.chunk.js.map",
-    "runtime-main.js": "/enstars-outfit-sorter/static/js/runtime-main.78dbdcb7.js",
-    "runtime-main.js.map": "/enstars-outfit-sorter/static/js/runtime-main.78dbdcb7.js.map",
-    "static/js/2.bc6dbf2a.chunk.js": "/enstars-outfit-sorter/static/js/2.bc6dbf2a.chunk.js",
-    "static/js/2.bc6dbf2a.chunk.js.map": "/enstars-outfit-sorter/static/js/2.bc6dbf2a.chunk.js.map",
-    "index.html": "/enstars-outfit-sorter/index.html",
-    "precache-manifest.c7b68176ccbde8a9db0103bfff9cf57b.js": "/enstars-outfit-sorter/precache-manifest.c7b68176ccbde8a9db0103bfff9cf57b.js",
-    "service-worker.js": "/enstars-outfit-sorter/service-worker.js",
-    "static/css/main.bdd10d07.chunk.css.map": "/enstars-outfit-sorter/static/css/main.bdd10d07.chunk.css.map",
-    "static/js/2.bc6dbf2a.chunk.js.LICENSE.txt": "/enstars-outfit-sorter/static/js/2.bc6dbf2a.chunk.js.LICENSE.txt"
+    "main.css": "/enstars-job-builder/static/css/main.5f40a70f.chunk.css",
+    "main.js": "/enstars-job-builder/static/js/main.996eaace.chunk.js",
+    "main.js.map": "/enstars-job-builder/static/js/main.996eaace.chunk.js.map",
+    "runtime-main.js": "/enstars-job-builder/static/js/runtime-main.cdcf4476.js",
+    "runtime-main.js.map": "/enstars-job-builder/static/js/runtime-main.cdcf4476.js.map",
+    "static/js/2.167d8b39.chunk.js": "/enstars-job-builder/static/js/2.167d8b39.chunk.js",
+    "static/js/2.167d8b39.chunk.js.map": "/enstars-job-builder/static/js/2.167d8b39.chunk.js.map",
+    "index.html": "/enstars-job-builder/index.html",
+    "precache-manifest.a6c712799547e44af486edb061d52df4.js": "/enstars-job-builder/precache-manifest.a6c712799547e44af486edb061d52df4.js",
+    "service-worker.js": "/enstars-job-builder/service-worker.js",
+    "static/css/main.5f40a70f.chunk.css.map": "/enstars-job-builder/static/css/main.5f40a70f.chunk.css.map",
+    "static/js/2.167d8b39.chunk.js.LICENSE.txt": "/enstars-job-builder/static/js/2.167d8b39.chunk.js.LICENSE.txt",
+    "static/media/arrow_down_darkblue.svg": "/enstars-job-builder/static/media/arrow_down_darkblue.87e78f37.svg",
+    "static/media/arrow_left_darkblue.svg": "/enstars-job-builder/static/media/arrow_left_darkblue.76314777.svg",
+    "static/media/arrow_up_darkblue.svg": "/enstars-job-builder/static/media/arrow_up_darkblue.727d3630.svg",
+    "static/media/filter_darkblue.svg": "/enstars-job-builder/static/media/filter_darkblue.224365ea.svg",
+    "static/media/instructions0.png": "/enstars-job-builder/static/media/instructions0.d5dad995.png",
+    "static/media/instructions1.png": "/enstars-job-builder/static/media/instructions1.e918fb19.png",
+    "static/media/platform.svg": "/enstars-job-builder/static/media/platform.deae2014.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.78dbdcb7.js",
-    "static/js/2.bc6dbf2a.chunk.js",
-    "static/css/main.bdd10d07.chunk.css",
-    "static/js/main.cb835c08.chunk.js"
+    "static/js/runtime-main.cdcf4476.js",
+    "static/js/2.167d8b39.chunk.js",
+    "static/css/main.5f40a70f.chunk.css",
+    "static/js/main.996eaace.chunk.js"
   ]
 }
