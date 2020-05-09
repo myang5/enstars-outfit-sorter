@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/enstars-outfit-sorter/precache-manifest.0c060b417ab4a8e7eab48b42f74ef1d0.js"
+  "/enstars-outfit-sorter/precache-manifest.60a74b03f3e04858c41aa56fa3007823.js"
 );
 
 self.addEventListener('message', (event) => {
