@@ -87,13 +87,12 @@ export class JobViewContainer extends React.PureComponent {
   }
 
   toggleJobList() {
-    console.log('toggleJobList');
     this.setState((state, props) => { return { isJobList: !state.isJobList } });
   }
 
   render() {
     if (this.props.activeJob) {
-      console.log('JobViewContainer render');
+      //console.log('JobViewContainer render');
       const jobViewProps = {
         attr: this.props.attr,
         activeJob: this.props.activeJob,
@@ -126,7 +125,7 @@ class JobView extends React.PureComponent {
   }
 
   render() {
-    console.log('JobView render');
+    //console.log('JobView render');
     const changeJobBtn = <div className='btn selectJob' onClick={this.props.toggleJobList}>Change Job</div>;
     const attr = this.props.attr.filter(attr => this.props.activeJob[attr] > 0);
     const baseline = {};
@@ -200,7 +199,7 @@ export class JobList extends React.Component {
   }
 
   componentDidMount() {
-    console.log('JobList componentDidMount')
+    //console.log('JobList componentDidMount')
     this.setState({ activeMenu: this.props.activeJob['Type'], viewJob: this.props.activeJob })
   }
 

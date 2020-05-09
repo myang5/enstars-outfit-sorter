@@ -198,7 +198,6 @@ class FilterMenu extends React.PureComponent {
   }
 
   toggleMenu(menu) {
-    console.log('toggleMenu click')
     this.setState((state) => { return { activeMenu: state.activeMenu === menu ? '' : menu } })
   }
 

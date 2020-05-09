@@ -40,7 +40,7 @@ export default class Main extends React.Component {
   }
 
   componentDidMount() {
-    console.log('Main componentDidMount')
+    //console.log('Main componentDidMount')
     const nextSheetId = 'Jobs';
     //fetch info for TeamBuilder
     fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${nextSheetId}?key=${apiKey}`)
@@ -81,7 +81,7 @@ export default class Main extends React.Component {
   }
 
   selectJob(job) {
-    console.log('SelectJob', job);
+    //console.log('SelectJob', job);
     if (this.state.activeJob !== job) {
       const newState = {
         activeJob: job,
@@ -140,7 +140,7 @@ export default class Main extends React.Component {
 
   submitFilterSelection(filter) {
     return (value) => {
-      console.log('submitFilterSelection', value)
+      //console.log('submitFilterSelection', value)
       this.setState((state) => {
         let newState = { ...state };
         newState[filter] = value;
@@ -211,7 +211,7 @@ export default class Main extends React.Component {
         }
       });
     }
-    console.log('addIdolStatus', outfits)
+    //console.log('addIdolStatus', outfits)
     return outfits
   }
 
@@ -220,121 +220,121 @@ export default class Main extends React.Component {
       //url format: https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/possible-extra-content
       let urlStr = url.replace('https://docs.google.com/spreadsheets/d/', '');
       const sheetId = urlStr.indexOf('/') > 0 ? urlStr.slice(0, urlStr.indexOf('/')) : urlStr;
-      console.log(sheetId);
+      //console.log(sheetId);
       //if (sheetId !== this.state.userSheetId) { user might be re-adding sheet w altered data
-        fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${'Outfits'}?key=${apiKey}`)
-          .then(res => res.json())
-          .then(res => this.handleErrors(res))
-          .then(res => {
-            if (res) {
-              let data = res.values; //Array of Arrays representing sheet rows
-              //check if 'Outfits' sheet columns are labeled correctly
-              let headers = data[0].map(header => header.toUpperCase());
-              if (!headers.includes('CHARACTER') || !headers.includes('OUTFIT') || !headers.includes('MADE')) {
-                this.handleErrors({ error: { status: 'HEADER NOT FOUND' } });
-              }
-              else {
-                //keep user data as Array of Arrays? assumes columns are in the same order
-                //--> convert to object so keys can be used instead of index
-                data[0] = headers //ignore column case jic
-                let userList = convertArraysToObjects(data);
-                userList = userList.filter(row => row['CHARACTER'] && row['OUTFIT']) //filter out empty rows
-                userList.sort((a, b) => { //sort by character then outfit A->Z
-                  if (a['CHARACTER'].toUpperCase() === b['CHARACTER'].toUpperCase()) {
-                    if (a['OUTFIT'].toUpperCase() < b['OUTFIT'].toUpperCase()) {
-                      return -1;
-                    }
-                    else if (a['OUTFIT'].toUpperCase() > b['OUTFIT'].toUpperCase()) {
-                      return 1;
-                    }
-                    return 0;
-                  }
-                  else if (a['CHARACTER'].toUpperCase() < b['CHARACTER'].toUpperCase()) {
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${'Outfits'}?key=${apiKey}`)
+        .then(res => res.json())
+        .then(res => this.handleErrors(res))
+        .then(res => {
+          if (res) {
+            let data = res.values; //Array of Arrays representing sheet rows
+            //check if 'Outfits' sheet columns are labeled correctly
+            let headers = data[0].map(header => header.toUpperCase());
+            if (!headers.includes('CHARACTER') || !headers.includes('OUTFIT') || !headers.includes('MADE')) {
+              this.handleErrors({ error: { status: 'HEADER NOT FOUND' } });
+            }
+            else {
+              //keep user data as Array of Arrays? assumes columns are in the same order
+              //--> convert to object so keys can be used instead of index
+              data[0] = headers //ignore column case jic
+              let userList = convertArraysToObjects(data);
+              userList = userList.filter(row => row['CHARACTER'] && row['OUTFIT']) //filter out empty rows
+              userList.sort((a, b) => { //sort by character then outfit A->Z
+                if (a['CHARACTER'].toUpperCase() === b['CHARACTER'].toUpperCase()) {
+                  if (a['OUTFIT'].toUpperCase() < b['OUTFIT'].toUpperCase()) {
                     return -1;
                   }
-                  else if (a['CHARACTER'].toUpperCase() > b['CHARACTER'].toUpperCase()) {
+                  else if (a['OUTFIT'].toUpperCase() > b['OUTFIT'].toUpperCase()) {
                     return 1;
                   }
                   return 0;
-                });
-                console.log('userlist length', userList.length);
-                //how to filter outfits with least time complexity?
-                //a) iterate over userList, find corresponding outfit, leave out outfits not in database
-                //b) iterate over outfits, check if outfit is in userList, outfits not in database will not be displayed
-                //both are O(userList.length * outfits.length)
-                //c) check if outfit is in userList when filtering data
-                //adds complexity to filtering so no good
-                let outfits = [...this.state.allOutfits];
-                let userOutfits = outfits.reduce((acc, outfit) => {
-                  //practice binary search algorithm
-                  let outfitMatch = false;
-                  let low = 0;
-                  let high = userList.length - 1;
-                  //console.log('looking for ', outfit);
-                  while (!outfitMatch) { //check if Character and Outfit combo is in userList
-                    //console.log('numbers', low, high, low > high);
-                    if (high < low) { break; }
-                    let middle = Math.floor(low + (high - low) / 2);
-                    //console.log('middle', middle, userList[middle]);
-                    if (userList[middle]['CHARACTER'].toUpperCase() === outfit['Character'].toUpperCase()) {
-                      if (userList[middle]['OUTFIT'].toUpperCase() < outfit['Outfit'].toUpperCase()) {
-                        low = middle + 1;
-                      }
-                      else if (userList[middle]['OUTFIT'].toUpperCase() > outfit['Outfit'].toUpperCase()) {
-                        high = middle - 1;
-                      }
-                      else { outfitMatch = userList[middle] }
-                    }
-                    else if (userList[middle]['CHARACTER'].toUpperCase() < outfit['Character'].toUpperCase()) {
+                }
+                else if (a['CHARACTER'].toUpperCase() < b['CHARACTER'].toUpperCase()) {
+                  return -1;
+                }
+                else if (a['CHARACTER'].toUpperCase() > b['CHARACTER'].toUpperCase()) {
+                  return 1;
+                }
+                return 0;
+              });
+              //console.log('userlist length', userList.length);
+              //how to filter outfits with least time complexity?
+              //a) iterate over userList, find corresponding outfit, leave out outfits not in database
+              //b) iterate over outfits, check if outfit is in userList, outfits not in database will not be displayed
+              //both are O(userList.length * outfits.length)
+              //c) check if outfit is in userList when filtering data
+              //adds complexity to filtering so no good
+              let outfits = [...this.state.allOutfits];
+              let userOutfits = outfits.reduce((acc, outfit) => {
+                //practice binary search algorithm
+                let outfitMatch = false;
+                let low = 0;
+                let high = userList.length - 1;
+                //console.log('looking for ', outfit);
+                while (!outfitMatch) { //check if Character and Outfit combo is in userList
+                  //console.log('numbers', low, high, low > high);
+                  if (high < low) { break; }
+                  let middle = Math.floor(low + (high - low) / 2);
+                  //console.log('middle', middle, userList[middle]);
+                  if (userList[middle]['CHARACTER'].toUpperCase() === outfit['Character'].toUpperCase()) {
+                    if (userList[middle]['OUTFIT'].toUpperCase() < outfit['Outfit'].toUpperCase()) {
                       low = middle + 1;
                     }
-                    else if (userList[middle]['CHARACTER'].toUpperCase() > outfit['Character'].toUpperCase()) {
+                    else if (userList[middle]['OUTFIT'].toUpperCase() > outfit['Outfit'].toUpperCase()) {
                       high = middle - 1;
                     }
+                    else { outfitMatch = userList[middle] }
                   }
-                  if (outfitMatch) {
-                    if (Object.keys(outfitMatch).includes('MADE')) {
-                      outfit['Made'] = outfitMatch['MADE'] === 'TRUE' ? true : false;
-                    }
-                    acc.push(outfit);
-                    return acc;
+                  else if (userList[middle]['CHARACTER'].toUpperCase() < outfit['Character'].toUpperCase()) {
+                    low = middle + 1;
                   }
-                  else return acc;
-                }, [])
-                return userOutfits;
-              }
-            }
-          })
-          .then(outfits => {
-            if (outfits) {
-              this.setState((state) => {
-                //clear team in case of outfits that aren't in userList
-                const emptyTeam = state.teamMembers.map(member => 0);
-                const preparedOutfits = this.prepareOutfitData(outfits, state)
-                return { userSheetId: sheetId, userOutfits: outfits, outfits: preparedOutfits, teamMembers: emptyTeam, selMade: new Set() }
-              });
-            }
-          })
-          .then(
-            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${'Idol Status'}?key=${apiKey}`)
-              .then(res => res.json())
-              .then(res => {
-                if (res.values) {
-                  const userStatus = convertArraysToObjects(res.values);
-                  const idolStats = {};
-                  userStatus.forEach(idol => {
-                    const name = idol['Character'];
-                    delete idol['Character'];
-                    idolStats[name] = idol;
-                  });
-                  const newState = { ...this.state };
-                  newState.idolStats = idolStats;
-                  const outfits = this.prepareOutfitData(this.state.outfits, newState);
-                  newState.outfits = outfits;
-                  this.setState(newState);
+                  else if (userList[middle]['CHARACTER'].toUpperCase() > outfit['Character'].toUpperCase()) {
+                    high = middle - 1;
+                  }
                 }
-              })
-          )
+                if (outfitMatch) {
+                  if (Object.keys(outfitMatch).includes('MADE')) {
+                    outfit['Made'] = outfitMatch['MADE'] === 'TRUE' ? true : false;
+                  }
+                  acc.push(outfit);
+                  return acc;
+                }
+                else return acc;
+              }, [])
+              return userOutfits;
+            }
+          }
+        })
+        .then(outfits => {
+          if (outfits) {
+            this.setState((state) => {
+              //clear team in case of outfits that aren't in userList
+              const emptyTeam = state.teamMembers.map(member => 0);
+              const preparedOutfits = this.prepareOutfitData(outfits, state)
+              return { userSheetId: sheetId, userOutfits: outfits, outfits: preparedOutfits, teamMembers: emptyTeam, selMade: new Set() }
+            });
+          }
+        })
+        .then(
+          fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${'Idol Status'}?key=${apiKey}`)
+            .then(res => res.json())
+            .then(res => {
+              if (res.values) {
+                const userStatus = convertArraysToObjects(res.values);
+                const idolStats = {};
+                userStatus.forEach(idol => {
+                  const name = idol['Character'];
+                  delete idol['Character'];
+                  idolStats[name] = idol;
+                });
+                const newState = { ...this.state };
+                newState.idolStats = idolStats;
+                const outfits = this.prepareOutfitData(this.state.outfits, newState);
+                newState.outfits = outfits;
+                this.setState(newState);
+              }
+            })
+        )
       //}
     }
   }
