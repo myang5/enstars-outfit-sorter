@@ -86,6 +86,7 @@ export default class Main extends React.Component {
       const newState = {
         activeJob: job,
         teamMembers: new Array(job['Idol Slots']).fill(0),
+        idolStats: this.state.idolStats,
       }
       const outfitSource = this.state.userOutfits ? this.state.userOutfits : this.state.allOutfits;
       newState.selAttr = Object.keys(job).filter(key => this.state.attr.includes(key) && job[key] > 0);
@@ -220,7 +221,7 @@ export default class Main extends React.Component {
       let urlStr = url.replace('https://docs.google.com/spreadsheets/d/', '');
       const sheetId = urlStr.indexOf('/') > 0 ? urlStr.slice(0, urlStr.indexOf('/')) : urlStr;
       console.log(sheetId);
-      if (sheetId !== this.state.userSheetId) {
+      //if (sheetId !== this.state.userSheetId) { user might be re-adding sheet w altered data
         fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${'Outfits'}?key=${apiKey}`)
           .then(res => res.json())
           .then(res => this.handleErrors(res))
@@ -334,7 +335,7 @@ export default class Main extends React.Component {
                 }
               })
           )
-      }
+      //}
     }
   }
 

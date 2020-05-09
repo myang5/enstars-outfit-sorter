@@ -60,9 +60,8 @@ function TeamMember(props) {
   return (
     <div className={cls} onClick={() => props.toggleOutfitList(props.index)}>
       <div className='imgContainer'>
-      <Platform hasMember={props.member} />
+        <Platform hasMember={props.member} />
         <Image obj={props.member} />
-        
       </div>
       <AttrList attr={props.selAttr} bonus={props.member} maxValue={300} hideIcon={true} />
     </div>

@@ -15,9 +15,6 @@ export default class OutfitList extends React.PureComponent {
     this.onScroll = this.onScroll.bind(this);
     this.loadOutfits = this.loadOutfits.bind(this);
     this.onScrollThrottled = throttle(this.onScroll, 100);
-    this.toggleSidebar = () => {
-      document.querySelector('#sidebar').classList.toggle('toggledOn');
-    }
   }
 
   componentDidMount() {
@@ -60,12 +57,11 @@ export default class OutfitList extends React.PureComponent {
   render() {
     //console.log(this.props);
     const outfits = this.state.loadedOutfits.map((elt) =>
-      !this.props.teamMembers.includes(elt) ?
-        <OutfitCard key={elt.Character + elt.Outfit + elt['Total Bonus']}
-          info={elt}
-          selAttr={this.props.selAttr}
-          setMember={this.props.setMember} /> :
-        null
+      <OutfitCard key={elt.Character + elt.Outfit + elt['Total Bonus']}
+        info={elt}
+        inTeam={this.props.teamMembers.includes(elt)}
+        selAttr={this.props.selAttr}
+        setMember={this.props.setMember} />
     );
     //console.log('finished loading outfit list', performance.now())
     let placeholders = [];
@@ -84,19 +80,6 @@ export default class OutfitList extends React.PureComponent {
         }
       </div>
     )
-    //return (
-    //  <div className={'outfitView ' + this.props.view} onScroll={this.onScrollThrottled}>
-    //    {/*<div id='toggleSidebarBtn' onClick={this.toggleSidebar}></div>*/}
-    //    {this.props.view === 'card' && <p className='status'>{this.props.status}</p>}
-    //    <div id='outfitList'>
-    //      {outfits}
-    //      {placeholders}
-    //    </div>
-    //    {!this.state.hasMore && this.props.view === 'card' &&
-    //      <p className='status'>End of results</p>
-    //    }
-    //  </div>
-    //)
   }
 }
 
@@ -104,14 +87,19 @@ function OutfitCard(props) {
   const cls = 'outfitCard' + (props.info.hasOwnProperty('Made') ? (!props.info['Made'] ? ' notMade' : '') : '');
   return (
     <div className={cls} onClick={() => props.setMember(props.info)}>
+      {props.inTeam && <div className='inTeam'>TEAM</div>}
       <p>{props.info['Character']}</p>
       <p>{props.info['Outfit']}</p>
       <hr />
       <div className='rowContainer'>
         <Image obj={props.info} alt={`${props.info['Character']} ${props.info['Outfit']}`} />
+        <div className='right'> 
         <AttrList attr={props.selAttr} bonus={props.info} maxValue={300} />
+        {('Total Bonus' in props.info) && <div className='bonus'>TOTAL: <strong>{props.info['Total Bonus']}</strong></div>}
+        </div>
+        
       </div>
-      {('Total Bonus' in props.info) && <span>{`TOTAL BONUS: ${props.info['Total Bonus']}`}</span>}
+      
     </div>
   )
 }

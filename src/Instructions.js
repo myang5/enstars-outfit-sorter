@@ -7,8 +7,8 @@ export default function Instructions(props) {
     <div className='overlay'>
 
       <div className='overlayContent' id='instructions'>
-        <div className='top'>
-          <div className='topContainer'>
+        <div className='topContainer'>
+          <div className='top'>
             <h3>How to Import User Data</h3>
             <p>
               Make a copy of this <a target='_blank' href='https://docs.google.com/spreadsheets/d/1asGXfBIw2qe3xYX_mawgbjO34gYqsj6IBNRbzqtqNAQ/edit?usp=sharing'>
@@ -45,7 +45,7 @@ export default function Instructions(props) {
             </p>
           </div>
         </div>
-        <div className='bottom'><div className='btn' onClick={props.toggleInstructions}>Close</div></div>
+        <div className='bottomContainer'><div className='btn' onClick={props.toggleInstructions}>Close</div></div>
 
       </div>
     </div>

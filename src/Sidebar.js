@@ -3,13 +3,16 @@ import { AttrIcon } from './Main.js';
 import arrowLeft from './arrow_left_darkblue.svg';
 import arrowUp from './arrow_up_darkblue.svg';
 import arrowDown from './arrow_down_darkblue.svg';
+import filter from './filter_darkblue.svg';
 
 export default class Sidebar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       filters: null,
+      isFilterMenu: false,
     }
+    this.toggleFilterMenu = this.toggleFilterMenu.bind(this);
   }
 
   componentDidMount() {
@@ -32,20 +35,33 @@ export default class Sidebar extends React.Component {
     return setsArr;
   }
 
+  toggleFilterMenu() {
+    this.setState((state) => {
+      const newState = { isFilterMenu: !state.isFilterMenu }
+      return newState;
+    });
+
+  }
+
   render() {
     if (this.state.filters) {
+      const sortMenuLandscape = <SortMenu className='hideOnPortraitSmall' selAttr={this.props.selAttr} sortOutfits={this.props.sortOutfits} toggleMade={this.props.toggleMade} />
+      const sortMenuPortrait = <SortMenu className='hideOnLandscape' selAttr={this.props.selAttr} sortOutfits={this.props.sortOutfits} toggleMade={this.props.toggleMade} />
       return (
         <div id='sidebar' className='toggledOn'>
-          <div className='btn close' onClick={this.props.toggleOutfitList}><img src={arrowLeft} alt='←'/></div>
+          <div className='btn close' onClick={this.props.toggleOutfitList}><img src={arrowLeft} alt='←' /></div>
           {/*<CheckBoxOptions optionsArr={this.props.attr} submitSelection={this.props.submitFilterSelection('selAttr')} />*/}
           <span id='status'>{this.props.status}</span>
           <div className='right'>
-            {this.props.toggleMade && <ToggleMade toggleMade={this.props.toggleMade} />}
-            <SortMenu selAttr={this.props.selAttr} sortOutfits={this.props.sortOutfits} />
+            {sortMenuLandscape}
+            <div className='btn toggleFilter' onClick={this.toggleFilterMenu}><img src={filter} alt='filter options' /></div>
           </div>
-          {/*<div className='filterHeading filter'><p>Filter data by...</p></div>*/}
           {/*<SearchType toggleTrue={this.props.toggleTrue} toggleFalse={this.props.toggleFalse} />*/}
-          {/*<FilterMenu filters={this.state.filters} submitFilterSelection={this.props.submitFilterSelection} />*/}
+          <FilterMenu isFilterMenu={this.state.isFilterMenu}
+            filters={this.state.filters}
+            sortMenu={sortMenuPortrait}
+            submitFilterSelection={this.props.submitFilterSelection}
+            toggleFilterMenu={this.toggleFilterMenu} />
 
         </div>
       )
@@ -128,7 +144,12 @@ class SortMenu extends React.Component {
       isActive={'Total Bonus' === this.state.activeSort}
       isAscending={this.state.isAscending}
       onClick={() => this.toggleSort('Total Bonus')} />)
-    return <div id='sortMenu'>{sortOpts}</div>
+    return (
+      <div id='sortMenu' className={this.props.className ? this.props.className : null}>
+        {this.props.toggleMade && <ToggleMade toggleMade={this.props.toggleMade} />}
+        {sortOpts}
+      </div>
+    )
   }
 }
 
@@ -160,8 +181,8 @@ function SearchType(props) {
 
 function ToggleMade(props) {
   return (
-    <div className='radioBtn'>
-      <input type='checkbox' id='toggleMade' onClick={props.toggleMade} />
+    <div className='radioBtn' id='toggleMade'>
+      <input type='checkbox' onClick={props.toggleMade} />
       <label htmlFor='toggleMade'>Show made outfits</label>
     </div>
   )
@@ -177,7 +198,8 @@ class FilterMenu extends React.PureComponent {
   }
 
   toggleMenu(menu) {
-    this.setState((state, props) => { return { activeMenu: state.activeMenu === menu ? '' : menu } })
+    console.log('toggleMenu click')
+    this.setState((state) => { return { activeMenu: state.activeMenu === menu ? '' : menu } })
   }
 
   render() {
@@ -195,7 +217,19 @@ class FilterMenu extends React.PureComponent {
         />
       );
     });
-    return (<div id='filterMenu'>{filters}</div>)
+    return (
+      <div id='filterMenu' className='overlayContent' style={{ display: this.props.isFilterMenu ? 'flex' : 'none' }}>
+        <div className='topContainer'>
+          <h4 className='hideOnLandscape'>Sort by...</h4>
+          {this.props.sortMenu}
+          <h4>Filter by...</h4>
+          <div id='filters'>
+            {filters}
+          </div>
+        </div>
+        <div className='bottomContainer'><div className='btn' onClick={this.props.toggleFilterMenu}>Close</div></div>
+      </div>
+    )
   }
 
 }
@@ -240,9 +274,9 @@ class Filter extends React.Component {
   render() {
     return (
       <div className='filter'>
-        <div className='filterHeading'>
-          <p className='filterIcon' onClick={this.props.toggleMenu}>⯆</p>
-          <p onClick={this.props.toggleMenu}>{this.props.heading}</p>
+        <div className='filterHeading' onClick={this.props.toggleMenu}>
+          <img className='filterIcon' src={arrowDown} />
+          <p>{this.props.heading}</p>
           {this.state.selected.size > 0 && <a onClick={this.clearFilter}>clear filter</a>}
         </div>
         {this.props.isMenuActive &&
