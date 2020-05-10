@@ -13,6 +13,7 @@ body{
 }
 
 .attrList {
+  flex: 0 0 auto;
   display: flex;
   height: auto;
   flex-direction: column;
@@ -142,7 +143,7 @@ body{
 .overlay {
   position: fixed;
   left: 0;
-  padding: 2rem;
+  padding: 1rem;
   box-sizing: border-box;
   width: 100%;
   height: 100%;
@@ -155,8 +156,8 @@ body{
   display: flex;
   flex-direction: column;
   flex: 1 0 auto;
-  height: calc(100% - 4rem);
-  width: calc(100% - 4rem);
+  height: calc(100% - 2rem);
+  width: calc(100% - 2rem);
   background-color: #fff;
   border-radius: 3px;
   border: solid 1px #0F1959;
@@ -171,6 +172,7 @@ body{
 
 #instructions .bottomContainer, #filterMenu .bottomContainer{
   display: flex;
+  flex: 0 0 auto;
   justify-content: center;
   width: 100%;
   padding: 0.5rem 0;
@@ -309,6 +311,7 @@ body{
 }
 
 #jobView .attrList {
+  flex: 0 1 auto;
   width: 90%;
   max-width: 15rem;
 }
@@ -384,6 +387,7 @@ body{
   display: flex;
   flex-direction: column;
   width: 5rem;
+  overflow-y: scroll;
 }
 
 .jobTab {
@@ -456,6 +460,7 @@ body{
 }
 
 #jobDetail .jobDetailBtns {
+  flex: 0 0 auto;
   display: flex;
   flex-direction: row-reverse;
 }
@@ -1007,12 +1012,12 @@ body{
 /* All smartphones */
 @media (max-width : 812px) { 
   .overlay {
-    padding: 0.7rem;
+    padding: 0;
   }
   
   .overlayContent {
-    height: calc(100% - 1.4rem);
-    width: calc(100% - 1.4rem);
+    height: 100%;
+    width: 100%;
   }
 
   #filterMenu {

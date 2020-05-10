@@ -427,7 +427,10 @@ export function Image(props) {
     image = <div className='imgPlaceholder'><div>{props.alt}</div></div>
   }
   else {
-    image = <img src={'https://drive.google.com/uc?export=view&id=' + props.obj['ImageID']} alt={props.alt} />
+    //was using 'https://drive.google.com/uc?export=view&id=' 
+    //or using 'https://drive.google.com/uc?export=download&id=' but high-res images seem to cause loading issues
+    //can also use 'https://drive.google.com/thumbnail?id='
+    image = <img src={'https://drive.google.com/thumbnail?id=' + props.obj['ImageID']} alt={props.alt} />
   }
   return image;
 }
