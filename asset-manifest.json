@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/enstars-outfit-sorter/static/css/main.8eab6a34.chunk.css",
-    "main.js": "/enstars-outfit-sorter/static/js/main.9e200203.chunk.js",
-    "main.js.map": "/enstars-outfit-sorter/static/js/main.9e200203.chunk.js.map",
+    "main.js": "/enstars-outfit-sorter/static/js/main.3d88907b.chunk.js",
+    "main.js.map": "/enstars-outfit-sorter/static/js/main.3d88907b.chunk.js.map",
     "runtime-main.js": "/enstars-outfit-sorter/static/js/runtime-main.78dbdcb7.js",
     "runtime-main.js.map": "/enstars-outfit-sorter/static/js/runtime-main.78dbdcb7.js.map",
     "static/js/2.167d8b39.chunk.js": "/enstars-outfit-sorter/static/js/2.167d8b39.chunk.js",
     "static/js/2.167d8b39.chunk.js.map": "/enstars-outfit-sorter/static/js/2.167d8b39.chunk.js.map",
     "index.html": "/enstars-outfit-sorter/index.html",
-    "precache-manifest.2f9be27a27e539185481161a61c78476.js": "/enstars-outfit-sorter/precache-manifest.2f9be27a27e539185481161a61c78476.js",
+    "precache-manifest.838c141edfe92d71656566d2cda550e6.js": "/enstars-outfit-sorter/precache-manifest.838c141edfe92d71656566d2cda550e6.js",
     "service-worker.js": "/enstars-outfit-sorter/service-worker.js",
     "static/css/main.8eab6a34.chunk.css.map": "/enstars-outfit-sorter/static/css/main.8eab6a34.chunk.css.map",
     "static/js/2.167d8b39.chunk.js.LICENSE.txt": "/enstars-outfit-sorter/static/js/2.167d8b39.chunk.js.LICENSE.txt",
@@ -24,6 +24,6 @@
     "static/js/runtime-main.78dbdcb7.js",
     "static/js/2.167d8b39.chunk.js",
     "static/css/main.8eab6a34.chunk.css",
-    "static/js/main.9e200203.chunk.js"
+    "static/js/main.3d88907b.chunk.js"
   ]
 }
