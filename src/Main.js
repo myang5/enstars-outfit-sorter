@@ -408,7 +408,7 @@ export default class Main extends React.Component {
             <TeamView {...teamViewProps} />
             {this.state.activeJob && <JobViewContainer {...jobViewProps} />}
           </div>
-          <div className='overlay' style={{ top: this.state.isOutfitList ? '0' : '100vh' }}>
+          <div className='overlay' style={{ display: this.state.isOutfitList ? 'flex' : 'none' }}>
             <div className='overlayContent'>
               <SideBar {...sidebarProps} />
               <OutfitList {...outfitListProps} />

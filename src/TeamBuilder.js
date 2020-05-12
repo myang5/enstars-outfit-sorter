@@ -109,7 +109,7 @@ export class JobViewContainer extends React.PureComponent {
       return (
         <div id='jobView'>
           <JobView {...jobViewProps} />
-          <div className='overlay' style={{ top: this.state.isJobList ? '0' : '100vh' }}>
+          <div className='overlay' style={{ display: this.state.isJobList ? 'flex' : 'none' }}>
             <JobList {...jobListProps} />
           </div>
 

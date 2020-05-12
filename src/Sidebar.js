@@ -217,7 +217,7 @@ class FilterMenu extends React.PureComponent {
       );
     });
     return (
-      <div id='filterMenu' className='overlayContent' style={{ display: this.props.isFilterMenu ? 'flex' : 'none' }}>
+      <div id='filterMenu' className='overlayContent' style={{ display: this.props.isFilterMenu ? 'initial' : 'none' }}>
         <div className='topContainer'>
           <h4 className='hideOnLandscape'>Sort by...</h4>
           {this.props.sortMenu}
@@ -236,11 +236,15 @@ class FilterMenu extends React.PureComponent {
 class Filter extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { selected: new Set() };
+    this.state = {
+      selected: new Set(),
+      submitted: new Set(),
+    };
     this.toggleOption = this.toggleOption.bind(this);
     this.clearSelect = this.clearSelect.bind(this);
     this.selectAll = this.selectAll.bind(this);
     this.clearFilter = this.clearFilter.bind(this);
+    this.submitSelection = this.submitSelection.bind(this);
   }
 
   toggleOption(option) {
@@ -255,7 +259,7 @@ class Filter extends React.Component {
   }
 
   clearSelect() {
-    this.setState({ selected: new Set() })
+    this.setState({ selected: new Set(), submitted: new Set() })
   }
 
   selectAll() {
@@ -270,19 +274,25 @@ class Filter extends React.Component {
     this.props.submitSelection(new Set());
   }
 
+  submitSelection() {
+    const arr = Array.from(this.state.selected).concat(Array.from(this.state.submitted))
+    this.setState({ submitted: new Set(arr) });
+    this.props.submitSelection(this.state.selected);
+  }
+
   render() {
     return (
       <div className='filter'>
-        <div className='filterHeading' onClick={this.props.toggleMenu}>
-          <img className='filterIcon' src={arrowDown} />
-          <p>{this.props.heading}</p>
-          {this.state.selected.size > 0 && <a onClick={this.clearFilter}>clear filter</a>}
+        <div className='filterHeading'>
+          <img className='filterIcon' src={arrowDown} onClick={this.props.toggleMenu} />
+          <p onClick={this.props.toggleMenu}>{this.props.heading}</p>
+          {this.state.submitted.size > 0 && <a onClick={this.clearFilter}>clear filter</a>}
         </div>
         {this.props.isMenuActive &&
           <FilterOptions heading={this.props.heading}
             optionsArr={this.props.optionsArr}
             selected={this.state.selected}
-            submitSelection={() => this.props.submitSelection(this.state.selected)}
+            submitSelection={this.submitSelection}
             toggleMenu={this.props.toggleMenu}
             toggleOption={this.toggleOption}
             clearSelect={this.clearSelect}
@@ -297,15 +307,15 @@ class FilterOptions extends React.Component {
     return (
       <div className='filterOptions'>
         <div>
-          <button className='clearBtn' onClick={this.props.clearSelect}>Clear</button>
-          <button className='selectAllBtn' onClick={this.props.selectAll}>Select All</button>
+          <span className='btn submit' onClick={() => { this.props.toggleMenu(); this.props.submitSelection() }}>OK</span>
+          {/*<a className='selectAllBtn' onClick={this.props.selectAll}>select all</a>*/}
         </div>
         <SelectOptions heading={this.props.heading}
           optionsArr={this.props.optionsArr}
           selected={this.props.selected}
           toggleOption={this.props.toggleOption} />
         <div>
-          <button className='submitBtn' onClick={() => { this.props.toggleMenu(); this.props.submitSelection() }}>OK</button>
+
         </div>
       </div>
     )

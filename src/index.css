@@ -142,6 +142,7 @@ body{
 
 .overlay {
   position: fixed;
+  top: 0;
   left: 0;
   padding: 1rem;
   box-sizing: border-box;
@@ -309,11 +310,14 @@ body{
 }
 
 #jobView .attrList {
-  flex: 0 1 auto;
+  
   width: 90%;
   max-width: 15rem;
 }
 
+#jobView .statInfo > .attrList {
+  flex: 0 1 auto;
+}
 
 #jobView .workResult {
   flex: 0 1 50%;
@@ -362,8 +366,6 @@ body{
   flex-direction: row;
   max-width: 50rem;
   background-color: #fff;
-  border: 1px solid #0F1959;
-  border-radius: 3px;
   font-size: 0.8rem;
   overflow: hidden;
 }
@@ -385,7 +387,7 @@ body{
   display: flex;
   flex-direction: column;
   width: 5rem;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .jobTab {
@@ -667,12 +669,14 @@ body{
 }
 
 #filterMenu {
-  right: -1px;
-  top: -1px;
+  right: 0;
+  top: 0;
   width: 20rem;
   max-width: 100%;
   height: auto;
   max-height: calc(100vh - 2rem);
+  border-radius: 3px;
+  border: solid 1px #0F1959;
   background-color: #fff;
   font-size: 1rem;
   padding: 0.25rem 0.5rem 0 0.5rem;
@@ -698,6 +702,11 @@ body{
 .filter {
   box-sizing: border-box;
   width: 100%;
+}
+
+.filter a {
+  text-decoration: underline;
+  font-size: 0.8rem;
 }
 
 .filterHeading {
@@ -736,7 +745,7 @@ body{
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   box-sizing: border-box;
   height: auto;
   background-color: #fff;
@@ -750,6 +759,7 @@ body{
   overflow-y: auto;
   list-style-type: none;
   padding: 0;
+  background-color: #ECF4F9;
 }
 
 .filterOptions li {
@@ -1029,6 +1039,8 @@ body{
   .overlayContent {
     height: 100%;
     width: 100%;
+    border-radius: 0;
+    border: none;
   }
 
   #filterMenu {
