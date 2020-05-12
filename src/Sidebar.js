@@ -237,8 +237,8 @@ class Filter extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: new Set(),
-      submitted: new Set(),
+      selected: new Set(), //filter values that user has selected but not yet applied
+      submitted: new Set(), // filter values that have already been applied to the outfitList
     };
     this.toggleOption = this.toggleOption.bind(this);
     this.clearSelect = this.clearSelect.bind(this);
@@ -292,6 +292,7 @@ class Filter extends React.Component {
           <FilterOptions heading={this.props.heading}
             optionsArr={this.props.optionsArr}
             selected={this.state.selected}
+            submitted={this.state.submitted}
             submitSelection={this.submitSelection}
             toggleMenu={this.props.toggleMenu}
             toggleOption={this.toggleOption}
@@ -313,9 +314,9 @@ class FilterOptions extends React.Component {
         <SelectOptions heading={this.props.heading}
           optionsArr={this.props.optionsArr}
           selected={this.props.selected}
+          submitted={this.props.submitted}
           toggleOption={this.props.toggleOption} />
         <div>
-
         </div>
       </div>
     )
@@ -325,6 +326,13 @@ class FilterOptions extends React.Component {
 function SelectOptions(props) {
   let optionsArr = props.optionsArr.slice(0).sort(); //needed to create a real new (shallow) copy of the array
   if (optionsArr.indexOf(props.heading) > -1) { optionsArr.splice(optionsArr.indexOf(props.heading), 1) }
+  if (props.submitted.size > 0) {
+    optionsArr.sort((a, b) => { //sort selected options to the top
+      if (props.submitted.has(a) === props.submitted.has(b)) return 0;
+      else if (props.submitted.has(a)) return -1;
+      else if (props.submitted.has(b)) return 1;
+    });
+  }
   const options = optionsArr.map(function (option) {
     return (
       <li key={option}
