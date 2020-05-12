@@ -55,14 +55,19 @@ export default class OutfitList extends React.PureComponent {
   }
 
   render() {
-    //console.log(this.props);
-    const outfits = this.state.loadedOutfits.map((elt) =>
-      <OutfitCard key={elt.Character + elt.Outfit + elt['Total Bonus']}
+    //console.log('OutfitList render', this.props.teamMembers);
+    const outfits = this.state.loadedOutfits.map((elt) => {
+      let inTeam = false;
+      this.props.teamMembers.forEach(member => {
+        if (member['Character'] === elt['Character'] && member['Outfit'] === elt['Outfit']) inTeam = true;
+      });
+      //console.log(elt);
+      return <OutfitCard key={elt.Character + elt.Outfit + elt['Total Bonus']}
         info={elt}
-        inTeam={this.props.teamMembers.includes(elt)}
+        inTeam={inTeam}
         selAttr={this.props.selAttr}
         setMember={this.props.setMember} />
-    );
+    });
     //console.log('finished loading outfit list', performance.now())
     let placeholders = [];
     for (let i = 0; i < 4; i++) {
