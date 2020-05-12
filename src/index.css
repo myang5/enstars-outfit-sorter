@@ -1,6 +1,7 @@
 body{
   margin: 0;
   font-family: 'Roboto', sans-serif;
+  /*overflow: hidden;*/
 }
 
 #root {
@@ -9,7 +10,6 @@ body{
   height: 100vh;
   color: #0F1959;
   font-size: 0.9rem;
-  overflow-y: hidden;
 }
 
 .attrList {
@@ -251,21 +251,19 @@ body{
 /* ------------------------------------JOBVIEW------------------------------------ */
 
 #jobView {
-  position: fixed;
-  left: 2%;
-  bottom: 0;
-  width: 98%;
-  height: 45%;
+  width: 100%;
+  height: auto;
+  padding: 0.5rem;
+  box-sizing: border-box;
   display: flex;
   flex-direction: row;
-  align-content: flex-start;
   max-width: 50rem;
 }
 
 #jobView .header {
   display: flex;
   flex-wrap: wrap;
-  padding: 0.5em 1em;
+  padding: 0 1em;
   box-sizing: border-box;
   align-content: flex-start;
   width: 60%;
@@ -971,6 +969,19 @@ body{
 
 /* All devices (portrait) */
 @media (orientation: portrait) {
+
+  #jobView {
+    flex-direction: column-reverse;
+    max-width: 30rem;
+  }
+
+  #jobView .header {
+    width: 100%;
+  }
+
+  #jobView .workResult {
+    margin: 1rem;
+  }
 
   #jobList {
     flex-direction: column-reverse;
