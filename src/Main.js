@@ -62,7 +62,11 @@ export default class Main extends React.Component {
             let data = result.values; //Array of Arrays representing sheet rows
             const newState = {};
             const filters = []
-            data[0].forEach((arr) => { if (arr !== 'ImageID' && !this.state.attr.includes(arr)) { filters.push(arr); newState['sel' + arr] = new Set() } }) //Create set for each header to keep track of selected values
+            data[0].forEach((arr) => { //Create set for each header to keep track of selected values
+              if (arr !== 'ImageID' && arr !== 'Total' && !this.state.attr.includes(arr)) {
+                filters.push(arr); newState['sel' + arr] = new Set()
+              }
+            })
             let outfits = convertArraysToObjects(data);
             outfits = this.filterIfColumnIsEmpty(outfits, ['Unit', 'Character', 'Outfit']);
             newState.allOutfits = outfits;
@@ -92,7 +96,7 @@ export default class Main extends React.Component {
   selectJob(job) {
     //console.log('SelectJob', job);
     if (this.state.activeJob !== job) {
-      const newState = {...this.state};
+      const newState = { ...this.state };
       newState.activeJob = job;
       newState.teamMembers = new Array(job['Idol Slots']).fill(0);
       const outfitSource = this.state.userOutfits ? this.state.userOutfits : this.state.allOutfits;
@@ -177,7 +181,7 @@ export default class Main extends React.Component {
     }
     return outfits;
   }
-  
+
   //returns Object with query and conditions given passed-in state
   getQueryAndConditions(state) {
     const query = Object.keys(state).reduce((accumulator, key) => { //make Object of Sets that hold selected values

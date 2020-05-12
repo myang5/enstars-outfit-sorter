@@ -53,7 +53,7 @@ export default class Sidebar extends React.Component {
       const sortMenuPortrait = <SortMenu className='hideOnLandscape' {...sortMenuProps} />
       return (
         <div id='sidebar' className='toggledOn'>
-          <div className='btn close' onClick={this.props.toggleOutfitList}><img src={arrowLeft} alt='←' /></div>
+          <div className='btn close' onClick={() => { this.setState({ isFilterMenu: false }); this.props.toggleOutfitList() }}><img src={arrowLeft} alt='←' /></div>
           {/*<CheckBoxOptions optionsArr={this.props.attr} submitSelection={this.props.submitFilterSelection('selAttr')} />*/}
           <span id='status'>{this.props.status}</span>
           <div className='right'>
@@ -222,7 +222,7 @@ class FilterMenu extends React.PureComponent {
       );
     });
     return (
-      <div id='filterMenu' className='overlayContent' style={{ display: this.props.isFilterMenu ? 'initial' : 'none' }}>
+      <div id='filterMenu' className='overlayContent' style={{ display: this.props.isFilterMenu ? 'flex' : 'none' }}>
         <div className='topContainer'>
           <h4 className='hideOnLandscape'>Sort by...</h4>
           {this.props.sortMenu}
@@ -290,7 +290,10 @@ class Filter extends React.Component {
     return (
       <div className='filter'>
         <div className='filterHeading'>
-          <img className='filterIcon' src={arrowDown} onClick={this.props.toggleMenu} />
+          <img className='filterIcon'
+            src={this.props.isMenuActive ? arrowUp : arrowDown}
+            alt={this.props.isMenuActive ? '↑' : '↓'}
+            onClick={this.props.toggleMenu} />
           <p onClick={this.props.toggleMenu}>{this.props.heading}</p>
           {this.state.submitted.size > 0 && <a onClick={this.clearFilter}>clear filter</a>}
         </div>

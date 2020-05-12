@@ -672,7 +672,7 @@ body{
 #filterMenu {
   right: 0;
   top: 0;
-  width: 20rem;
+  width: 25rem;
   max-width: 100%;
   height: auto;
   max-height: calc(100vh - 2rem);
