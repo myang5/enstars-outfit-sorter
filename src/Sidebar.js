@@ -45,8 +45,12 @@ export default class Sidebar extends React.Component {
 
   render() {
     if (this.state.filters) {
-      const sortMenuLandscape = <SortMenu className='hideOnPortraitSmall' selAttr={this.props.selAttr} sortOutfits={this.props.sortOutfits} toggleMade={this.props.toggleMade} />
-      const sortMenuPortrait = <SortMenu className='hideOnLandscape' selAttr={this.props.selAttr} sortOutfits={this.props.sortOutfits} toggleMade={this.props.toggleMade} />
+      let sortMenuProps = {
+        selAttr: this.props.selAttr,
+        sortOutfits: this.props.sortOutfits,
+      }
+      const sortMenuLandscape = <SortMenu className='hideOnPortraitSmall' {...sortMenuProps} />
+      const sortMenuPortrait = <SortMenu className='hideOnLandscape' {...sortMenuProps} />
       return (
         <div id='sidebar' className='toggledOn'>
           <div className='btn close' onClick={this.props.toggleOutfitList}><img src={arrowLeft} alt='←' /></div>
@@ -60,6 +64,8 @@ export default class Sidebar extends React.Component {
           <FilterMenu isFilterMenu={this.state.isFilterMenu}
             filters={this.state.filters}
             sortMenu={sortMenuPortrait}
+            toggleMade={this.props.toggleMade}
+            selMade={this.props.selMade}
             submitFilterSelection={this.props.submitFilterSelection}
             toggleFilterMenu={this.toggleFilterMenu} />
 
@@ -146,7 +152,6 @@ class SortMenu extends React.Component {
       onClick={() => this.toggleSort('Total Bonus')} />)
     return (
       <div id='sortMenu' className={this.props.className ? this.props.className : null}>
-        {this.props.toggleMade && <ToggleMade toggleMade={this.props.toggleMade} />}
         {sortOpts}
       </div>
     )
@@ -182,8 +187,8 @@ function SearchType(props) {
 function ToggleMade(props) {
   return (
     <div className='radioBtn' id='toggleMade'>
-      <input type='checkbox' onClick={props.toggleMade} />
-      <label htmlFor='toggleMade'>Show made outfits</label>
+      <input type='checkbox' checked={props.selMade.size ? true : false} onChange={props.toggleMade} />
+      <label htmlFor='toggleMade'>Only made outfits</label>
     </div>
   )
 }
@@ -222,6 +227,7 @@ class FilterMenu extends React.PureComponent {
           <h4 className='hideOnLandscape'>Sort by...</h4>
           {this.props.sortMenu}
           <h4>Filter by...</h4>
+          {this.props.toggleMade && <ToggleMade selMade={this.props.selMade} toggleMade={this.props.toggleMade} />}
           <div id='filters'>
             {filters}
           </div>

@@ -35,7 +35,6 @@ export function filterData(data, config = {}) {
       }
       if (meetsConditions && queried) {
         result.push(JSON.parse(JSON.stringify(row))
-
         );
       }
     }
@@ -57,7 +56,7 @@ function matchFilters(query, row) {
 }
 
 //convert Array of Arrays to Array of objects assuming first Array holds key values
-//does not mutate original Array, but would only make shallow copy
+//does not mutate original Array
 export function convertArraysToObjects(arrs) {
   const result = [];
   const headers = arrs[0]; //first row is header row

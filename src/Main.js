@@ -63,13 +63,22 @@ export default class Main extends React.Component {
             const newState = {};
             const filters = []
             data[0].forEach((arr) => { if (arr !== 'ImageID' && !this.state.attr.includes(arr)) { filters.push(arr); newState['sel' + arr] = new Set() } }) //Create set for each header to keep track of selected values
-            const outfits = convertArraysToObjects(data);
+            let outfits = convertArraysToObjects(data);
+            outfits = this.filterIfColumnIsEmpty(outfits, ['Unit', 'Character', 'Outfit']);
             newState.allOutfits = outfits;
             newState.outfits = this.prepareOutfitData(outfits, this.state);
             newState.filters = filters;
             this.setState(newState);
           })
       })
+  }
+
+  //filter out row only if even one given column is empty
+  filterIfColumnIsEmpty(arr, columnsArr) {
+    return arr.filter((row) => {
+      const result = columnsArr.map(column => row[column] ? true : false);
+      return result.reduce(function (accumulator, currVal) { return accumulator && currVal }, true);
+    })
   }
 
   toggleOutfitList(index = null) {
@@ -83,11 +92,9 @@ export default class Main extends React.Component {
   selectJob(job) {
     //console.log('SelectJob', job);
     if (this.state.activeJob !== job) {
-      const newState = {
-        activeJob: job,
-        teamMembers: new Array(job['Idol Slots']).fill(0),
-        idolStats: this.state.idolStats,
-      }
+      const newState = {...this.state};
+      newState.activeJob = job;
+      newState.teamMembers = new Array(job['Idol Slots']).fill(0);
       const outfitSource = this.state.userOutfits ? this.state.userOutfits : this.state.allOutfits;
       newState.selAttr = Object.keys(job).filter(key => this.state.attr.includes(key) && job[key] > 0);
       if (this.state.outfits) { newState.outfits = this.prepareOutfitData(outfitSource, newState); }
@@ -152,20 +159,6 @@ export default class Main extends React.Component {
     }
   }
 
-  //returns Object with query and conditions given passed-in state
-  getQueryAndConditions(state) {
-    const query = Object.keys(state).reduce((accumulator, key) => { //make Object of Sets that hold selected values
-      const value = state[key];
-      if (key.includes('sel') && key !== 'selAttr' && value.size > 0) { accumulator[key] = value; }
-      return accumulator;
-    }, {});
-    //console.log(query);
-    const conditions = state.activeJob ?
-      state.activeJob['Conditions'] ? state.activeJob['Conditions'].split(',').map(str => str.trim()) : []
-      : [];
-    return { query: query, conditions: conditions };
-  }
-
   //filter outfits based on any selected queries and conditions in activeJob
   //calculate total bonus for selected attributes
   //sort outfits in descending order by total bonus
@@ -183,6 +176,20 @@ export default class Main extends React.Component {
       this.sortByFilter(outfits, 'Total Bonus', false);
     }
     return outfits;
+  }
+  
+  //returns Object with query and conditions given passed-in state
+  getQueryAndConditions(state) {
+    const query = Object.keys(state).reduce((accumulator, key) => { //make Object of Sets that hold selected values
+      const value = state[key];
+      if (key.includes('sel') && key !== 'selAttr' && value.size > 0) { accumulator[key] = value; }
+      return accumulator;
+    }, {});
+    //console.log(query);
+    const conditions = state.activeJob ?
+      state.activeJob['Conditions'] ? state.activeJob['Conditions'].split(',').map(str => str.trim()) : []
+      : [];
+    return { query: query, conditions: conditions };
   }
 
   calculateTotalBonus(outfits, attrSet) { //outfits is Array of Objects of each outfit info
@@ -360,7 +367,7 @@ export default class Main extends React.Component {
 
   render() {
     if (this.state.outfits && this.state.jobs) {
-      //console.log('Main render', this.state.allOutfits, this.state.userOutfits, this.state.outfits)
+      //console.log('Main render', this.state.selMade)
       //outfitList doesn't update without key. 100 is an arbitrary number
       let outfitListKey = this.state.outfits.slice(0, 100);
       outfitListKey = JSON.stringify(outfitListKey);
@@ -392,6 +399,7 @@ export default class Main extends React.Component {
       }
       const sidebarProps = {
         selAttr: this.state.selAttr,
+        selMade: this.state.selMade,
         data: this.state.allOutfits,
         filters: this.state.filters,
         status: `showing ${this.state.outfits.length} outfits`,
@@ -428,8 +436,9 @@ export function Image(props) {
   }
   else {
     //was using 'https://drive.google.com/uc?export=view&id=' 
-    //or using 'https://drive.google.com/uc?export=download&id=' but high-res images seem to cause loading issues
-    //can also use 'https://drive.google.com/thumbnail?id='
+    //also tried 'https://drive.google.com/uc?export=download&id=' but high-res images seem to cause loading issues
+    //using 'https://drive.google.com/thumbnail?id=' which fetches the low-res thumbnail
+    //fine for chibi render images but noticeable quality drop for work bgs which are originally about 2048px x 1026px
     image = <img src={'https://drive.google.com/thumbnail?id=' + props.obj['ImageID']} alt={props.alt} />
   }
   return image;

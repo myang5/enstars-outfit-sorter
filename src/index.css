@@ -624,7 +624,6 @@ body{
 
 #sidebar .radioBtn label {
   margin-left: 0.4em;
-  max-width: 6.5em;
 }
 
 #sidebar .radioBtn .desc {
@@ -967,11 +966,6 @@ body{
   #sortMenu:not(.hideOnPortraitSmall ) {
     display: flex;
   }
-
-  #sidebar #toggleMade {
-    flex: 0 0 100%;
-    margin-bottom: 0.5em;
-  }
 }
 
 
@@ -1042,7 +1036,7 @@ body{
   }
 
   #filterMenu {
-    max-height: calc(100vh - 1.4rem);
+    max-height: 100vh;
   }
 
   #outfitList {
