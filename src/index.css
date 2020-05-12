@@ -833,14 +833,7 @@ body{
   flex: 1 0 auto;
   height: calc(100% - 3.25rem);
   overflow: auto;
-}
-
-#outfitView .status{
-  text-align: center;
-}
-
-#outfitView .header {
-  width: 100%;
+  background-color: #ECF4F9;
 }
 
 #outfitList {
@@ -849,8 +842,7 @@ body{
   justify-content: flex-start;
   box-sizing: border-box;
   padding: 0.25rem;
-  width: 100%;
-  background-color: #ECF4F9;
+  width: 100%; 
 }
 
 .outfitCard {
@@ -872,6 +864,10 @@ body{
 
 .outfitCard.notMade {
   background-color: rgba(0,0,0,0);
+}
+
+.outfitCard.notMade img{
+  opacity: 0.5;
 }
 
 .outfitCard .inTeam {
