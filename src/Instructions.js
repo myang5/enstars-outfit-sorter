@@ -80,9 +80,20 @@ export default function Instructions(props) {
                 </>
               }
             </ul>
-            <p>
-              Copy the spreadsheet link into the sorter and click 'Add'.
-            </p>
+            <p>Copy and paste the spreadsheet link into the sorter and click 'Add'.</p>
+            <p>OR get the spreadsheet ID and add it to the sorter URL:</p>
+            <ul>
+              <li>
+                Your spreadsheet link will look something like this: <br />
+                https://docs.google.com/spreadsheets/d/<strong>SPREADSHEET_ID</strong>/view...
+              </li>
+              <li>
+                Get the SPREADSHEET_ID part of the link and add it to the sorter URL so it looks like this: <br />
+                https://myang5.github.io/enstars-outfit-sorter/<strong>SPREADSHEET_ID</strong>
+
+              </li>
+            </ul>
+            <p>This way you can save/bookmark the outfit sorter with your data instead of pasting the spreadsheet link every time.</p>
             <hr />
             <h3>About</h3>
             <p>Tool developed by <a href='https://twitter.com/gayandasleep'>Midori</a> (feel free to DM them with any feedback/bug reports/suggestions for features</p>

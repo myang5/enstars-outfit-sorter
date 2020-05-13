@@ -74,6 +74,12 @@ export default class Main extends React.Component {
             newState.filters = filters;
             this.setState(newState);
           })
+          .then(() => {
+            if (this.props.sheetId) {
+              //console.log(this.props.sheetId);
+              this.getUserData(this.props.sheetId)
+            }
+          })
       })
   }
 
