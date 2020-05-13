@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "d480a436ef1c2aba65cd99c8e7352b3d",
+    "revision": "bce53d44d92b61260e166dc38c6a346b",
     "url": "/enstars-outfit-sorter/index.html"
   },
   {
-    "revision": "a387c81a6f29d9884de0",
-    "url": "/enstars-outfit-sorter/static/css/main.8fe9637f.chunk.css"
+    "revision": "7dcdd5d490dbd5b4ba4b",
+    "url": "/enstars-outfit-sorter/static/css/main.fac9f7cb.chunk.css"
   },
   {
-    "revision": "265f437236cf0b8aeb7e",
-    "url": "/enstars-outfit-sorter/static/js/2.e3f4d20b.chunk.js"
+    "revision": "d4bbc1a4e0839e6a5046",
+    "url": "/enstars-outfit-sorter/static/js/2.f55620d3.chunk.js"
   },
   {
     "revision": "e88a3e95b5364d46e95b35ae8c0dc27d",
-    "url": "/enstars-outfit-sorter/static/js/2.e3f4d20b.chunk.js.LICENSE.txt"
+    "url": "/enstars-outfit-sorter/static/js/2.f55620d3.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "a387c81a6f29d9884de0",
-    "url": "/enstars-outfit-sorter/static/js/main.0d697bd9.chunk.js"
+    "revision": "7dcdd5d490dbd5b4ba4b",
+    "url": "/enstars-outfit-sorter/static/js/main.bdfdfdec.chunk.js"
   },
   {
     "revision": "c40e28794536246050bb",
@@ -46,6 +46,14 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "e918fb19e2600333d7dcadb41b149444",
     "url": "/enstars-outfit-sorter/static/media/instructions1.e918fb19.png"
+  },
+  {
+    "revision": "35bd47ff26dc1f5761872197e63f221f",
+    "url": "/enstars-outfit-sorter/static/media/instructions2.35bd47ff.PNG"
+  },
+  {
+    "revision": "819b73f6519abe90b5dffa9b1dc9380f",
+    "url": "/enstars-outfit-sorter/static/media/instructions3.819b73f6.PNG"
   },
   {
     "revision": "deae2014046fab3b1155c6aa30303b2c",
