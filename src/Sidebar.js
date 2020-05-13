@@ -323,16 +323,14 @@ class FilterOptions extends React.Component {
   render() {
     return (
       <div className='filterOptions'>
-        <div>
-          <span className='btn submit' onClick={() => { this.props.toggleMenu(); this.props.submitSelection() }}>OK</span>
-          {/*<a className='selectAllBtn' onClick={this.props.selectAll}>select all</a>*/}
-        </div>
         <SelectOptions heading={this.props.heading}
           optionsArr={this.props.optionsArr}
           selected={this.props.selected}
           submitted={this.props.submitted}
           toggleOption={this.props.toggleOption} />
         <div>
+          <div className='btn submit' onClick={() => { this.props.toggleMenu(); this.props.submitSelection() }}>OK</div>
+          {/*<a className='selectAllBtn' onClick={this.props.selectAll}>select all</a>*/}
         </div>
       </div>
     )

@@ -115,6 +115,7 @@ body{
 }
 
 .btn {
+  display: inline-block;
   border: 1px solid #0F1959;
   border-radius: 5px;
   padding: 0.5em 1em;
@@ -130,10 +131,6 @@ body{
 
 .btn:active {
   transform: scale(0.9)
-}
-
-.btn p {
-  width: auto;
 }
 
 .imgPlaceholder {
@@ -788,10 +785,14 @@ body{
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 0.5rem 1rem;
+  padding: 0 1rem;
   box-sizing: border-box;
   height: auto;
   font-size: 0.9rem;
+}
+
+.filterOptions > * {
+  margin: 0.25rem 0;
 }
 
 .filterOptions ul {
