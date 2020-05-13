@@ -9,9 +9,9 @@ body{
   display: flex;
   flex-direction: column;
   height: 100vh;
-  min-height: -moz-available;          /* WebKit-based browsers will ignore this. */
-  min-height: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
-  min-height: fill-available;
+  max-height: -moz-available;          /* WebKit-based browsers will ignore this. */
+  max-height: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+  max-height: fill-available;
   color: #0F1959;
   font-size: 0.9rem;
 }
