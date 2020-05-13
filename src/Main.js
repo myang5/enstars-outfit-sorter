@@ -197,8 +197,8 @@ export default class Main extends React.Component {
     //keep trying to set a team member at empty slots
     let i = 0;
     while (teamMembers.includes(0) && i < outfits.length) {
-      console.log('getTopTeam', outfits[i], teamMembers);
-      //don't try to set team member if idol is already in team (avoid setting weaker outfits)
+      //don't try to set team member if character is already in team (avoid setting weaker outfits)
+      //outfit list is already sorted by total bonus so only need to check if character is same
       let isPresent = teamMembers.map(member => member ? member['Character'] === outfits[i]['Character'] : false);
       if (!isPresent.includes(true)) {
         const teamSlot = teamMembers.indexOf(0);

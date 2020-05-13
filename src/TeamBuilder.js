@@ -20,7 +20,8 @@ export class TeamView extends React.Component {
     //console.log('TeamView render', this.props.activeJob);
     if (this.props.activeJob && this.props.teamMembers.length > 0) {
       const members = this.props.teamMembers.map((member, index) => {
-        return <TeamMember key={index}
+        return <TeamMember 
+          key={index + JSON.stringify(member)}
           index={index}
           member={member}
           selAttr={this.props.selAttr}
