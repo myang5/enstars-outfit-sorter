@@ -25,9 +25,7 @@ export default class Main extends React.Component {
       teamMembers: [],
       teamSlot: null, //Store index of teamMember user is currently choosing
     };
-    this.prepareOutfitData = this.prepareOutfitData.bind(this)
     this.submitFilterSelection = this.submitFilterSelection.bind(this);
-    this.calculateTotalBonus = this.calculateTotalBonus.bind(this);
     this.toggleSearchTypeTrue = this.toggleSearchTypeTrue.bind(this);
     this.toggleSearchTypeFalse = this.toggleSearchTypeFalse.bind(this);
     this.toggleMade = this.toggleMade.bind(this);
@@ -37,42 +35,43 @@ export default class Main extends React.Component {
     this.selectJob = this.selectJob.bind(this);
     this.setMember = this.setMember.bind(this);
     this.getUserData = this.getUserData.bind(this);
+    this.handleErrors = this.handleErrors.bind(this);
+    this.getTopTeam = this.getTopTeam.bind(this);
   }
 
   componentDidMount() {
     //console.log('Main componentDidMount')
-    const nextSheetId = 'Jobs';
-    //fetch info for TeamBuilder
-    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${nextSheetId}?key=${apiKey}`)
+    const sheetId = 'Stat Bonuses';
+    //fetch info for Sidebar
+    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}`)
       .then(result => result.json())
       .then(result => {
         let data = result.values; //Array of Arrays representing sheet rows
-        const jobs = convertArraysToObjects(data);
-        this.setState({ jobs: jobs });
-        let i = 0;
-        while (jobs[i]['Type'] !== 'Beginner') { i++; }
-        this.selectJob(jobs[i]);
+        const newState = {};
+        const filters = []
+        data[0].forEach((arr) => { //Create set for each header to keep track of selected values
+          if (arr !== 'ImageID' && arr !== 'Total' && !this.state.attr.includes(arr)) {
+            filters.push(arr); newState['sel' + arr] = new Set()
+          }
+        })
+        let outfits = convertArraysToObjects(data);
+        outfits = this.filterIfColumnIsEmpty(outfits, ['Unit', 'Character', 'Outfit']);
+        newState.allOutfits = outfits;
+        newState.filters = filters;
+        this.setState(newState);
       })
       .then(() => {
-        const sheetId = 'Stat Bonuses';
-        //fetch info for Sidebar
-        fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetId}?key=${apiKey}`)
+        const nextSheetId = 'Jobs';
+        //fetch info for TeamBuilder
+        fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${nextSheetId}?key=${apiKey}`)
           .then(result => result.json())
           .then(result => {
             let data = result.values; //Array of Arrays representing sheet rows
-            const newState = {};
-            const filters = []
-            data[0].forEach((arr) => { //Create set for each header to keep track of selected values
-              if (arr !== 'ImageID' && arr !== 'Total' && !this.state.attr.includes(arr)) {
-                filters.push(arr); newState['sel' + arr] = new Set()
-              }
-            })
-            let outfits = convertArraysToObjects(data);
-            outfits = this.filterIfColumnIsEmpty(outfits, ['Unit', 'Character', 'Outfit']);
-            newState.allOutfits = outfits;
-            newState.outfits = this.prepareOutfitData(outfits, this.state);
-            newState.filters = filters;
-            this.setState(newState);
+            const jobs = convertArraysToObjects(data);
+            this.setState({ jobs: jobs });
+            let i = 0;
+            while (jobs[i]['Type'] !== 'Beginner') { i++; }
+            this.selectJob(jobs[i]);
           })
           .then(() => {
             if (this.props.sheetId) {
@@ -107,7 +106,10 @@ export default class Main extends React.Component {
       newState.teamMembers = new Array(job['Idol Slots']).fill(0);
       const outfitSource = this.state.userOutfits ? this.state.userOutfits : this.state.allOutfits;
       newState.selAttr = Object.keys(job).filter(key => this.state.attr.includes(key) && job[key] > 0);
-      if (this.state.outfits) { newState.outfits = this.prepareOutfitData(outfitSource, newState); }
+      if (outfitSource) {
+        newState.outfits = this.prepareOutfitData(outfitSource, newState);
+        newState.teamMembers = this.getTopTeam(outfitSource, job);
+      }
       this.setState(newState);
     }
   }
@@ -128,10 +130,6 @@ export default class Main extends React.Component {
     this.submitFilterSelection('selMade')(newMade);
   }
 
-  sortByFilter(outfits, filter, isAscending = true) {
-    outfits.sort((a, b) => isAscending ? a[filter] - b[filter] : b[filter] - a[filter])
-  }
-
   sortOutfits(filter, isAscending) {
     this.setState((state, props) => {
       let outfits = [...state.outfits];
@@ -141,18 +139,8 @@ export default class Main extends React.Component {
     })
   }
 
-  setMember(newMember) {
-    this.setState((state, props) => {
-      let newTeam = state.teamMembers.slice();
-      let index = state.teamSlot;
-      //can't have same chara on team twice
-      //assume if user chooses outfit for chara on team they are changing their outfit
-      for (let i = 0; i < newTeam.length; i++) {
-        if (newMember['Character'] === newTeam[i]['Character']) { index = i; break; }
-      }
-      newTeam[index] = newMember;
-      return { teamMembers: newTeam, isOutfitList: false };
-    })
+  sortByFilter(outfits, filter, isAscending = true) {
+    outfits.sort((a, b) => isAscending ? a[filter] - b[filter] : b[filter] - a[filter])
   }
 
   submitFilterSelection(filter) {
@@ -167,6 +155,58 @@ export default class Main extends React.Component {
         return newState;
       });
     }
+  }
+
+  setMember(newMember) {
+    this.setState((state) => {
+      let teamCopy = state.teamMembers.slice();
+      this.setMemberAtSlot(teamCopy, newMember, state.teamSlot);
+      return { teamMembers: teamCopy, isOutfitList: false };
+    })
+  }
+
+  setMemberAtSlot(team, newMember, teamSlot) {
+    //can't have same chara on team twice
+    //assume if user chooses outfit for chara on team they are changing their outfit
+    //and also switch places of relevant charas like in the game
+    for (let i = 0; i < team.length; i++) {
+      if (newMember['Character'] === team[i]['Character']) {
+        const slotToChange = i;
+        const oldMember = team[teamSlot];
+        team[slotToChange] = oldMember;
+        break;
+      }
+    }
+    team[teamSlot] = newMember;
+  }
+
+  //get top team from userOutfits or allOutfits
+  //total bonus needs to be calculated already
+  //should take job conditions into account but should ignore filters in case filters interfere with outfits available 
+  //ex. one character is selected, but team can't be filled with same character
+  //also allow for case where team won't be filled JIC like if user provides sheet with < 5 outfits
+  getTopTeam(outfitSource, job, idolStats = null) {
+    let teamMembers = new Array(job['Idol Slots']).fill(0);
+    let attrSet = Object.keys(job).filter(key => this.state.attr.includes(key) && job[key] > 0);
+    const conditions = this.getJobConditions(job);
+    let outfits = conditions.length > 0 ? filterData(outfitSource, { conditions: this.getJobConditions(job) }) : outfitSource;
+    outfits = this.addIdolStatus(outfits, idolStats);
+    outfits = this.calculateTotalBonus(outfits, attrSet);
+    this.sortByFilter(outfits, 'Total Bonus', false);
+    //while team still has empty slots, and while there are still outfits left
+    //keep trying to set a team member at empty slots
+    let i = 0;
+    while (teamMembers.includes(0) && i < outfits.length) {
+      console.log('getTopTeam', outfits[i], teamMembers);
+      //don't try to set team member if idol is already in team (avoid setting weaker outfits)
+      let isPresent = teamMembers.map(member => member ? member['Character'] === outfits[i]['Character'] : false);
+      if (!isPresent.includes(true)) {
+        const teamSlot = teamMembers.indexOf(0);
+        this.setMemberAtSlot(teamMembers, outfits[i], teamSlot);
+      }
+      i++;
+    }
+    return teamMembers;
   }
 
   //filter outfits based on any selected queries and conditions in activeJob
@@ -196,10 +236,12 @@ export default class Main extends React.Component {
       return accumulator;
     }, {});
     //console.log(query);
-    const conditions = state.activeJob ?
-      state.activeJob['Conditions'] ? state.activeJob['Conditions'].split(',').map(str => str.trim()) : []
-      : [];
+    const conditions = state.activeJob ? this.getJobConditions(state.activeJob) : [];
     return { query: query, conditions: conditions };
+  }
+
+  getJobConditions(job) {
+    return job['Conditions'] ? job['Conditions'].split(',').map(str => str.trim()) : [];
   }
 
   calculateTotalBonus(outfits, attrSet) { //outfits is Array of Objects of each outfit info
@@ -232,6 +274,14 @@ export default class Main extends React.Component {
     return outfits
   }
 
+  checkResponseOk(response) {
+    if (response.ok || response.status === 200) {
+      return response.json();
+    } else {
+      throw response;
+    }
+  }
+
   getUserData(url) {
     if (url.length > 0) {
       //url format: https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/possible-extra-content
@@ -239,12 +289,14 @@ export default class Main extends React.Component {
       const sheetId = urlStr.indexOf('/') > 0 ? urlStr.slice(0, urlStr.indexOf('/')) : urlStr;
       //console.log(sheetId);
       //if (sheetId !== this.state.userSheetId) { user might be re-adding sheet w altered data
-      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${'Outfits'}?key=${apiKey}`)
-        .then(res => res.json())
-        .then(res => this.handleErrors(res))
-        .then(res => {
-          if (res) {
-            let data = res.values; //Array of Arrays representing sheet rows
+      let fetchOutfits = fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${'Outfits'}?key=${apiKey}`).then(res => this.checkResponseOk(res)).catch(e => this.handleErrors(e));
+      let fetchIdolStats = fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${'Idol Status'}?key=${apiKey}`).then(res => this.checkResponseOk(res)).catch(e => this.handleErrors(e));
+      Promise.all([fetchOutfits, fetchIdolStats])
+        .then(values => {
+          const [outfitData, idolStatData] = values;
+          console.log(outfitData, idolStatData)
+          if (outfitData) {
+            let data = outfitData.values; //Array of Arrays representing sheet rows
             //check if 'Outfits' sheet columns are labeled correctly
             let headers = data[0].map(header => header.toUpperCase());
             if (!headers.includes('CHARACTER') || !headers.includes('OUTFIT') || !headers.includes('MADE')) {
@@ -317,62 +369,56 @@ export default class Main extends React.Component {
                   return acc;
                 }
                 else return acc;
-              }, [])
-              return userOutfits;
-            }
-          }
-        })
-        .then(outfits => {
-          if (outfits) {
-            this.setState((state) => {
-              //clear team in case of outfits that aren't in userList
-              const emptyTeam = state.teamMembers.map(member => 0);
-              const preparedOutfits = this.prepareOutfitData(outfits, state)
-              return { userSheetId: sheetId, userOutfits: outfits, outfits: preparedOutfits, teamMembers: emptyTeam, selMade: new Set() }
-            });
-          }
-        })
-        .then(
-          fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${'Idol Status'}?key=${apiKey}`)
-            .then(res => res.json())
-            .then(res => {
-              if (res.values) {
-                const userStatus = convertArraysToObjects(res.values);
-                const idolStats = {};
+              }, []);
+              let idolStats = null;
+              if (idolStatData.values) {
+                const userStatus = convertArraysToObjects(idolStatData.values);
+                idolStats = {};
                 userStatus.forEach(idol => {
                   const name = idol['Character'];
                   delete idol['Character'];
                   idolStats[name] = idol;
                 });
-                const newState = { ...this.state };
-                newState.idolStats = idolStats;
-                const outfits = this.prepareOutfitData(this.state.outfits, newState);
-                newState.outfits = outfits;
-                this.setState(newState);
               }
-            })
-        )
-      //}
+              const newState = { ...this.state };
+              newState.idolStats = idolStats;
+              newState.userOutfits = userOutfits;
+              newState.teamMembers = this.getTopTeam(userOutfits, newState.activeJob, idolStats);
+              newState.outfits = this.prepareOutfitData(userOutfits, newState);
+              newState.userSheetId = sheetId;
+              newState.selMade = new Set();
+              this.setState(newState);
+            }
+          }
+        });
     }
   }
 
   handleErrors(response) {
     //console.log(response);
-    if (response.error) {
-      if (response.error.code === 403 && response.error.status.includes('PERMISSION_DENIED')) {
-        console.log("Error: Sorter did not have permission to access your spreadsheet. Don't forget to turn link-sharing on!")
-        return;
+    response.json().then(response => {
+      if (response.error) {
+        let status = '';
+        if (response.error.code === 403 && response.error.status.includes('PERMISSION_DENIED')) {
+          status += "Sorter did not have permission to access your spreadsheet. Don't forget to turn link-sharing on!";
+        }
+        if (response.error.code === 400 && response.error.status.includes('INVALID_ARGUMENT')) {
+          if (response.error.message.includes('Outfits')) {
+            status += "Sorter did not find a sheet called 'Outfits' in your spreadsheet.";
+          }
+          if (response.error.message.includes('Idol Stats')) {
+            status += "Sorter did not find a sheet called 'Idol Stats' in your spreadsheet.";
+          }
+        }
+        if (response.error.status === ('HEADER NOT FOUND')) {
+          console.log("Error: Sorter did not find 'Character', 'Outfit', and 'Made' columns in your spreadsheet.")
+          return null;
+        }
+        else { status += response.error.message }
+        throw new Error(status);
       }
-      if (response.error.code === 400 && response.error.status.includes('INVALID_ARGUMENT')) {
-        console.log("Error: Sorter did not find a sheet called 'Outfits' in your spreadsheet.")
-        return;
-      }
-      if (response.error.status === ('HEADER NOT FOUND')) {
-        console.log("Error: Sorter did not find 'Character', 'Outfit', and 'Made' columns in your spreadsheet.")
-        return;
-      }
-    }
-    else return response;
+    })
+      .catch(e => console.log(e));
   }
 
   render() {
