@@ -287,8 +287,8 @@ class Filter extends React.Component {
   }
 
   submitSelection() {
-    const arr = Array.from(this.state.selected).concat(Array.from(this.state.submitted))
-    this.setState({ submitted: new Set(arr) });
+    const submitted = new Set(this.state.selected);
+    this.setState({ submitted: submitted });
     this.props.submitSelection(this.state.selected);
   }
 

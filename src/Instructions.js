@@ -32,7 +32,7 @@ export default function Instructions(props) {
             <ul>
               <p><strong>Notes on the spreadsheet format</strong></p>
               <li>
-                <strong>Must have:</strong> a sheet named Outfits with columns labeled Character, Outfit, and Made.
+                <strong>Must have:</strong> a sheet named Outfits with columns labeled Character, Outfit, and Made
               </li>
               <li>
                 <strong>Optional: </strong> the Idol Status sheet and Validation Lists sheet
