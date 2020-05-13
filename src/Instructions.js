@@ -84,12 +84,12 @@ export default function Instructions(props) {
             <p>OR get the spreadsheet ID and add it to the sorter URL:</p>
             <ul>
               <li>
-                Your spreadsheet link will look something like this: <br />
-                https://docs.google.com/spreadsheets/d/<strong>SPREADSHEET_ID</strong>/view...
+                <p>Your spreadsheet link will look something like this:</p>
+                <blockquote>https://docs.google.com/spreadsheets/d/<strong>SPREADSHEET_ID</strong>/edit...</blockquote>
               </li>
               <li>
-                Get the SPREADSHEET_ID part of the link and add it to the sorter URL so it looks like this: <br />
-                https://myang5.github.io/enstars-outfit-sorter/<strong>SPREADSHEET_ID</strong>
+                <p>Get the SPREADSHEET_ID part of the link and add it to the sorter URL so it looks like this:</p>
+                <blockquote>https://myang5.github.io/enstars-outfit-sorter/#/<strong>SPREADSHEET_ID</strong></blockquote>
 
               </li>
             </ul>

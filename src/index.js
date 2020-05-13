@@ -3,18 +3,18 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import Main from './Main.js';
 import * as serviceWorker from './serviceWorker';
-import { BrowserRouter as Router, Switch, Route, useParams } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route, useParams } from 'react-router-dom';
 
 function App() {
-  let {path, sheetId} = useParams();
+  let {sheetId} = useParams();
   return <Main sheetId={sheetId}/>
 }
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router>
+    <Router basename='/'>
       <Switch>
-        <Route path='/:path/:sheetId' children={<App />} />
+        <Route path='/:sheetId' children={<App />} />
         <Route path='/'><Main /></Route>
       </Switch>
     </Router>
