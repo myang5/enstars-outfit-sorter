@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/enstars-outfit-sorter/static/css/main.7e18d0fb.chunk.css",
-    "main.js": "/enstars-outfit-sorter/static/js/main.9f5ff669.chunk.js",
-    "main.js.map": "/enstars-outfit-sorter/static/js/main.9f5ff669.chunk.js.map",
+    "main.css": "/enstars-outfit-sorter/static/css/main.5d028c7d.chunk.css",
+    "main.js": "/enstars-outfit-sorter/static/js/main.f75b3497.chunk.js",
+    "main.js.map": "/enstars-outfit-sorter/static/js/main.f75b3497.chunk.js.map",
     "runtime-main.js": "/enstars-outfit-sorter/static/js/runtime-main.78dbdcb7.js",
     "runtime-main.js.map": "/enstars-outfit-sorter/static/js/runtime-main.78dbdcb7.js.map",
-    "static/js/2.91ce3ecb.chunk.js": "/enstars-outfit-sorter/static/js/2.91ce3ecb.chunk.js",
-    "static/js/2.91ce3ecb.chunk.js.map": "/enstars-outfit-sorter/static/js/2.91ce3ecb.chunk.js.map",
+    "static/js/2.0cb57ad5.chunk.js": "/enstars-outfit-sorter/static/js/2.0cb57ad5.chunk.js",
+    "static/js/2.0cb57ad5.chunk.js.map": "/enstars-outfit-sorter/static/js/2.0cb57ad5.chunk.js.map",
     "index.html": "/enstars-outfit-sorter/index.html",
-    "precache-manifest.ae99320bf47cd748c56d94b365219f73.js": "/enstars-outfit-sorter/precache-manifest.ae99320bf47cd748c56d94b365219f73.js",
+    "precache-manifest.b912f1b9de9a8b765f188fbb893124f7.js": "/enstars-outfit-sorter/precache-manifest.b912f1b9de9a8b765f188fbb893124f7.js",
     "service-worker.js": "/enstars-outfit-sorter/service-worker.js",
-    "static/css/main.7e18d0fb.chunk.css.map": "/enstars-outfit-sorter/static/css/main.7e18d0fb.chunk.css.map",
-    "static/js/2.91ce3ecb.chunk.js.LICENSE.txt": "/enstars-outfit-sorter/static/js/2.91ce3ecb.chunk.js.LICENSE.txt",
+    "static/css/main.5d028c7d.chunk.css.map": "/enstars-outfit-sorter/static/css/main.5d028c7d.chunk.css.map",
+    "static/js/2.0cb57ad5.chunk.js.LICENSE.txt": "/enstars-outfit-sorter/static/js/2.0cb57ad5.chunk.js.LICENSE.txt",
     "static/media/arrow_down_darkblue.svg": "/enstars-outfit-sorter/static/media/arrow_down_darkblue.87e78f37.svg",
     "static/media/arrow_left_darkblue.svg": "/enstars-outfit-sorter/static/media/arrow_left_darkblue.76314777.svg",
     "static/media/arrow_up_darkblue.svg": "/enstars-outfit-sorter/static/media/arrow_up_darkblue.727d3630.svg",
@@ -24,8 +24,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.78dbdcb7.js",
-    "static/js/2.91ce3ecb.chunk.js",
-    "static/css/main.7e18d0fb.chunk.css",
-    "static/js/main.9f5ff669.chunk.js"
+    "static/js/2.0cb57ad5.chunk.js",
+    "static/css/main.5d028c7d.chunk.css",
+    "static/js/main.f75b3497.chunk.js"
   ]
 }
