@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/enstars-outfit-sorter/static/css/main.4d237e57.chunk.css",
-    "main.js": "/enstars-outfit-sorter/static/js/main.8009bc28.chunk.js",
-    "main.js.map": "/enstars-outfit-sorter/static/js/main.8009bc28.chunk.js.map",
+    "main.js": "/enstars-outfit-sorter/static/js/main.0ef665e9.chunk.js",
+    "main.js.map": "/enstars-outfit-sorter/static/js/main.0ef665e9.chunk.js.map",
     "runtime-main.js": "/enstars-outfit-sorter/static/js/runtime-main.78dbdcb7.js",
     "runtime-main.js.map": "/enstars-outfit-sorter/static/js/runtime-main.78dbdcb7.js.map",
-    "static/js/2.f55620d3.chunk.js": "/enstars-outfit-sorter/static/js/2.f55620d3.chunk.js",
-    "static/js/2.f55620d3.chunk.js.map": "/enstars-outfit-sorter/static/js/2.f55620d3.chunk.js.map",
+    "static/js/2.27a8cf3e.chunk.js": "/enstars-outfit-sorter/static/js/2.27a8cf3e.chunk.js",
+    "static/js/2.27a8cf3e.chunk.js.map": "/enstars-outfit-sorter/static/js/2.27a8cf3e.chunk.js.map",
     "index.html": "/enstars-outfit-sorter/index.html",
-    "precache-manifest.1ede93b5babb8c16b9c3c0ae8e8d78b5.js": "/enstars-outfit-sorter/precache-manifest.1ede93b5babb8c16b9c3c0ae8e8d78b5.js",
+    "precache-manifest.fc4d3d5693b3bce1ca1020d00bd1d094.js": "/enstars-outfit-sorter/precache-manifest.fc4d3d5693b3bce1ca1020d00bd1d094.js",
     "service-worker.js": "/enstars-outfit-sorter/service-worker.js",
     "static/css/main.4d237e57.chunk.css.map": "/enstars-outfit-sorter/static/css/main.4d237e57.chunk.css.map",
-    "static/js/2.f55620d3.chunk.js.LICENSE.txt": "/enstars-outfit-sorter/static/js/2.f55620d3.chunk.js.LICENSE.txt",
+    "static/js/2.27a8cf3e.chunk.js.LICENSE.txt": "/enstars-outfit-sorter/static/js/2.27a8cf3e.chunk.js.LICENSE.txt",
     "static/media/arrow_down_darkblue.svg": "/enstars-outfit-sorter/static/media/arrow_down_darkblue.87e78f37.svg",
     "static/media/arrow_left_darkblue.svg": "/enstars-outfit-sorter/static/media/arrow_left_darkblue.76314777.svg",
     "static/media/arrow_up_darkblue.svg": "/enstars-outfit-sorter/static/media/arrow_up_darkblue.727d3630.svg",
@@ -24,8 +24,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.78dbdcb7.js",
-    "static/js/2.f55620d3.chunk.js",
+    "static/js/2.27a8cf3e.chunk.js",
     "static/css/main.4d237e57.chunk.css",
-    "static/js/main.8009bc28.chunk.js"
+    "static/js/main.0ef665e9.chunk.js"
   ]
 }
