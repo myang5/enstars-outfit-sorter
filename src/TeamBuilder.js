@@ -31,7 +31,7 @@ export class TeamView extends React.Component {
       const sheetHref = 'https://docs.google.com/spreadsheets/d/' + this.props.sheetId;
       return (
         <>
-          <div id='topMenu'>
+          <div key={this.props.sheetId} id='topMenu'>
             {/*{this.props.sheetId &&
               <span>using spreadsheet <a href={sheetHref}>{this.props.sheetId.slice(0, 7) + '...'}</a></span>
             }*/}
