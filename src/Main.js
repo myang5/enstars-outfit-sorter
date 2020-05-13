@@ -429,7 +429,7 @@ export default class Main extends React.Component {
         </>
       )
     }
-    else return <div>Loading...</div>;
+    else return <div id='loading'>Loading...</div>
   }
 }
 
