@@ -168,17 +168,17 @@ body{
 }
 
 #instructions .topContainer, #filterMenu .topContainer {
-  display: flex;
   overflow: auto;
 }
 
 #instructions .bottomContainer, #filterMenu .bottomContainer{
-  display: flex;
   flex: 0 0 auto;
+  display: flex;
   justify-content: center;
   width: 100%;
   padding: 0.5rem 0;
   background-color: #fff;
+  box-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.2);
 }
 
 /* ------------------------------------TEAM BUILDER------------------------------------ */
@@ -222,12 +222,25 @@ body{
 }
 
 #instructions .topContainer {
-  padding: 1rem;
   justify-content: center;
+  flex: 1 1 auto;
 }
 
 #instructions .top {
   width: auto;
+  height: auto;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+#instructions hr {
+  width: 100%;
+  border: solid 0.5px #CBCFE4;
+  margin-top: 1rem;
+}
+
+#instructions a {
+  color: #0F1959;
 }
 
 #instructions img {
@@ -235,6 +248,16 @@ body{
   height: auto;
   max-width: 30rem;
   margin: 0.5em;
+}
+
+#instructions .sharingHeading {
+  display: flex;
+  align-items: center;
+}
+
+#instructions .arrow {
+  width: 0.9rem;
+  margin: 0 0.5em;
 }
 
 #instructions li {
@@ -680,14 +703,14 @@ body{
   border: solid 1px #0F1959;
   background-color: #fff;
   font-size: 1rem;
-  padding: 0.25rem 0.5rem 0 0.5rem;
   z-index: 99;
 }
 
 #filterMenu .topContainer{
   width: 100%;
   flex-direction: column;
-  overflow: auto;
+  padding: 0.25rem 0.5rem 0 0.5rem;
+  box-sizing: border-box;
 }
 
 #filterMenu .topContainer > * {
@@ -749,7 +772,6 @@ body{
   padding: 0.5rem 1rem;
   box-sizing: border-box;
   height: auto;
-  background-color: #fff;
   font-size: 0.9rem;
 }
 

@@ -40,7 +40,6 @@ export default class Sidebar extends React.Component {
       const newState = { isFilterMenu: !state.isFilterMenu }
       return newState;
     });
-
   }
 
   render() {
@@ -117,6 +116,13 @@ export default class Sidebar extends React.Component {
 //  )
 //}
 
+export function UpDownArrow(props) {
+  const imgProps = { ...props };
+  imgProps.src = props.up ? arrowUp : arrowDown;
+  imgProps.alt = props.up ? '↑' : '↓';
+  return <img {...imgProps} />
+}
+
 class SortMenu extends React.Component {
   constructor(props) {
     super(props);
@@ -162,7 +168,8 @@ function SortOpt(props) {
   return (
     <div className={'btn sortOpt' + (props.isActive ? ' active' : '')} onClick={props.onClick}>
       <span className='arrow' style={{ width: '0.7rem', height: '1rem' }}>
-        {props.isActive && (props.isAscending ? <img src={arrowUp} alt='↑' /> : <img src={arrowDown} alt='↓' />)}
+        {props.isActive && <UpDownArrow up={props.isAscending} />}
+        {/*{props.isActive && (props.isAscending ? <img src={arrowUp} alt='↑' /> : <img src={arrowDown} alt='↓' />)}*/}
       </span>
       {props.opt !== 'Total' ? <AttrIcon attr={props.opt} /> : <span>{props.opt}</span>}
     </div>
@@ -236,7 +243,6 @@ class FilterMenu extends React.PureComponent {
       </div>
     )
   }
-
 }
 
 class Filter extends React.Component {
@@ -290,10 +296,11 @@ class Filter extends React.Component {
     return (
       <div className='filter'>
         <div className='filterHeading'>
-          <img className='filterIcon'
-            src={this.props.isMenuActive ? arrowUp : arrowDown}
-            alt={this.props.isMenuActive ? '↑' : '↓'}
-            onClick={this.props.toggleMenu} />
+          <UpDownArrow
+            className='filterIcon'
+            onClick={this.props.toggleMenu}
+            up={this.props.isMenuActive}
+          />
           <p onClick={this.props.toggleMenu}>{this.props.heading}</p>
           {this.state.submitted.size > 0 && <a onClick={this.clearFilter}>clear filter</a>}
         </div>
