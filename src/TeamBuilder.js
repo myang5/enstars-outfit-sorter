@@ -57,11 +57,12 @@ export class TeamView extends React.Component {
 //https://stackoverflow.com/questions/12170261/how-to-auto-resize-a-div-with-css-while-keeping-aspect-ratio
 function TeamMember(props) {
   const cls = 'teamMember' + (props.member.hasOwnProperty('Made') ? (!props.member['Made'] ? ' notMade' : '') : '');
+  const alt = props.member ? `${props.member['Character']} ${props.member['Outfit']}` : null;
   return (
     <div className={cls} onClick={() => props.toggleOutfitList(props.index)}>
       <div className='imgContainer'>
         <Platform hasMember={props.member} />
-        <Image obj={props.member} />
+        <Image obj={props.member} alt={alt} />
       </div>
       <AttrList attr={props.selAttr} bonus={props.member} maxValue={300} hideIcon={true} />
     </div>

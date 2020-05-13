@@ -83,6 +83,11 @@ export default function Instructions(props) {
             <p>
               Copy the spreadsheet link into the sorter and click 'Add'.
             </p>
+            <hr />
+            <h3>About</h3>
+            <p>Tool developed by <a href='https://twitter.com/gayandasleep'>Midori</a> (feel free to DM them with any feedback/bug reports/suggestions for features</p>
+            <p>Game images pulled from <a href='https://twitter.com/sakasakitty/status/1230928809169498113'>Rai's render drive</a></p>
+            <p>Directional arrow icons made by <a href="https://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></p>
           </div>
         </div>
         <div className='bottomContainer'><div className='btn' onClick={props.toggleInstructions}>Close</div></div>
