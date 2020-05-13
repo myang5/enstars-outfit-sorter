@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "e4d87d2edf76c7267205579491730d7d",
+    "revision": "5f93621ec3d4703f238d79fa71bec0d9",
     "url": "/enstars-outfit-sorter/index.html"
   },
   {
