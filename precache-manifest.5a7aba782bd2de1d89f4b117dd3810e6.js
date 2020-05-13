@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "f63aa745301c26069ede926cd1f879bb",
+    "revision": "189bcf737926ca752c4050ad57b0018e",
     "url": "/enstars-outfit-sorter/index.html"
   },
   {
-    "revision": "c9526b11727eae57dd9f",
-    "url": "/enstars-outfit-sorter/static/css/main.5d028c7d.chunk.css"
+    "revision": "fd321990a88a62bb04bb",
+    "url": "/enstars-outfit-sorter/static/css/main.9205a912.chunk.css"
   },
   {
     "revision": "f6c74973c130c843e17a",
@@ -16,7 +16,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/enstars-outfit-sorter/static/js/2.0cb57ad5.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "c9526b11727eae57dd9f",
+    "revision": "fd321990a88a62bb04bb",
     "url": "/enstars-outfit-sorter/static/js/main.de9fbcc4.chunk.js"
   },
   {
